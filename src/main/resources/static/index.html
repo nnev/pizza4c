@@ -1,10 +1,52 @@
-<!DOCTYPE HTML>
 <html>
-<head>
-    <title>Getting Started: Serving Web Content</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-</head>
-<body>
-<p>Get your greeting <a href="/greeting">here</a></p>
-</body>
+<style>
+    .rad,
+    .set {
+        display: none;
+        opacity: 0;
+    }
+
+    .rad:checked + .set {
+        display: block;
+        opacity: 1;
+    }
+
+    .btn {
+        display: inline-block;
+        border: 2px inset grey;
+        border-radius: 6px;
+        padding: 2px 3px;
+        cursor: pointer;
+    }
+
+    .btn:hover {
+        border-color: tomato;
+        color: tomato;
+        transition: .75s ease;
+    }
+
+    legend {
+        font-size: 1.5em;
+    }
+</style>
+
+<form id='main'>
+    <fieldset>
+        <legend>SWITCH</legend>
+        <label for='rad0' class='btn'>OPEN SET 0</label>
+        <label for='rad1' class='btn'>OPEN SET 1</label>
+    </fieldset>
+
+    <input id='rad0' class='rad' name='rad' type='radio'>
+
+    <fieldset class='set'>
+        <legend>SET 0</legend>
+    </fieldset>
+
+    <input id='rad1' class='rad' name='rad' type='radio'>
+
+    <fieldset class='set'>
+        <legend>SET 1</legend>
+    </fieldset>
+</form>
 </html>

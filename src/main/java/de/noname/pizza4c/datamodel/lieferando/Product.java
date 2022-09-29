@@ -22,5 +22,9 @@ public class Product {
     private List<Variant> variants;
 
     @JsonProperty
-    private AllergenHolder allergenHolder = new AllergenHolder();
+    private ProductInfo productInfo = new ProductInfo();
+
+    public List<String> getDescription() {
+        return description == null ? null : description.stream().map(s -> s.replace("• ", "")).toList();
+    }
 }

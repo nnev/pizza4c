@@ -1,0 +1,131 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Getting Started: Serving Web Content</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <style>
+        aside {
+            position: absolute;
+            left: 0;
+            width: 200px;
+        }
+
+        aside h1, main h2 {
+            margin-bottom: 0;
+        }
+
+        ol {
+            list-style: none;
+        }
+
+        aside .categoryDescription {
+            font-size: small;
+            color: gray;
+        }
+
+        main {
+            position: absolute;
+            left: 200px;
+        }
+
+        main .product > ol {
+            list-style: initial;
+        }
+
+        .category, .product {
+            border-top: 1px solid gray;
+        }
+
+        .category:last-child, .product:last-child {
+            border-bottom: 1px solid gray;
+        }
+
+        li.product {
+            min-height: 50px;
+        }
+
+        .productPrice {
+            float: right;
+        }
+        .productSelect {
+            float: right;
+            border: 1px solid blue;
+            padding: 10px;
+
+        }
+
+
+    </style>
+</head>
+<body>
+
+<aside>
+    <nav>
+        <ol>
+            <li th:each="category : ${restaurant.menu.categories}">
+                <h1>
+                    <a
+                            th:href="'#'+${category.id}"
+                            th:text="${category.name}"
+                            th:title="${#strings.arrayJoin(category.description, ',')}"
+                    ></a>
+                </h1>
+            </li>
+        </ol>
+    </nav>
+</aside>
+<main>
+    <ol>
+        <li
+                class="category"
+                th:each="category : ${restaurant.menu.categories}">
+            <h1
+                    th:text="${category.name}"
+                    th:name="${category.id}"
+            />
+            <th:block th:if="${category.description != null && category.description.size() > 0}">
+            <span
+                    class="categoryDescription"
+                    th:text="${category.description.get(0)}"/>
+            </th:block>
+
+            <ol>
+                <li
+                        class="product"
+                        th:each="productId : ${category.getProductIds()}"
+                        th:with="product=${restaurant.menu.products.get(productId)}">
+                    <h2 th:text="${product.name}"/>
+                    <ol>
+                        <li th:each="description : ${product.description}" th:text="${description}"/>
+                    </ol>
+                    <div th:if="${product.productInfo.anyInformation}">
+                        ProductInfo:
+                        <ul>
+                            <li th:if="${product.productInfo.additives}">Additives: <span
+                                    th:text="${product.productInfo.additives}"/></li>
+                            <li th:if="${product.productInfo.allergens}">Allergens: <span
+                                    th:text="${product.productInfo.allergens}"/></li>
+                            <li th:if="${product.productInfo.alcoholVolume}">AlcoholVolume: <span
+                                    th:text="${product.productInfo.alcoholVolume}"/></li>
+                            <li th:if="${product.productInfo.caffeineAmount}">CaffeineAmount: <span
+                                    th:text="${product.productInfo.caffeineAmount}"/></li>
+                            <li th:if="${product.productInfo.isFoodInformationVerifiedByRestaurant}">Verified: <span
+                                    th:text="${product.productInfo.isFoodInformationVerifiedByRestaurant}"/></li>
+                            <li th:if="${product.productInfo.nutritionalTextManual}">Manual: <span
+                                    th:text="${product.productInfo.nutritionalTextManual}"/></li>
+                        </ul>
+                    </div>
+                    <div class="productSelect">
+                        <a th:href="'/customize/'+${productId}">+</a>
+                    </div>
+                    <div
+                            class="productPrice"
+                            th:text="${product.getVariants().get(0).prices.deliveryEuro}+'€'"
+                    ></div>
+                </li>
+            </ol>
+        </li>
+    </ol>
+</main>
+</body>
+</html>

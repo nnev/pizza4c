@@ -27,4 +27,7 @@ public class OptionGroup {
     @JsonProperty
     private List<String> optionIds;
 
+    public boolean isMandatory() {
+        return minChoices == 1 && maxChoices == 1;
+    }
 }
