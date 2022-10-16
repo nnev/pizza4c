@@ -26,11 +26,32 @@ public class CartEntry {
     }
 
     public List<String> getOptionList(Menu menu) {
-        return options
+        var result = new ArrayList<String>();
+        result.add(menu.getProducts().get(product).getName());
+
+        options
                 .values()
                 .stream()
                 .flatMap(Collection::stream)
                 .map(s -> menu.getOptions().get(s).getName())
-                .collect(Collectors.toList());
+                .forEach(result::add);
+        return result;
     }
+
+    public String getOptionListHtml(Menu menu) {
+        StringBuilder result = new StringBuilder();
+        result.append(menu.getProducts().get(product).getName()).append("<br>");
+
+        options
+                .values()
+                .stream()
+                .flatMap(Collection::stream)
+                .map(s -> menu.getOptions().get(s).getName())
+                .forEach(s -> {
+                    result.append("&nbsp;&nbsp;+&nbsp;").append(s).append("<br>");
+                });
+        return result.toString();
+    }
+
+
 }

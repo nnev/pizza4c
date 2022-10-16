@@ -3,6 +3,8 @@
 <head>
     <title>Getting Started: Serving Web Content</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <!-- TODO: Self host https://developers.google.com/fonts/docs/material_icons#icon_font_for_the_web  -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <style>
         .optionsContainer {
             display: grid;
@@ -29,12 +31,16 @@
             display: block;
         }
 
+        .variantContent ul {
+            list-style: none;
+        }
+
     </style>
 </head>
 <body>
 
-<form action="/customizeFinish" method="post" th:with="product=${restaurant.menu.products.get(productId)}">
-    <input type="hidden" name="productId" th:value="${productId}" />
+<form action="/addToCart" method="post" th:with="product=${restaurant.menu.products.get(productId)}">
+    <input type="hidden" name="productId" th:value="${productId}"/>
     Product: <span th:text="${product.name}"/> (<span th:text="${productId}"/>) <br>
     ProductInfo:
     <ul>
@@ -51,76 +57,31 @@
         <li th:if="${product.productInfo.nutritionalTextManual}">Manual: <span
                 th:text="${product.productInfo.nutritionalTextManual}"/></li>
     </ul>
-    Variants:
-    <ul class="variantContainer">
-        <li
-                class="variant"
-                th:each="variant : ${product.variants}"
-        >
-            <input
-                    class="variantSelect"
-                    type="radio"
-                    th:name="${productId} + '-' + ${variant.id}"
-                    th:id="${productId} + '-' + ${variant.id}"
+    <th:block th:if="${#lists.size(product.variants) > 1}">
+        Variants:
+        <ul class="variantContainer">
+            <li
+                    class="variant"
+                    th:each="variant : ${product.variants}"
             >
-            <legend
-                    class="variantTitle"
-                    th:for="${productId} + '-' + ${variant.id}"
-            >
-                Variant: <span th:text="${variant.name}"/> Price: <span
-                    th:text="${variant.prices.deliveryEuro}"/>€<br>
-            </legend>
-            <div class="variantContent">
-                OptionGroups:
-                <ul>
-                    <li th:each="optionGroupId : ${variant.optionGroupIds}"
-                        th:with="optionGroup=${restaurant.menu.optionGroups.get(optionGroupId)}">
-                        OptionGroup: <span th:text="${optionGroup.name}"/>
-                        [<span th:text="${optionGroup.minChoices}"/> - <span
-                            th:text="${optionGroup.maxChoices}"/>] <br>
-                        Options:
-                        <fieldset class="optionsContainer">
-                            <div class="option"
-                                 th:each="optionId : ${optionGroup.optionIds}"
-                                 th:with="option=${restaurant.menu.options.get(optionId)}"
-                            >
-                                <div
-                                        class="optionRadio"
-                                        th:if="${optionGroup.isMandatory()}"
-                                >
-                                    <input
-                                            type="radio"
-                                            th:name="${productId} + '-' + ${variant.id} + '-' + ${optionGroupId} + '-' +  ${optionId}"
-                                            th:id="${productId} + '-' + ${variant.id} + '-' + ${optionGroupId} + '-' +  ${optionId}"
-                                    />
-                                </div>
-                                <div
-                                        class="optionCheckbox"
-                                        th:if="${!optionGroup.isMandatory()}"
-                                >
-                                    <input
-                                            type="checkbox"
-                                            th:name="${productId} + '-' + ${variant.id} + '-' + ${optionGroupId} + '-' +  ${optionId}"
-                                            th:id="${productId} + '-' + ${variant.id} + '-' + ${optionGroupId} + '-' +  ${optionId}"
-                                    />
-                                </div>
-                                <div class="optionName">
-                                    <label
-                                            th:for="${productId} + '-' + ${variant.id} + '-' + ${optionGroupId} + '-' +  ${optionId}"
-                                            th:text="${restaurant.menu.options.get(optionId).name}"/>
-                                </div>
-                                <div class="optionPrice">
-                                    <label
-                                            th:for="${productId} + '-' + ${variant.id} + '-' + ${optionGroupId} + '-' +  ${optionId}"
-                                            th:text="'+'+${option.prices.deliveryEuro}+'€'"/>
-                                </div>
-                            </div>
-                        </fieldset>
-                    </li>
-                </ul>
-            </div>
-        </li>
-    </ul>
+                <input
+                        class="variantSelect"
+                        type="radio"
+                        th:name="variantId"
+                        th:value="${productId} + '-' + ${variant.id}"
+                        th:id="${productId} + '-' + ${variant.id}"
+                >
+                <th:block th:insert="customizeVariantBody"></th:block>
+            </li>
+        </ul>
+    </th:block>
+    <th:block th:if="${#lists.size(product.variants) == 1}" th:with="variant = ${product.variants.get(0)}">
+        <input type="hidden"
+               th:name="variantId"
+               th:value="${productId} + '-' + ${variant.id}"
+               th:id="${productId} + '-' + ${variant.id}"/>
+        <th:block th:insert="customizeVariantBody"></th:block>
+    </th:block>
 
     <input type="submit">
 </form>

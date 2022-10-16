@@ -1,5 +1,7 @@
 package de.noname.pizza4c.webpage;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import de.noname.pizza4c.datamodel.lieferando.Menu;
 import de.noname.pizza4c.datamodel.lieferando.Product;
 import de.noname.pizza4c.datamodel.lieferando.Restaurant;
@@ -10,11 +12,21 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.MultiValueMap;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.view.RedirectView;
 
 import javax.servlet.http.HttpSession;
-import java.util.*;
+import java.util.HashMap;
+import java.util.LinkedHashSet;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.UUID;
 
 @Controller
 public class WebpageController {
@@ -22,10 +34,28 @@ public class WebpageController {
     @Autowired
     private RestaurantService restaurantService;
 
-    @GetMapping("/greeting")
-    public String index(Model model) {
-        model.addAttribute("restaurant", restaurantService.getCachedRestaurant("xxx"));
-        return "greeting";
+    @GetMapping("/api/restaurant/current")
+    public String getRestaurant(Model model) throws JsonProcessingException {
+
+        model.addAttribute("data", new ObjectMapper().writer().writeValueAsString(restaurantService.getCachedRestaurant("xxx")));
+        return "json";
+    }
+
+    @GetMapping("/changeName")
+    public String changeName() {
+        return "changeName";
+    }
+
+    @RequestMapping(value = "/changeName/do", method = RequestMethod.POST,
+            consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+    public RedirectView changeName(@RequestBody MultiValueMap<String, String> formData,
+                                   HttpSession session) {
+        String name = formData.getFirst("name");
+        if (name != null && name.length() >= 3) {
+            session.setAttribute("name", name);
+        }
+
+        return new RedirectView("/order");
     }
 
     @GetMapping("/order")
@@ -33,13 +63,21 @@ public class WebpageController {
         var restaurant = restaurantService.getCachedRestaurant("xxx");
         String name = (String) session.getAttribute("name");
         if (name == null) {
-            session.setAttribute("name", "Kormarun");
+            session.setAttribute("name", generateRandomName());
             restaurantService.allCarts.setRestaurant(restaurant);
         }
 
+        Cart cart = restaurantService.allCarts.getOrCreateCart(name);
+
         model.addAttribute("restaurant", restaurant);
         model.addAttribute("allCarts", restaurantService.allCarts);
+        model.addAttribute("name", name);
+        model.addAttribute("myCart", cart);
         return "orderOverview";
+    }
+
+    private String generateRandomName() {
+        return UUID.randomUUID().toString();
     }
 
     @GetMapping("/customize/{productId}")
@@ -49,32 +87,50 @@ public class WebpageController {
         return "customize";
     }
 
-    @RequestMapping(value = "/customizeFinish", method = RequestMethod.POST, consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-    public RedirectView customizeFinish(@RequestBody MultiValueMap<String, String> formData, Model model, HttpSession session) {
+    @RequestMapping(value = "/addToCart", method = RequestMethod.POST,
+            consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+    public RedirectView addToCart(@RequestBody MultiValueMap<String, String> formData, Model model,
+                                  HttpSession session) {
         Restaurant restaurant = restaurantService.getCachedRestaurant("xxx");
         String productId = formData.getFirst("productId");
         var product = restaurant.getMenu().getProducts().get(productId);
         var variant = getSelectedVariant(formData, productId, product);
         var selectedOptions = getSelectedOptions(formData, restaurant.getMenu(), productId, variant);
 
+        return addToCart(productId, variant.getId(), selectedOptions, session);
+    }
+
+    @RequestMapping(value = "/addToCart/{productId}", method = RequestMethod.GET)
+    public RedirectView addToCartNonCustomized(Model model, @PathVariable("productId") String productId,
+                                               HttpSession session) {
+        Restaurant restaurant = restaurantService.getCachedRestaurant("xxx");
+        var product = restaurant.getMenu().getProducts().get(productId);
+
+        return addToCart(productId, product.getVariants().get(0).getId(), Map.of(), session);
+    }
+
+    private RedirectView addToCart(String productId, String variantId, Map<String, Set<String>> options,
+                                   HttpSession session) {
         String name = (String) session.getAttribute("name");
         if (name != null) {
             Cart cart = restaurantService.allCarts.getOrCreateCart(name);
-            cart.addEntry(productId, variant.getId(), selectedOptions);
+            cart.addEntry(productId, variantId, options);
         }
 
         return new RedirectView("/order");
     }
 
     private Variant getSelectedVariant(MultiValueMap<String, String> formData, String productId, Product product) {
+        var variantId = formData.getFirst("variantId");
         return product.getVariants()
                 .stream()
-                .filter(variant -> Objects.equals("on", formData.getFirst(productId + "-" + variant.getId())))
+                .filter(variant -> Objects.equals(variantId, productId + "-" + variant.getId()))
                 .findFirst()
                 .orElse(null);
     }
 
-    private Map<String, Set<String>> getSelectedOptions(MultiValueMap<String, String> formData, Menu menu, String productId, Variant variant) {
+    private Map<String, Set<String>> getSelectedOptions(MultiValueMap<String, String> formData, Menu menu,
+                                                        String productId, Variant variant) {
         Map<String, Set<String>> result = new HashMap<>();
 
         formData.forEach((key, values) -> {
@@ -103,5 +159,23 @@ public class WebpageController {
         });
 
         return result;
+    }
+
+    @GetMapping("/markPaid/{cartId}")
+    public RedirectView markAsPaid(@PathVariable("cartId") String cartId, Model model) {
+        Cart cart = restaurantService.allCarts.getCartById(cartId);
+        if (cart != null) {
+            cart.setPayed(true);
+        }
+        return new RedirectView("/order");
+    }
+
+    @GetMapping("/markUnpaid/{cartId}")
+    public RedirectView markAsUnpaid(@PathVariable("cartId") String cartId, Model model) {
+        Cart cart = restaurantService.allCarts.getCartById(cartId);
+        if (cart != null) {
+            cart.setPayed(false);
+        }
+        return new RedirectView("/order");
     }
 }

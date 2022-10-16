@@ -23,7 +23,22 @@ public class Menu {
     private Map<String, Product> products;
 
 
-    public Variant getVariant(String productId, String variantId){
-        return products.get(productId).getVariants().stream().filter(variant -> variant.getId().equals(variantId)).findFirst().orElse(null);
+    public Variant getVariant(String productId, String variantId) {
+        return products.get(productId)
+                .getVariants()
+                .stream()
+                .filter(variant -> variant.getId().equals(variantId))
+                .findFirst()
+                .orElse(null);
+    }
+
+    public boolean isConfigurable(Product product) {
+        return product.getVariants().size() > 1 ||
+                product.getVariants().stream().flatMap(variant -> variant.getOptionGroupIds().stream())
+                        .map(s -> getOptionGroups().get(s)).anyMatch(this::isConfigurable);
+    }
+
+    public boolean isConfigurable(OptionGroup optionGroup) {
+        return optionGroup.getOptionIds().size() > 0;
     }
 }

@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.LogoutConfigurer;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -36,7 +37,9 @@ public class WebSecurityConfig {
                         .loginPage("/login")
                         .permitAll()
                 )
-                .logout((logout) -> logout.permitAll())
+                .logout(httpSecurityLogoutConfigurer -> httpSecurityLogoutConfigurer
+                        .deleteCookies("JSESSIONID")
+                        .permitAll())
                 .csrf().disable();
 
         return http.build();
@@ -44,23 +47,11 @@ public class WebSecurityConfig {
 
     @Bean
     public UserDetailsService userDetailsService() {
-        UserDetails user =
-                User.withDefaultPasswordEncoder()
-                        .username("user")
-                        .password("password")
-                        .roles("USER")
-                        .build();
-
-        return new InMemoryUserDetailsManager(user);
+        return new InMemoryUserDetailsManager();
     }
 
     @Bean
-    public AccessDeniedHandler accessDeniedHandler(){
-        return new AccessDeniedHandler() {
-            @Override
-            public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) throws IOException, ServletException {
-                LOG.info("nknjkjsk");
-            }
-        };
+    public AccessDeniedHandler accessDeniedHandler() {
+        return (request, response, accessDeniedException) -> LOG.info("nknjkjsk");
     }
 }

@@ -27,4 +27,6 @@ public class Product {
     public List<String> getDescription() {
         return description == null ? null : description.stream().map(s -> s.replace("• ", "")).toList();
     }
+
+
 }

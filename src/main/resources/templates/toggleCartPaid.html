@@ -1,0 +1,8 @@
+<a th:if="!${selectedCart.payed}" th:href="'/markPaid/'+${selectedCart.id}">
+    <span class="material-icons">paid</span>
+    Mark As Paid
+</a>
+<a th:if="${selectedCart.payed}" th:href="'/markUnpaid/'+${selectedCart.id}">
+    <span class="material-icons">money_off</span>
+    Mark As Unpaid
+</a>

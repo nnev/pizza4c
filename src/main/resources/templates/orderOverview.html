@@ -4,6 +4,44 @@
     <title>Getting Started: Serving Web Content</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <style>
+        @font-face {
+            font-family: 'Material Icons';
+            font-style: normal;
+            font-weight: 400;
+            src: url(/MaterialIcons-Regular.eot); /* For IE6-8 */
+            src: local('Material Icons'),
+            local('MaterialIcons-Regular'),
+            url(/MaterialIcons-Regular.woff2) format('woff2'),
+            url(/MaterialIcons-Regular.woff) format('woff'),
+            url(/MaterialIcons-Regular.ttf) format('truetype');
+        }
+
+        .material-icons {
+            font-family: 'Material Icons';
+            font-weight: normal;
+            font-style: normal;
+            font-size: 24px; /* Preferred icon size */
+            display: inline-block;
+            line-height: 1;
+            text-transform: none;
+            letter-spacing: normal;
+            word-wrap: normal;
+            white-space: nowrap;
+            direction: ltr;
+
+            /* Support for all WebKit browsers. */
+            -webkit-font-smoothing: antialiased;
+            /* Support for Safari and Chrome. */
+            text-rendering: optimizeLegibility;
+
+            /* Support for Firefox. */
+            -moz-osx-font-smoothing: grayscale;
+
+            /* Support for IE. */
+            font-feature-settings: 'liga';
+        }
+
+
         aside {
             position: absolute;
             left: 0;
@@ -47,11 +85,12 @@
 
         .productMain {
             flex-grow: 1;
+            min-height: 70px;
         }
 
         .productPrice {
             align-self: center;
-            width: 4em;
+            min-width: 5em;
             text-align: center;
         }
 
@@ -65,6 +104,18 @@
             text-decoration: none;
         }
 
+        .orderTable{
+            width: 100%;
+        }
+
+        .orderTable td {
+            width: 1%;
+            white-space: nowrap;
+        }
+
+        .orderTable td.grow {
+            width: 50%;
+        }
 
     </style>
 </head>
@@ -86,36 +137,26 @@
     </nav>
 </aside>
 <main>
-    Summe: <th:block th:text="${allCarts.getPrice(restaurant.menu)}"></th:block>€
-    <table>
-        <tr>
-            <th>Product</th>
-            <th>Größe</th>
-            <th>Preis (€)</th>
-            <th>Beschriftung</th>
-        </tr>
-        <th:block th:each="cart : ${allCarts.carts}">
-            <tr th:each="cartEntry : ${cart.entries}">
-                <td th:text="${restaurant.menu.products.get(cartEntry.product).name}"></td>
-                <td th:text="${restaurant.menu.getVariant(cartEntry.product, cartEntry.variant).name}"></td>
-                <td th:text="${cartEntry.getPrice(restaurant.menu)}"></td>
-                <td th:text="${cart.name}"></td>
-            </tr>
-        </th:block>
-
-    </table>
-    <ol>
-        <li >
-
-        </li>
-    </ol>
+    Deine Bestellung, <th:block th:text="${name}"></th:block><br>
+    <th:block th:if="${!myCart.entries.isEmpty()}" th:with="selectedCart = ${myCart}">
+        <th:block th:insert="toggleCartPaid"></th:block>
+    </th:block>
+    <a href="/changeName">I am not <th:block th:text="${name}"></th:block></a><br/>
+    <th:block th:each="cartEntry : ${myCart.entries}">
+        <span th:utext="${cartEntry.getOptionListHtml(restaurant.menu)}"></span>
+    </th:block>
+    <h2>Bezahlt:</h2>
+    Summe:<th:block th:text="${allCarts.getPrice(restaurant.menu)}"></th:block>€
+    <th:block th:with="selectedCarts=${allCarts.payedCarts}" th:insert="orderCartView" />
+    <h2>Nicht bezahlt</h2>
+    <th:block th:with="selectedCarts=${allCarts.unpayedCarts}" th:insert="orderCartView" />
     <ol>
         <li
                 class="category"
                 th:each="category : ${restaurant.menu.categories}">
             <h1
                     th:text="${category.name}"
-                    th:name="${category.id}"
+                    th:id="${category.id}"
             />
             <th:block th:if="${category.description != null && category.description.size() > 0}">
             <span
@@ -153,7 +194,16 @@
                         </div>
                     </div>
                     <div class="productSelect">
-                        <a th:href="'/customize/'+${productId}">+</a>
+                        <th:block th:if="${restaurant.getMenu().isConfigurable(product)}">
+                            <a th:href="'/customize/'+${productId}">
+                                <span class="material-icons">tune</span>
+                            </a>
+                        </th:block>
+                        <th:block th:if="!${restaurant.getMenu().isConfigurable(product)}">
+                            <a th:href="'/addToCart/'+${productId}">
+                                <span class="material-icons">add</span>
+                            </a>
+                        </th:block>
                     </div>
                     <div
                             class="productPrice"

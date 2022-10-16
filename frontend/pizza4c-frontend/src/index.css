@@ -1,0 +1,112 @@
+@font-face {
+    font-family: 'Material Icons';
+    font-style: normal;
+    font-weight: 400;
+    src: url(/MaterialIcons-Regular.eot); /* For IE6-8 */
+    src: local('Material Icons'),
+    local('MaterialIcons-Regular'),
+    url(/MaterialIcons-Regular.woff2) format('woff2'),
+    url(/MaterialIcons-Regular.woff) format('woff'),
+    url(/MaterialIcons-Regular.ttf) format('truetype');
+}
+
+.material-icons {
+    font-family: 'Material Icons';
+    font-weight: normal;
+    font-style: normal;
+    font-size: 24px; /* Preferred icon size */
+    display: inline-block;
+    line-height: 1;
+    text-transform: none;
+    letter-spacing: normal;
+    word-wrap: normal;
+    white-space: nowrap;
+    direction: ltr;
+
+    /* Support for all WebKit browsers. */
+    -webkit-font-smoothing: antialiased;
+    /* Support for Safari and Chrome. */
+    text-rendering: optimizeLegibility;
+
+    /* Support for Firefox. */
+    -moz-osx-font-smoothing: grayscale;
+
+    /* Support for IE. */
+    font-feature-settings: 'liga';
+}
+
+
+aside {
+    position: absolute;
+    left: 0;
+    width: 200px;
+}
+
+aside h1, main h2 {
+    margin-bottom: 0;
+}
+
+ol {
+    list-style: none;
+}
+
+aside .categoryDescription {
+    font-size: small;
+    color: gray;
+}
+
+main {
+    position: absolute;
+    left: 200px;
+}
+
+main .product > ol {
+    list-style: initial;
+}
+
+.category, .product {
+    border-top: 1px solid gray;
+}
+
+.category:last-child, .product:last-child {
+    border-bottom: 1px solid gray;
+}
+
+li.product {
+    min-height: 50px;
+    display: flex;
+}
+
+.productMain {
+    flex-grow: 1;
+    min-height: 70px;
+}
+
+.productPrice {
+    align-self: center;
+    min-width: 5em;
+    text-align: center;
+}
+
+.productSelect {
+    align-self: center;
+}
+
+.productSelect a {
+    padding: 20px;
+    border: 1px solid blue;
+    text-decoration: none;
+}
+
+.orderTable{
+    width: 100%;
+}
+
+.orderTable td {
+    width: 1%;
+    white-space: nowrap;
+}
+
+.orderTable td.grow {
+    width: 50%;
+}

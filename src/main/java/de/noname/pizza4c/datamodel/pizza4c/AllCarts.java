@@ -11,6 +11,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 
 @Data
 @Component
@@ -25,15 +26,28 @@ public class AllCarts {
     public Cart getOrCreateCart(String userName) {
         return carts.stream().filter(c -> Objects.equals(c.getName(), userName)).findFirst().orElseGet(() -> {
             Cart cart = new Cart();
+            cart.setId(UUID.randomUUID().toString());
             cart.setName(userName);
             carts.add(cart);
             return cart;
         });
     }
 
+    public Cart getCartById(String cartId) {
+        return carts.stream().filter(c -> Objects.equals(c.getId(), cartId)).findFirst().orElse(null);
+    }
+
     @Bean
     @Scope("singular")
     public static AllCarts getInstance() {
         return new AllCarts();
+    }
+
+    public List<Cart> getPayedCarts(){
+        return carts.stream().filter(Cart::isPayed).toList();
+    }
+
+    public List<Cart> getUnpayedCarts(){
+        return carts.stream().filter(cart -> !cart.isPayed()).toList();
     }
 }

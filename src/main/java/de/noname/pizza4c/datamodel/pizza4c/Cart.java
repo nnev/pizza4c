@@ -11,8 +11,11 @@ import java.util.Set;
 
 @Data
 public class Cart {
+    private String id;
     private String name;
     private List<CartEntry> entries = new ArrayList<>();
+
+    private boolean isPayed = false;
 
     public BigDecimal getPrice(Menu menu) {
         return entries.stream().map(cartEntry -> cartEntry.getPrice(menu)).reduce(BigDecimal.ZERO, BigDecimal::add);
@@ -24,5 +27,9 @@ public class Cart {
         cartEntry.setVariant(variant);
         cartEntry.setOptions(selectedOptions);
         entries.add(cartEntry);
+    }
+
+    public String getShortName(){
+        return name.substring(0, Math.min(name.length(), 3)).toUpperCase();
     }
 }
