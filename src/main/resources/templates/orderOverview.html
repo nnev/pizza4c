@@ -42,16 +42,27 @@
 
         li.product {
             min-height: 50px;
+            display: flex;
+        }
+
+        .productMain {
+            flex-grow: 1;
         }
 
         .productPrice {
-            float: right;
+            align-self: center;
+            width: 4em;
+            text-align: center;
         }
-        .productSelect {
-            float: right;
-            border: 1px solid blue;
-            padding: 10px;
 
+        .productSelect {
+            align-self: center;
+        }
+
+        .productSelect a {
+            padding: 20px;
+            border: 1px solid blue;
+            text-decoration: none;
         }
 
 
@@ -75,6 +86,29 @@
     </nav>
 </aside>
 <main>
+    Summe: <th:block th:text="${allCarts.getPrice(restaurant.menu)}"></th:block>€
+    <table>
+        <tr>
+            <th>Product</th>
+            <th>Größe</th>
+            <th>Preis (€)</th>
+            <th>Beschriftung</th>
+        </tr>
+        <th:block th:each="cart : ${allCarts.carts}">
+            <tr th:each="cartEntry : ${cart.entries}">
+                <td th:text="${restaurant.menu.products.get(cartEntry.product).name}"></td>
+                <td th:text="${restaurant.menu.getVariant(cartEntry.product, cartEntry.variant).name}"></td>
+                <td th:text="${cartEntry.getPrice(restaurant.menu)}"></td>
+                <td th:text="${cart.name}"></td>
+            </tr>
+        </th:block>
+
+    </table>
+    <ol>
+        <li >
+
+        </li>
+    </ol>
     <ol>
         <li
                 class="category"
@@ -93,27 +127,30 @@
                 <li
                         class="product"
                         th:each="productId : ${category.getProductIds()}"
-                        th:with="product=${restaurant.menu.products.get(productId)}">
-                    <h2 th:text="${product.name}"/>
-                    <ol>
-                        <li th:each="description : ${product.description}" th:text="${description}"/>
-                    </ol>
-                    <div th:if="${product.productInfo.anyInformation}">
-                        ProductInfo:
-                        <ul>
-                            <li th:if="${product.productInfo.additives}">Additives: <span
-                                    th:text="${product.productInfo.additives}"/></li>
-                            <li th:if="${product.productInfo.allergens}">Allergens: <span
-                                    th:text="${product.productInfo.allergens}"/></li>
-                            <li th:if="${product.productInfo.alcoholVolume}">AlcoholVolume: <span
-                                    th:text="${product.productInfo.alcoholVolume}"/></li>
-                            <li th:if="${product.productInfo.caffeineAmount}">CaffeineAmount: <span
-                                    th:text="${product.productInfo.caffeineAmount}"/></li>
-                            <li th:if="${product.productInfo.isFoodInformationVerifiedByRestaurant}">Verified: <span
-                                    th:text="${product.productInfo.isFoodInformationVerifiedByRestaurant}"/></li>
-                            <li th:if="${product.productInfo.nutritionalTextManual}">Manual: <span
-                                    th:text="${product.productInfo.nutritionalTextManual}"/></li>
-                        </ul>
+                        th:with="product=${restaurant.menu.products.get(productId)}"
+                >
+                    <div class="productMain">
+                        <h2 th:text="${product.name}"/>
+                        <ol>
+                            <li th:each="description : ${product.description}" th:text="${description}"/>
+                        </ol>
+                        <div th:if="${product.productInfo.anyInformation}">
+                            ProductInfo:
+                            <ul>
+                                <li th:if="${product.productInfo.additives}">Additives: <span
+                                        th:text="${product.productInfo.additives}"/></li>
+                                <li th:if="${product.productInfo.allergens}">Allergens: <span
+                                        th:text="${product.productInfo.allergens}"/></li>
+                                <li th:if="${product.productInfo.alcoholVolume}">AlcoholVolume: <span
+                                        th:text="${product.productInfo.alcoholVolume}"/></li>
+                                <li th:if="${product.productInfo.caffeineAmount}">CaffeineAmount: <span
+                                        th:text="${product.productInfo.caffeineAmount}"/></li>
+                                <li th:if="${product.productInfo.isFoodInformationVerifiedByRestaurant}">Verified: <span
+                                        th:text="${product.productInfo.isFoodInformationVerifiedByRestaurant}"/></li>
+                                <li th:if="${product.productInfo.nutritionalTextManual}">Manual: <span
+                                        th:text="${product.productInfo.nutritionalTextManual}"/></li>
+                            </ul>
+                        </div>
                     </div>
                     <div class="productSelect">
                         <a th:href="'/customize/'+${productId}">+</a>

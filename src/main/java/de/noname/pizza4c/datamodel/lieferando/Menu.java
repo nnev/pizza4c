@@ -22,4 +22,8 @@ public class Menu {
     @JsonProperty
     private Map<String, Product> products;
 
+
+    public Variant getVariant(String productId, String variantId){
+        return products.get(productId).getVariants().stream().filter(variant -> variant.getId().equals(variantId)).findFirst().orElse(null);
+    }
 }

@@ -3,8 +3,10 @@ package de.noname.pizza4c.webpage;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.noname.pizza4c.datamodel.lieferando.ProductInfo;
 import de.noname.pizza4c.datamodel.lieferando.Restaurant;
+import de.noname.pizza4c.datamodel.pizza4c.AllCarts;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -13,6 +15,10 @@ import java.io.IOException;
 @Service
 public class RestaurantService {
     private static final Logger LOG = LoggerFactory.getLogger(RestaurantService.class);
+
+    @Autowired
+    public AllCarts allCarts;
+
     private Restaurant cachedRestaurant;
 
     private void retrieveData1(String restaurantName) {
