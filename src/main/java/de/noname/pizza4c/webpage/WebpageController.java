@@ -7,6 +7,8 @@ import de.noname.pizza4c.datamodel.lieferando.Product;
 import de.noname.pizza4c.datamodel.lieferando.Restaurant;
 import de.noname.pizza4c.datamodel.lieferando.Variant;
 import de.noname.pizza4c.datamodel.pizza4c.Cart;
+import de.noname.pizza4c.utils.SessionUtils;
+import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
@@ -21,12 +23,13 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.view.RedirectView;
 
 import javax.servlet.http.HttpSession;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-import java.util.UUID;
 
 @Controller
 public class WebpageController {
@@ -37,7 +40,78 @@ public class WebpageController {
     @GetMapping("/api/restaurant/current")
     public String getRestaurant(Model model) throws JsonProcessingException {
 
-        model.addAttribute("data", new ObjectMapper().writer().writeValueAsString(restaurantService.getCachedRestaurant("xxx")));
+        model.addAttribute("data",
+                new ObjectMapper().writer().writeValueAsString(restaurantService.getCachedRestaurant("xxx")));
+        return "json";
+    }
+
+    @Data
+    public static class AddToCartDto {
+        String product;
+        String variant;
+        Map<String, Set<String>> options;
+    }
+
+    @PostMapping("/api/addToCart")
+    public String addToCart(@RequestBody String rawBody, Model model, HttpSession session) throws IOException {
+        Restaurant restaurant = restaurantService.getCachedRestaurant("xxx");
+        var data = new ObjectMapper().reader().readValue(rawBody, AddToCartDto.class);
+        String productId = data.product;
+        String variantId = data.variant;
+        var product = restaurant.getMenu().getProducts().get(productId);
+        var variant = getSelectedVariant(productId + "-" + variantId, productId, product);
+        addToCart(productId, variant.getId(), data.options, session);
+
+        String name = SessionUtils.getOrCreateName(session);
+        Cart cart = restaurantService.allCarts.getOrCreateCart(name);
+
+        model.addAttribute("data", new ObjectMapper().writer().writeValueAsString(cart));
+        return "json";
+    }
+
+    @GetMapping("/api/allCarts")
+    public String allCarts(Model model) throws IOException {
+        model.addAttribute("data",
+                new ObjectMapper().writer().writeValueAsString(restaurantService.allCarts.getCarts()));
+        return "json";
+    }
+
+    @GetMapping("/api/myCart")
+    public String allCarts(Model model, HttpSession session) throws IOException {
+        String name = SessionUtils.getOrCreateName(session);
+
+        model.addAttribute("data",
+                new ObjectMapper().writer().writeValueAsString(restaurantService.allCarts.getOrCreateCart(name)));
+        return "json";
+    }
+
+    @PostMapping("/api/changeName")
+    public String changeName(@RequestBody String rawBody, Model model, HttpSession session) throws IOException {
+        var body = new ObjectMapper().reader().readTree(rawBody);
+
+        changeName(body.get("name").asText(), session);
+
+        model.addAttribute("data", List.of());
+        return "json";
+    }
+
+    @PostMapping("/api/markPaid/{cartId}")
+    public String markAsPaidApi(@PathVariable("cartId") String cartId, Model model) {
+        Cart cart = restaurantService.allCarts.getCartById(cartId);
+        if (cart != null) {
+            cart.setPayed(true);
+        }
+        model.addAttribute("data", List.of());
+        return "json";
+    }
+
+    @PostMapping("/api/markUnpaid/{cartId}")
+    public String markAsUnpaidApi(@PathVariable("cartId") String cartId, Model model) {
+        Cart cart = restaurantService.allCarts.getCartById(cartId);
+        if (cart != null) {
+            cart.setPayed(false);
+        }
+        model.addAttribute("data", List.of());
         return "json";
     }
 
@@ -46,27 +120,28 @@ public class WebpageController {
         return "changeName";
     }
 
+
     @RequestMapping(value = "/changeName/do", method = RequestMethod.POST,
             consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     public RedirectView changeName(@RequestBody MultiValueMap<String, String> formData,
                                    HttpSession session) {
         String name = formData.getFirst("name");
+        changeName(name, session);
+
+        return new RedirectView("/order");
+    }
+
+    private void changeName(String name, HttpSession session) {
         if (name != null && name.length() >= 3) {
             session.setAttribute("name", name);
         }
-
-        return new RedirectView("/order");
     }
 
     @GetMapping("/order")
     public String orderOverview(Model model, HttpSession session) {
         var restaurant = restaurantService.getCachedRestaurant("xxx");
-        String name = (String) session.getAttribute("name");
-        if (name == null) {
-            session.setAttribute("name", generateRandomName());
-            restaurantService.allCarts.setRestaurant(restaurant);
-        }
-
+        restaurantService.allCarts.setRestaurant(restaurant);
+        String name = SessionUtils.getOrCreateName(session);
         Cart cart = restaurantService.allCarts.getOrCreateCart(name);
 
         model.addAttribute("restaurant", restaurant);
@@ -76,9 +151,6 @@ public class WebpageController {
         return "orderOverview";
     }
 
-    private String generateRandomName() {
-        return UUID.randomUUID().toString();
-    }
 
     @GetMapping("/customize/{productId}")
     public String customize(@PathVariable("productId") String productId, Model model) {
@@ -122,6 +194,10 @@ public class WebpageController {
 
     private Variant getSelectedVariant(MultiValueMap<String, String> formData, String productId, Product product) {
         var variantId = formData.getFirst("variantId");
+        return getSelectedVariant(variantId, productId, product);
+    }
+
+    private Variant getSelectedVariant(String variantId, String productId, Product product) {
         return product.getVariants()
                 .stream()
                 .filter(variant -> Objects.equals(variantId, productId + "-" + variant.getId()))

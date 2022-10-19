@@ -1,5 +1,6 @@
 package de.noname.pizza4c.datamodel.pizza4c;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import de.noname.pizza4c.datamodel.lieferando.Menu;
 import lombok.Builder;
 import lombok.Data;
@@ -10,10 +11,12 @@ import java.util.stream.Collectors;
 
 @Data
 public class CartEntry {
+    private String id;
     private String product;
     private String variant;
     private Map<String, Set<String>> options;
 
+    @JsonProperty
     public BigDecimal getPrice(Menu menu) {
         return new BigDecimal(menu.getVariant(product, variant).getPrices().getDeliveryEuro()).add(
                 options

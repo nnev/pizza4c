@@ -1,8 +1,8 @@
 import React from "react";
-import Restaurant from "../datamodel/restaurant";
-import {getCurrentRestaurant} from "../backend/restaurant";
-import {OrderSidebar} from "./order/OrderSidebar";
-import {OrderList} from "./order/OrderList";
+import Restaurant from "../../datamodel/restaurant/restaurant";
+import {CurrentRestaurantObservable, getCurrentRestaurant} from "../../backend/restaurant";
+import {OrderSidebar} from "./OrderSidebar";
+import {OrderList} from "./OrderList";
 
 interface OrderProps {
 }
@@ -18,8 +18,16 @@ export class Order extends React.Component<OrderProps, OrderState> {
         this.state = {}
     }
 
+    listener = (value: Restaurant) => {
+        this.setState({restaurant: value});
+    }
+
     componentDidMount() {
-        this.loadRestaurant();
+        CurrentRestaurantObservable.subscribe(this.listener);
+    }
+
+    componentWillUnmount() {
+        CurrentRestaurantObservable.unsubscribe(this.listener);
     }
 
     render() {
@@ -35,9 +43,5 @@ export class Order extends React.Component<OrderProps, OrderState> {
                 </main>
             </>
         );
-    }
-
-    private loadRestaurant() {
-        getCurrentRestaurant().then(value => this.setState({restaurant: value}));
     }
 }

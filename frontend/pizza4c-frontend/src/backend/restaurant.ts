@@ -1,9 +1,17 @@
 import {BACKEND} from "./Constants";
-import Restaurant from "../datamodel/restaurant";
+import Restaurant from "../datamodel/restaurant/restaurant";
+import {Observable} from "../util/Observable";
 
-export function getCurrentRestaurant(): Promise<Restaurant>{
-    return fetch(BACKEND +"/restaurant/current",{
+export async function getCurrentRestaurant() {
+    fetch(BACKEND + "/restaurant/current", {
         method: "GET",
         credentials: "include"
-    }).then(value => value.json())
+    })
+        .then(value => value.json())
+        .then(value => {
+            CurrentRestaurantObservable.setValue(value);
+            return value;
+        })
 }
+
+export const CurrentRestaurantObservable = new Observable<Restaurant>();

@@ -58,6 +58,7 @@ aside .categoryDescription {
 main {
     position: absolute;
     left: 200px;
+    right: 200px;
 }
 
 main .product > ol {
@@ -98,8 +99,13 @@ li.product {
     text-decoration: none;
 }
 
-.orderTable{
+.orderTable {
     width: 100%;
+    border-collapse: collapse;
+}
+
+.orderTable thead {
+    border-bottom: 1px solid black;
 }
 
 .orderTable td {
@@ -109,4 +115,42 @@ li.product {
 
 .orderTable td.grow {
     width: 50%;
+}
+
+.orderTable .cartBegin {
+    border-top: 1px solid black;
+}
+
+
+.optionsContainer {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, max-content));
+}
+
+.optionsContainerInner {
+    width: 100%;
+}
+
+.option {
+}
+
+.optionRadio, .optionCheckbox, .optionName, .optionPrice {
+    display: inline;
+}
+
+.optionPrice {
+    float: right;
+    margin-left: 1em;
+}
+
+.variantSelect ~ .variantContent {
+    display: none;
+}
+
+.variantSelect:checked ~ .variantContent {
+    display: block;
+}
+
+.variantContent ul {
+    list-style: none;
 }

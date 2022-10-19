@@ -10,3 +10,7 @@ export interface OptionGroup {
 export function isConfigurableOptionGroup(optionGroup: OptionGroup): boolean {
     return optionGroup.optionIds.length > 0;
 }
+
+export function isOptionGroupMandatory(optionGroup: OptionGroup) {
+    return optionGroup.minChoices === 1 && optionGroup.maxChoices === 1;
+}

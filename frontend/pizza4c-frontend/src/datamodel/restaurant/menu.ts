@@ -2,15 +2,14 @@ import Category from "./category";
 import {isConfigurableOptionGroup, OptionGroup} from "./optionGroup";
 import Option from "./option";
 import Product from "./product";
+import Dictionary from "../../util/Dictionary";
+import Variant from "./variant";
 
-interface Dictionary<T = any> {
-    [key: string]: T;
-}
 
 export interface Menu {
     categories: Category[];
     optionGroups: Dictionary<OptionGroup>;
-    options: Map<string, Option>;
+    options: Dictionary<Option>;
     products: Dictionary<Product>;
 }
 
@@ -28,4 +27,8 @@ export function isConfigurableProduct(menu: Menu, product: Product): boolean {
         }
     }
     return false;
+}
+
+export function getVariant(menu: Menu, productId: string, variantId: string): Variant | undefined {
+    return menu.products[productId].variants.find(value => value.id = variantId);
 }

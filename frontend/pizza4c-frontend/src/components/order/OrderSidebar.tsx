@@ -1,5 +1,5 @@
 import React from "react";
-import Restaurant from "../../datamodel/restaurant";
+import Restaurant from "../../datamodel/restaurant/restaurant";
 
 interface OrderSidebarProps {
     restaurant: Restaurant
