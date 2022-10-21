@@ -2,6 +2,10 @@ package de.noname.pizza4c.webpage;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.lowagie.text.*;
+import com.lowagie.text.Font;
+import com.lowagie.text.html.HtmlParser;
+import com.lowagie.text.pdf.PdfWriter;
 import de.noname.pizza4c.datamodel.lieferando.Menu;
 import de.noname.pizza4c.datamodel.lieferando.Product;
 import de.noname.pizza4c.datamodel.lieferando.Restaurant;
@@ -20,10 +24,18 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.servlet.view.AbstractView;
 import org.springframework.web.servlet.view.RedirectView;
+import org.springframework.web.servlet.view.document.AbstractPdfView;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.awt.*;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -113,6 +125,38 @@ public class WebpageController {
         }
         model.addAttribute("data", List.of());
         return "json";
+    }
+
+    @GetMapping("/api/generatePdf")
+    public AbstractView generatePdf(Model model) {
+
+        return new AbstractView() {
+
+            @Override
+            protected void renderMergedOutputModel(Map<String, Object> model, HttpServletRequest request, HttpServletResponse response) throws Exception {
+                setContentType("application/pdf");
+                ByteArrayOutputStream baos = createTemporaryOutputStream();
+
+                // step 1: creation of a document-object
+                try (Document document = new Document()) {
+                    PdfWriter.getInstance(document, baos);
+
+                    HeaderFooter footer = new HeaderFooter(true);
+                    footer.setAlignment(Element.ALIGN_BOTTOM | Element.ALIGN_MIDDLE);
+                    document.setFooter(footer);
+                    // step 2: we open the document
+                    document.open();
+                    // step 3: parsing the HTML document to convert it in PDF
+                    HtmlParser.parse(document, new ByteArrayInputStream(restaurantService.renderAllCart().getBytes(StandardCharsets.UTF_8)));
+
+                    document.close();
+
+                    writeToResponse(response, baos);
+                } catch (DocumentException | IOException de) {
+                    System.err.println(de.getMessage());
+                }
+            }
+        };
     }
 
     @GetMapping("/changeName")

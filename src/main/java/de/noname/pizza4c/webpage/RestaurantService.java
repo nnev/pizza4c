@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.thymeleaf.context.Context;
 
 import java.io.IOException;
 
@@ -18,6 +19,9 @@ public class RestaurantService {
 
     @Autowired
     public AllCarts allCarts;
+
+    @Autowired
+    public PdfTemplateService pdfTemplateService;
 
     private Restaurant cachedRestaurant;
 
@@ -63,5 +67,13 @@ public class RestaurantService {
             retrieveData2(restaurantName);
         }
         return cachedRestaurant;
+    }
+
+    public String renderAllCart(){
+        final Context ctx = new Context();
+        ctx.setVariable("allCarts", allCarts);
+        ctx.setVariable("restaurant", getCachedRestaurant("xxx"));
+
+        return pdfTemplateService.emailTemplateEngine().process("html/order.html", ctx);
     }
 }

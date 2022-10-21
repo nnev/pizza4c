@@ -15,6 +15,7 @@ import {Link, Navigate} from "react-router-dom";
 import CartEntry from "../../datamodel/cart/cartEntry";
 import {getVariant} from "../../datamodel/restaurant/menu";
 import {sumReducer} from "../../util/Reducers";
+import {renderPdf} from "../../backend/RenderPdf";
 
 interface markPaid {
     (paid: boolean): void
@@ -236,6 +237,7 @@ export class Overview extends React.Component<OverviewProps, OverviewState> {
 
         return (
             <main>
+                <PixmapButton onClick={()=>renderPdf()} pixmap="render" text="render" />
                 Deine Bestellung, {this.state.myCart!.name}<br/>
                 <ToggleCartPaid
                     cart={this.state.myCart!}
