@@ -7,6 +7,7 @@ import de.noname.pizza4c.datamodel.pizza4c.AllCarts;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -19,9 +20,13 @@ public class RestaurantService {
     @Autowired
     public AllCarts allCarts;
 
-    private Restaurant cachedRestaurant;
+    @Value("${pizza4c.defaultRestaurant:3Q3N1P1}") // Default to pizza rapido
+    private String defaultRestaurantId;
 
-    private void retrieveData1(String restaurantName) {
+    private String selectedRestaurantId;
+    private Restaurant selectedRestaurant;
+
+    private void loadRestaurantData(String restaurantName) {
         WebClient client = WebClient.builder()
                 .codecs(configurer -> configurer.defaultCodecs()
                         .maxInMemorySize(16 * 1024 * 1024)
@@ -45,23 +50,33 @@ public class RestaurantService {
             product.setProductInfo(productInfo);
         });
 
-        cachedRestaurant = restaurant;
+        selectedRestaurant = restaurant;
     }
 
-    private void retrieveData2(String restaurantName) {
+    private void loadRestaurantDataFromDisk(String restaurantName) {
         try {
             ObjectMapper mapper = new ObjectMapper();
-            cachedRestaurant =
+            selectedRestaurant =
                     mapper.readValue(RestaurantService.class.getResource("/static/testdata.json"), Restaurant.class);
         } catch (IOException e) {
             LOG.error("Failed to retrieve new restaurant data for {}", restaurantName, e);
         }
     }
 
-    public Restaurant getCachedRestaurant(String restaurantName) {
-        if (cachedRestaurant == null) {
-            retrieveData2(restaurantName);
+    public void selectRestaurant(String restaurantId) {
+        if (restaurantId == null) {
+            selectedRestaurantId = defaultRestaurantId;
+        } else {
+            selectedRestaurantId = restaurantId;
         }
-        return cachedRestaurant;
+        selectedRestaurant = null;
+        allCarts.getCarts().clear();
+    }
+
+    public Restaurant getSelectedRestaurant() {
+        if (selectedRestaurant == null) {
+            loadRestaurantDataFromDisk(selectedRestaurantId);
+        }
+        return selectedRestaurant;
     }
 }

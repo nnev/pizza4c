@@ -6,6 +6,7 @@ import de.noname.pizza4c.datamodel.lieferando.Restaurant;
 import de.noname.pizza4c.datamodel.lieferando.Variant;
 import de.noname.pizza4c.datamodel.pizza4c.Cart;
 import de.noname.pizza4c.pdf.PdfGenerator;
+import de.noname.pizza4c.utils.Name;
 import de.noname.pizza4c.utils.SessionUtils;
 import lombok.Data;
 import org.slf4j.Logger;
@@ -40,7 +41,7 @@ public class WebpageController {
 
     @GetMapping("/api/restaurant/current")
     public Restaurant getRestaurant() {
-        return restaurantService.getCachedRestaurant("xxx");
+        return restaurantService.getSelectedRestaurant();
     }
 
     @Data
@@ -52,30 +53,27 @@ public class WebpageController {
 
     @PostMapping("/api/addToCart")
     public Cart addToCart(@RequestBody String rawBody, HttpSession session) throws IOException {
-        Restaurant restaurant = restaurantService.getCachedRestaurant("xxx");
+        Restaurant restaurant = restaurantService.getSelectedRestaurant();
         var data = new ObjectMapper().reader().readValue(rawBody, AddToCartDto.class);
         String productId = data.product;
         String variantId = data.variant;
         var product = restaurant.getMenu().getProducts().get(productId);
         var variant = getSelectedVariant(productId + "-" + variantId, productId, product);
-        String name1 = (String) session.getAttribute("name");
-        if (name1 != null) {
-            Cart cart = restaurantService.allCarts.getOrCreateCart(name1);
-            cart.addEntry(productId, variant.getId(), data.options);
-        }
 
-        String name = SessionUtils.getOrCreateName(session);
-        return restaurantService.allCarts.getOrCreateCart(name);
+        Name name = SessionUtils.getOrCreateName(session);
+        Cart cart = restaurantService.allCarts.getOrCreateCart(name);
+        cart.addEntry(productId, variant.getId(), data.options);
+        return cart;
     }
 
     @GetMapping("/api/allCarts")
-    public List<Cart> allCarts() throws IOException {
+    public List<Cart> allCarts() {
         return restaurantService.allCarts.getCarts();
     }
 
     @GetMapping("/api/myCart")
-    public Cart myCart(HttpSession session) throws IOException {
-        String name = SessionUtils.getOrCreateName(session);
+    public Cart myCart(HttpSession session) {
+        Name name = SessionUtils.getOrCreateName(session);
         return restaurantService.allCarts.getOrCreateCart(name);
     }
 
@@ -83,8 +81,11 @@ public class WebpageController {
     public boolean changeName(@RequestBody String rawBody, HttpSession session) throws IOException {
         var body = new ObjectMapper().reader().readTree(rawBody);
 
-        String name = body.get("name").asText();
-        if (name != null && name.length() >= 3) {
+        String nameText = body.get("name").asText();
+        if (nameText != null && nameText.length() >= 3) {
+            Name name = new Name();
+            name.setLongName(nameText);
+            name.setShortName(nameText.substring(0, 3).toUpperCase());
             session.setAttribute("name", name);
         }
         return true;
@@ -129,6 +130,19 @@ public class WebpageController {
                 .filter(variant -> Objects.equals(variantId, productId + "-" + variant.getId()))
                 .findFirst()
                 .orElse(null);
+    }
+
+    @PostMapping("/api/restaurant/change/{restaurantId}")
+    public boolean selectRestaurant(@PathVariable("restaurantId") String restaurantId) {
+        restaurantService.selectRestaurant(restaurantId);
+        return true;
+    }
+
+    @PostMapping("/api/remove/{entryId}")
+    public boolean removeCartEntry(@PathVariable("entryId") String entryId) {
+        restaurantService.allCarts.getCarts()
+                .forEach(cart -> cart.getEntries().removeIf(cartEntry -> cartEntry.getId().equals(entryId)));
+        return true;
     }
 
 }

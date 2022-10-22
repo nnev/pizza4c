@@ -1,9 +1,11 @@
 import React from "react";
 import {isConfigurableProduct} from "../../datamodel/restaurant/menu";
-import {PixmapLink} from "../Pixmap";
+import {PixmapButton} from "../Pixmap";
 import {ProductInfoView} from "./ProductInfo";
 import Restaurant from "../../datamodel/restaurant/restaurant";
 import Product from "../../datamodel/restaurant/product";
+import {Navigate} from "react-router-dom";
+import {addToCart as addToCartApi} from "../../backend/Cart";
 
 interface ProductEntryProps {
     restaurant: Restaurant
@@ -12,23 +14,53 @@ interface ProductEntryProps {
 
 interface ProductEntryState {
     product: Product;
+    redirectToCustomize: boolean;
+    addToCartCompleted: boolean;
 }
 
 export class ProductEntry extends React.Component<ProductEntryProps, ProductEntryState> {
     constructor(props: ProductEntryProps, context: any) {
         super(props, context);
-        this.state = {product: props.restaurant.menu.products[props.productId]!}
+        this.state = {
+            product: props.restaurant.menu.products[props.productId]!,
+            redirectToCustomize: false,
+            addToCartCompleted: false
+        }
     }
 
     private getAddToCartLink() {
         if (isConfigurableProduct(this.props.restaurant.menu, this.state.product)) {
-            return <PixmapLink to={'/customize/' + this.props.productId} pixmap="tune"/>
+            return <PixmapButton onClick={this.customize} pixmap="tune"/>
         } else {
-            return <PixmapLink to={'/addToCart/' + this.props.productId} pixmap="add"/>
+            return <PixmapButton onClick={this.addToCart} pixmap="add"/>
         }
     }
 
+    addToCart = () => {
+        if (this.props.productId) {
+            addToCartApi(this.props.productId, this.state.product.variants[0].id, new Map<string, Set<string>>())
+                .then(value => {
+                    this.setState({addToCartCompleted: true});
+                })
+                .catch(value => {
+                    console.error("Error", value); // TODO
+                })
+        }
+    }
+
+    customize = () => {
+        this.setState({redirectToCustomize: true});
+    }
+
     render() {
+        if (this.state.redirectToCustomize) {
+            return <Navigate to={'/customize/' + this.props.productId}/>
+        }
+
+        if (this.state.addToCartCompleted) {
+            return <Navigate to="/"/>
+        }
+
         return (
             <li className="product" key={this.props.productId}>
                 <div className="productMain">

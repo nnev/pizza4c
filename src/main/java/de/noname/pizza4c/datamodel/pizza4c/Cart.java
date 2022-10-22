@@ -15,6 +15,7 @@ import java.util.UUID;
 public class Cart {
     private String id;
     private String name;
+    private String shortName;
     private List<CartEntry> entries = new ArrayList<>();
 
     private boolean isPayed = false;
@@ -31,13 +32,5 @@ public class Cart {
         cartEntry.setVariant(variant);
         cartEntry.setOptions(selectedOptions);
         entries.add(cartEntry);
-    }
-
-    @JsonProperty
-    public String getShortName() {
-        if (name == null) {
-            return null;
-        }
-        return name.substring(0, Math.min(name.length(), 3)).toUpperCase();
     }
 }

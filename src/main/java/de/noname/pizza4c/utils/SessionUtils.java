@@ -1,19 +1,14 @@
 package de.noname.pizza4c.utils;
 
 import javax.servlet.http.HttpSession;
-import java.util.UUID;
 
 public class SessionUtils {
-    public static String getOrCreateName(HttpSession session){
-        String name = (String) session.getAttribute("name");
+    public static Name getOrCreateName(HttpSession session) {
+        Name name = (Name) session.getAttribute("name");
         if (name == null) {
-            name = generateRandomName();
-            session.setAttribute("name", name);
+            name = NameUtils.generateNewName();
         }
+        session.setAttribute("name", name);
         return name;
-    }
-
-    private static String generateRandomName() {
-        return UUID.randomUUID().toString();
     }
 }

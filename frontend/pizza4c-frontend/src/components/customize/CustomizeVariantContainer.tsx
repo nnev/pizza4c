@@ -33,7 +33,7 @@ export class CustomizeVariantContainer extends React.Component<CustomizeVariantC
             return <CustomizeVariantSelector
                 restaurant={this.props.restaurant}
                 productId={this.props.productId}
-                variants={this.props.variants}
+                variants={this.props.variants.slice()}
                 onOptionSelected={this.props.onOptionSelected}
                 onVariantSelected={this.selectVariant}
             />

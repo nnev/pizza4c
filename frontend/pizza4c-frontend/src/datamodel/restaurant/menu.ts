@@ -30,5 +30,5 @@ export function isConfigurableProduct(menu: Menu, product: Product): boolean {
 }
 
 export function getVariant(menu: Menu, productId: string, variantId: string): Variant | undefined {
-    return menu.products[productId].variants.find(value => value.id = variantId);
+    return menu.products[productId].variants.find(value => value.id == variantId);
 }

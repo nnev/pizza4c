@@ -1,7 +1,8 @@
 package de.noname.pizza4c.datamodel.pizza4c;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import de.noname.pizza4c.datamodel.lieferando.Menu;
-import de.noname.pizza4c.datamodel.lieferando.Restaurant;
+import de.noname.pizza4c.utils.Name;
 import lombok.Data;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Scope;
@@ -16,18 +17,18 @@ import java.util.UUID;
 @Data
 @Component
 public class AllCarts {
-    private Restaurant restaurant;
     private List<Cart> carts = new ArrayList<>();
 
     public BigDecimal getPrice(Menu menu) {
         return carts.stream().map(cartEntry -> cartEntry.getPrice(menu)).reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
-    public Cart getOrCreateCart(String userName) {
-        return carts.stream().filter(c -> Objects.equals(c.getName(), userName)).findFirst().orElseGet(() -> {
+    public Cart getOrCreateCart(Name name) {
+        return carts.stream().filter(c -> Objects.equals(c.getName(), name.getLongName())).findFirst().orElseGet(() -> {
             Cart cart = new Cart();
             cart.setId(UUID.randomUUID().toString());
-            cart.setName(userName);
+            cart.setName(name.getLongName());
+            cart.setShortName(name.getShortName());
             carts.add(cart);
             return cart;
         });
@@ -43,11 +44,13 @@ public class AllCarts {
         return new AllCarts();
     }
 
-    public List<Cart> getPayedCarts(){
+    @JsonProperty
+    public List<Cart> getPayedCarts() {
         return carts.stream().filter(Cart::isPayed).toList();
     }
 
-    public List<Cart> getUnpayedCarts(){
+    @JsonProperty
+    public List<Cart> getUnpayedCarts() {
         return carts.stream().filter(cart -> !cart.isPayed()).toList();
     }
 }

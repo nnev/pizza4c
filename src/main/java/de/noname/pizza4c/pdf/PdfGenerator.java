@@ -132,7 +132,7 @@ public class PdfGenerator {
             gmapsCode.render(writer.getDirectContent());
 
             var allCarts = restaurantService.allCarts;
-            var menu = restaurantService.getCachedRestaurant("xxx").getMenu();
+            var menu = restaurantService.getSelectedRestaurant().getMenu();
 
             document.add(new Paragraph(new Phrase(" "))); // spacer
             document.add(new Paragraph(new Phrase(" "))); // spacer

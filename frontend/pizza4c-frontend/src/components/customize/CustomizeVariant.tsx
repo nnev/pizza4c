@@ -29,14 +29,14 @@ export class CustomizeVariant extends React.Component<CustomizeVariantProps, Cus
             <>
                 <label
                     className="variantTitle"
-                    htmlFor={this.props.productId + '-' + this.props.variant.id}
+                    htmlFor={this.props.productId + '-' + this.props.variant.id.slice()}
                 >
                     {this.props.variant.name &&
                         <>
                             <span>{this.props.variant.name}</span>,&nbsp;
                         </>
                     }
-                    Price: <span>{this.props.variant.prices.deliveryEuro}</span>€<br/>
+                    Preis ohne Extras: <span>{this.props.variant.prices.deliveryEuro}</span>€<br/>
                 </label>
                 <div className="variantContent">
                     <ul>

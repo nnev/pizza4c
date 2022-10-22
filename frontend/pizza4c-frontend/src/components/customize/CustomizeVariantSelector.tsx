@@ -37,8 +37,8 @@ export class CustomizeVariantSelector extends React.Component<CustomizeVariantSe
                     className="variantSelect"
                     type="radio"
                     name="variantId"
-                    value={variant.id}
-                    id={this.props.productId + '-' + variant.id}
+                    value={variant.id.slice()}
+                    id={this.props.productId + '-' + variant.id.slice()}
                     onChange={this.variantSelectionChanged}
                 />
                 <CustomizeVariant

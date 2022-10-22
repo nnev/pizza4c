@@ -1,3 +1,14 @@
+* {
+    margin: 0;
+    padding: 0;
+    text-decoration: none;
+    font-family: sans-serif;
+}
+
+body {
+    color: black;
+}
+
 @font-face {
     font-family: 'Material Icons';
     font-style: normal;
@@ -111,6 +122,7 @@ li.product {
 .orderTable td {
     width: 1%;
     white-space: nowrap;
+    min-width: 100px;
 }
 
 .orderTable td.grow {
@@ -132,6 +144,8 @@ li.product {
 }
 
 .option {
+    line-height: 30px;
+    padding: 0 5px;
 }
 
 .optionRadio, .optionCheckbox, .optionName, .optionPrice {
@@ -153,4 +167,79 @@ li.product {
 
 .variantContent ul {
     list-style: none;
+}
+
+.menu {
+    background: lightcyan;
+    line-height: 60px;
+}
+
+.menu a {
+    color: gray;
+    padding: 20px;
+}
+
+button.pixmapButton {
+    line-height: 40px;
+    padding: 5px 10px;
+}
+
+button.pixmapButton.grow {
+    width: 100%;
+}
+
+button.pixmapButton span {
+    line-height: 40px;
+    vertical-align: middle;
+}
+
+button.pixmapButton span:first-child {
+    padding-right: 2px;
+}
+
+.pixmapGroup button.pixmapButton {
+    margin: 0 3px;
+}
+
+.pixmapGroup button.pixmapButton:first-child {
+    margin: 0 3px 0 0;
+}
+
+.pixmapGroup button.pixmapButton:last-child {
+    margin: 0 0 0 3px;
+}
+
+.textRight {
+    text-align: right;
+}
+
+.unpayed {
+    color: red;
+}
+
+.payed {
+    color: darkgreen;
+}
+
+.progress {
+    background: gray;
+    position: relative;
+    height: 30px;
+    padding: 5px;
+}
+
+.progress .progressBackground {
+    background: lightgreen;
+    height: 30px;
+    text-align: center;
+    border-radius: 5px;
+}
+
+.progress .progressText {
+    display: inline-block;
+    position: absolute;
+    width: 100%;
+    left: 0;
+    text-shadow: white 0px 0px 1px;
+    line-height: 30px;
 }

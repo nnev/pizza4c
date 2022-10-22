@@ -101,3 +101,10 @@ export async function markAsUnpaid(cart: Cart): Promise<Cart> {
     })
         .then(value => value.json())
 }
+export async function removeEntry(entry: CartEntry): Promise<Cart> {
+    return fetch(BACKEND + "/remove/" + entry.id, {
+        method: "POST",
+        credentials: "include",
+    })
+        .then(value => value.json())
+}
