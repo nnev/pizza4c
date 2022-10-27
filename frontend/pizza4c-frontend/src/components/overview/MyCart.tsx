@@ -1,7 +1,7 @@
 import React, {MouseEvent} from "react";
 import Restaurant from "../../datamodel/restaurant/restaurant";
 import {CurrentRestaurantObservable} from "../../backend/restaurant";
-import {fetchMyCart, MyCartObservable} from "../../backend/Cart";
+import {MyCartObservable} from "../../backend/Cart";
 import Cart from "../../datamodel/cart/cart";
 import {Pixmap, PixmapButton, PixmapGroup} from "../Pixmap";
 import {Navigate} from "react-router-dom";
@@ -36,8 +36,6 @@ export class MyCart extends React.Component<MyCartProps, MyCartState> {
     componentDidMount() {
         CurrentRestaurantObservable.subscribe(this.restaurantObserver);
         MyCartObservable.subscribe(this.myCartObserver);
-
-        fetchMyCart();
     }
 
     componentWillUnmount() {
@@ -98,7 +96,7 @@ export class MyCart extends React.Component<MyCartProps, MyCartState> {
                         pixmap={this.state.myCart.payed ? "done" : "close"}
                         text={this.state.myCart.payed ? "You appear marked as payed" : "You still need to pay"}
                         className={this.state.myCart.payed ? "payed" : "unpayed"}
-                    /> <br />
+                    /> <br/>
                     {this.state.myCart.getPrice(this.state.restaurant.menu).toFixed(2)} €
                 </p>
                 <p>

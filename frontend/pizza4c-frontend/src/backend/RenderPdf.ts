@@ -1,6 +1,7 @@
 import {BACKEND} from "./Constants";
 
 export function renderPdf() {
+    console.log("---")
     window.open(BACKEND + "/generatePdf");
     /*
     return fetch(BACKEND + "/generatePdf", {

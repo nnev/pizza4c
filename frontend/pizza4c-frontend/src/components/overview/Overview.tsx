@@ -36,8 +36,6 @@ export class Overview extends React.Component<OverviewProps, OverviewState> {
     componentDidMount() {
         CurrentRestaurantObservable.subscribe(this.restaurantObserver);
         AllCartsObservable.subscribe(this.allCartsObserver);
-
-        fetchAllCarts();
     }
 
     componentWillUnmount() {
