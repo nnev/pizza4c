@@ -68,12 +68,16 @@ export class MyCart extends React.Component<MyCartProps, MyCartState> {
         if (this.state.myCart.entries.length == 0) {
             return (<>
                     <h1>Noch keine Bestellung, {this.state.myCart.name}</h1>
-                    <PixmapButton onClick={this.logout}
-                                  pixmap="logout"
-                                  text={'I am not ' + this.state.myCart.name}/><br/>
-                    <PixmapButton onClick={this.order}
-                                  pixmap="add"
-                                  text="New Order"/>
+                    <PixmapGroup>
+                        <PixmapButton onClick={this.order}
+                                      pixmap="add"
+                                      text="New Order"
+                                      className="primary"
+                        />
+                        <PixmapButton onClick={this.logout}
+                                      pixmap="logout"
+                                      text={'I am not ' + this.state.myCart.name}/><br/>
+                    </PixmapGroup>
                 </>
             );
         }
@@ -87,10 +91,13 @@ export class MyCart extends React.Component<MyCartProps, MyCartState> {
                     />
                     <PixmapButton onClick={this.order}
                                   pixmap="add"
-                                  text="New Order"/>
+                                  text="New Order"
+                                  className="primary"
+                    />
                     <PixmapButton onClick={this.logout} pixmap="logout"
                                   text={'I am not ' + this.state.myCart.name}/><br/>
                 </PixmapGroup>
+                <br/>
                 <div className="myOrder">
                     <p>
                         <Pixmap

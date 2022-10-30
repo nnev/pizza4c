@@ -51,11 +51,11 @@ export class CheckboxOptionGroup extends React.Component<CheckboxOptionGroupProp
                             value={optionId}
                         />
                     </div>
-                    <div className="optionName">
-                        <label htmlFor={id}>{option.name}</label>
-                    </div>
                     <div className="optionPrice">
                         <label htmlFor={id}>{"+" + option.prices.deliveryEuro + '€'}</label>
+                    </div>
+                    <div className="optionName">
+                        <label htmlFor={id}>{option.name}</label>
                     </div>
                 </div>
             );

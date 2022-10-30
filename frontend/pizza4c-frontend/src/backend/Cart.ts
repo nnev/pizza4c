@@ -3,7 +3,7 @@ import {Observable} from "../util/Observable";
 import Cart from "../datamodel/cart/cart";
 import CartEntry from "../datamodel/cart/cartEntry";
 
-export async function addToCart(product: string, variant: string, options: Map<string, Set<string>>): Promise<Cart> {
+export async function addToCart(product: string, variant: string, options: Map<string, Set<string>>): Promise<any> {
     function replacer(key: any, value: any) {
         if (value instanceof Map) {
             return Object.fromEntries(value);
@@ -33,6 +33,7 @@ export async function addToCart(product: string, variant: string, options: Map<s
             MyCartObservable.setValue(value);
             return value;
         })
+        .then(value => fetchAllCarts());
 }
 
 export const MyCartObservable = new Observable<Cart>();

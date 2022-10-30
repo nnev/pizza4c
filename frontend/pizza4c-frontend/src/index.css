@@ -1,3 +1,15 @@
+:root {
+
+    --maincolor: #ECECEC;
+    --shades: #90CCF4;
+    --borders: #5DA2D5;
+    --accent: #F3D250;
+    --textcolor: #000000;
+
+    --success: #6a994e;
+    --failure: #d90429;
+}
+
 * {
     margin: 0;
     padding: 0;
@@ -6,7 +18,8 @@
 }
 
 body {
-    color: black;
+    color: var(--textcolor);
+    background-color: var(--maincolor);
 }
 
 @font-face {
@@ -46,22 +59,86 @@ body {
     font-feature-settings: 'liga';
 }
 
+/**
+Layout
+ */
+
 aside {
-    position: absolute;
+    position: sticky;
     left: 0;
-    width: 200px;
+    width: 180px;
+    top: 0;
+    background-color: var(--maincolor);
 }
 
+main {
+    top: 50px;
+    background-color: var(--maincolor);
+}
+
+.menu {
+    position: fixed;
+    width: 100%;
+    z-index: 999;
+    top: 0;
+    left: 0;
+    right: 0;
+}
+
+.container {
+    max-width: 1200px;
+    width: 100%;
+    position: absolute;
+    top: 60px;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.row {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+main {
+    position: absolute;
+    left: 200px;
+    top: 0;
+    bottom: 0;
+    overflow-y: auto;
+}
+
+main ol:first-child {
+    margin-top: -10px;
+}
+
+.row .customize {
+    width: 100%;
+}
+
+/**
+Rest
+ */
+
 .target, :target {
-    background: blue;
 }
 
 aside h1, main h2 {
     margin-bottom: 0;
+    padding: 0 5px;
 }
 
 aside li {
     margin: 10px 0;
+}
+
+aside h1.target {
+    border-radius: 5px;
+    background: var(--shades);
+}
+aside h1 a {
+    border-radius: 5px;
+    color: var(--textcolor);
 }
 
 ol {
@@ -70,14 +147,7 @@ ol {
 
 aside .categoryDescription {
     font-size: small;
-    color: gray;
-}
-
-main {
-    position: absolute;
-    left: 200px;
-    max-width: 800px;
-    /*right: 200px;*/
+    color: var(--textcolor);
 }
 
 main .product > ol {
@@ -85,9 +155,7 @@ main .product > ol {
 }
 
 .category, .product {
-    border-top: 1px solid gray;
-
-    /*margin-top: 15px;*/
+    border-top: 2px solid var(--borders);
 }
 
 .category {
@@ -96,7 +164,7 @@ main .product > ol {
 }
 
 .category:last-child, .product:last-child {
-    border-bottom: 1px solid gray;
+    border-bottom: 2px solid var(--borders);
 }
 
 li.product {
@@ -131,7 +199,7 @@ li.product {
 
 .productSelect a {
     padding: 20px;
-    border: 1px solid blue;
+    border: 2px solid var(--borders);
     text-decoration: none;
 }
 
@@ -141,7 +209,7 @@ li.product {
 }
 
 .orderTable thead {
-    border-bottom: 1px solid black;
+    border-bottom: 2px solid var(--borders);
 }
 
 .orderTable td {
@@ -156,9 +224,8 @@ li.product {
 }
 
 .orderTable .cartBegin {
-    border-top: 1px solid black;
+    border-top: 2px solid var(--borders);
 }
-
 
 .optionsContainer {
     display: grid;
@@ -178,9 +245,8 @@ li.product {
     display: inline;
 }
 
-.optionPrice {
-    float: right;
-    margin-left: 1em;
+.optionName,.optionPrice {
+    margin-left: 0.3em;
 }
 
 .variantSelect ~ .variantContent {
@@ -196,22 +262,48 @@ li.product {
 }
 
 .menu {
-    background: lightcyan;
+    background: var(--shades);
     line-height: 60px;
 }
 
 .menu a {
-    color: gray;
+    color: var(--textcolor);
     padding: 20px;
 }
 
 button.pixmapButton {
     line-height: 40px;
     padding: 5px 10px;
+    font-weight: bold;
+    border-radius: 7px;
+    border: 2px solid var(--borders);
+    background-color: var(--maincolor);
+    color: var(--textcolor);
+}
+
+button.pixmapButton:hover {
+    border: 2px solid var(--borders);
+    background-color: var(--shades);
 }
 
 button.pixmapButton.grow {
     width: 100%;
+}
+
+button.pixmapButton.primary {
+    background-color: var(--shades);
+    color: var(--textcolor);
+}
+button.pixmapButton.primary:hover {
+    background-color: var(--borders);
+    border-color: var(--shades);
+    color: var(--textcolor);
+}
+
+button.pixmapButton.primary:disabled {
+    background-color: var(--shades);
+    color: var(--textcolor);
+    opacity: 60%;
 }
 
 button.pixmapButton span {
@@ -240,36 +332,37 @@ button.pixmapButton span:first-child {
 }
 
 .unpayed {
-    color: red;
+    color: var(--failure);
 }
 
 .payed {
-    color: darkgreen;
+    color: var(--success);
 }
 
 .box.unpayed {
-    background-color: red;
+    background-color: var(--failure);
 }
 
 .box.payed {
-    background-color: green;
+    background-color: var(--success);
 }
 
 .progress {
-    background: gray;
+    background: var(--shades);
     position: relative;
     height: 30px;
     padding: 5px;
 }
 
 .progress .progressBackground {
-    background: lightgreen;
+    background: var(--success);
     height: 30px;
     text-align: center;
     border-radius: 5px;
 }
 
 .progress .progressText {
+    color: var(--maincolor);
     display: inline-block;
     position: absolute;
     width: 100%;
@@ -279,8 +372,8 @@ button.pixmapButton span:first-child {
 }
 
 .myOrder {
-    background-color: lightgray;
-    border: 1px solid black;
+    background-color: var(--shades);
+    border: 2px solid var(--borders);
     padding: 10px;
     border-radius: 10px;
 }
@@ -289,4 +382,21 @@ button.pixmapButton span:first-child {
     max-width: 1em;
     width: 1em;
     min-width: 1em;
+}
+
+.orderTable td button {
+    margin-bottom: 2px;
+    margin-top: 2px;
+}
+
+.customizeButtons{
+    display: flex;
+}
+
+.customize fieldset {
+    border: 2px solid var(--borders);
+    background-color: var(--shades);
+    margin: 5px 0;
+    border-radius: 10px;
+    padding: 5px;
 }

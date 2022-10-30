@@ -4,7 +4,7 @@ import {joinClasses} from "../util/JoinClasses";
 
 interface PixmapProps {
     pixmap: string;
-    text?: string;
+    text?: string|JSX.Element;
     className?: string;
 }
 

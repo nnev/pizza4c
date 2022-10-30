@@ -38,7 +38,6 @@ public class NameUtils {
             "dizzy",
             "skeptical",
             "puzzled",
-            "light-hearted",
             "perplexed",
             "over-whelmed",
             "jovial",

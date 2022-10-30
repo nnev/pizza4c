@@ -30,7 +30,7 @@ export class ProductEntry extends React.Component<ProductEntryProps, ProductEntr
 
     private getAddToCartLink() {
         if (isConfigurableProduct(this.props.restaurant.menu, this.state.product)) {
-            return <PixmapButton onClick={this.customize} pixmap="tune"/>
+            return <PixmapButton onClick={this.customize} pixmap="add"/>
         } else {
             return <PixmapButton onClick={this.addToCart} pixmap="add"/>
         }

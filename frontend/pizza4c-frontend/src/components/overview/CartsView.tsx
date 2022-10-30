@@ -3,6 +3,7 @@ import Restaurant from "../../datamodel/restaurant/restaurant";
 import React from "react";
 import {CartView} from "./CartView";
 import {sumReducer} from "../../util/Reducers";
+import {SumPrice} from "./SumPrice";
 
 interface CartsViewProps {
     carts: Cart[];
@@ -31,14 +32,6 @@ export class CartsView extends React.Component<CartsViewProps, CartsViewState> {
 
         return (
             <>
-                Summe: {
-                this.props.carts
-                    .map(value => {
-                        return value.getPrice(this.props.restaurant.menu);
-                    })
-                    .reduce(sumReducer, 0)
-                    .toFixed(2)
-            }€
                 <table className="orderTable">
                     <thead>
                     <tr>
