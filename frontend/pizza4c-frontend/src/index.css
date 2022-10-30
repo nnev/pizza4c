@@ -52,6 +52,10 @@ aside {
     width: 200px;
 }
 
+.target, :target {
+    background: blue;
+}
+
 aside h1, main h2 {
     margin-bottom: 0;
 }
@@ -148,6 +152,7 @@ li.product {
 
 .orderTable td.grow {
     width: 50%;
+    padding-left: 5px;
 }
 
 .orderTable .cartBegin {
@@ -230,8 +235,8 @@ button.pixmapButton span:first-child {
     margin: 0 0 0 3px;
 }
 
-.textRight {
-    text-align: right;
+.textCenter {
+    text-align: center;
 }
 
 .unpayed {
@@ -240,6 +245,14 @@ button.pixmapButton span:first-child {
 
 .payed {
     color: darkgreen;
+}
+
+.box.unpayed {
+    background-color: red;
+}
+
+.box.payed {
+    background-color: green;
 }
 
 .progress {
@@ -263,4 +276,17 @@ button.pixmapButton span:first-child {
     left: 0;
     text-shadow: white 0px 0px 1px;
     line-height: 30px;
+}
+
+.myOrder {
+    background-color: lightgray;
+    border: 1px solid black;
+    padding: 10px;
+    border-radius: 10px;
+}
+
+.orderTable td.box {
+    max-width: 1em;
+    width: 1em;
+    min-width: 1em;
 }

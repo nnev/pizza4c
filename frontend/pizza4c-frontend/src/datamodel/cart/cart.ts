@@ -20,4 +20,8 @@ export default class Cart {
     public getPrice(menu: Menu): number {
         return this.entries.map(value => value.getPrice(menu)).reduce(sumReducer, 0);
     }
+
+    public getPaymentClass(): string {
+        return this.payed ? "payed" : "unpayed"
+    }
 }

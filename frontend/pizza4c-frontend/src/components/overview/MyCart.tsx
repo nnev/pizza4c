@@ -91,25 +91,26 @@ export class MyCart extends React.Component<MyCartProps, MyCartState> {
                     <PixmapButton onClick={this.logout} pixmap="logout"
                                   text={'I am not ' + this.state.myCart.name}/><br/>
                 </PixmapGroup>
-                <p>
-                    <Pixmap
-                        pixmap={this.state.myCart.payed ? "done" : "close"}
-                        text={this.state.myCart.payed ? "You appear marked as payed" : "You still need to pay"}
-                        className={this.state.myCart.payed ? "payed" : "unpayed"}
-                    /> <br/>
-                    {this.state.myCart.getPrice(this.state.restaurant.menu).toFixed(2)} €
-                </p>
-                <p>
-                    {
-                        this.state.myCart.entries.map(entry =>
-                            <OptionListView
-                                key={entry.id}
-                                entry={entry}
-                                restaurant={this.state.restaurant!}
-                            />)
-                    }
-                </p>
-
+                <div className="myOrder">
+                    <p>
+                        <Pixmap
+                            pixmap={this.state.myCart.payed ? "done" : "close"}
+                            text={this.state.myCart.payed ? "You appear marked as payed" : "You still need to pay"}
+                            className={this.state.myCart.getPaymentClass()}
+                        /> <br/>
+                        {this.state.myCart.getPrice(this.state.restaurant.menu).toFixed(2)} €
+                    </p>
+                    <p>
+                        {
+                            this.state.myCart.entries.map(entry =>
+                                <OptionListView
+                                    key={entry.id}
+                                    entry={entry}
+                                    restaurant={this.state.restaurant!}
+                                />)
+                        }
+                    </p>
+                </div>
             </>
         )
     }

@@ -37,10 +37,12 @@ export class CartsView extends React.Component<CartsViewProps, CartsViewState> {
                         return value.getPrice(this.props.restaurant.menu);
                     })
                     .reduce(sumReducer, 0)
+                    .toFixed(2)
             }€
                 <table className="orderTable">
                     <thead>
                     <tr>
+                        <th>&nbsp;</th>
                         <th>Product</th>
                         <th>Größe</th>
                         <th>Preis (€)</th>

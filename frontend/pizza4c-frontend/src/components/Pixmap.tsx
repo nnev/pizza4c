@@ -1,5 +1,6 @@
 import React, {MouseEventHandler} from "react";
 import {Link} from "react-router-dom";
+import {joinClasses} from "../util/JoinClasses";
 
 interface PixmapProps {
     pixmap: string;
@@ -15,21 +16,6 @@ interface PixmapButtonProps extends PixmapProps {
 
 interface PixmapLinkProps extends PixmapProps {
     to: string;
-}
-
-function joinClasses(a?: string, b?: string): string {
-    let total = "";
-    if (a) {
-        total += a;
-    }
-    if (a && b) {
-        total += " ";
-    }
-    if (b) {
-        total += b;
-    }
-
-    return total;
 }
 
 export class Pixmap extends React.Component<PixmapProps, any> {

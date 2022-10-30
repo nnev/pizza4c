@@ -13,7 +13,9 @@ export class Progress extends React.Component<ProgressProps, any> {
             <div className="progress">
                 <div className="progressBackground"
                      style={{width: percentage + "%"}}>
-                <span className="progressText">{this.props.current} €/ {this.props.max} €</span>
+                    <span
+                        className="progressText">
+                        {this.props.current.toFixed(2)} €/ {this.props.max.toFixed(2)} €</span>
                 </div>
             </div>
         );

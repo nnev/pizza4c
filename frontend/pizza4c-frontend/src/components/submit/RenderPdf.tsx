@@ -1,34 +1,32 @@
 import React from "react";
 import {renderPdf} from "../../backend/RenderPdf";
+import {Navigate} from "react-router-dom";
 
 
 interface RenderProps {
 }
 
 interface RenderState {
-    redirected: boolean
 }
 
 export class RenderPdf extends React.Component<RenderProps, RenderState> {
+    private nonReactRedirect = false;
+
     constructor(props: RenderProps, context: any) {
         super(props, context);
-        this.state = {redirected: false}
+        this.state = {}
     }
 
     componentDidMount() {
         console.log("mount")
-        // if (!this.state.redirected) {
-        //     renderPdf()
-        //     this.setState({redirected: true});
-        // }
-    }
-
-    componentWillUnmount() {
-        console.log("unmount")
     }
 
     render() {
-        return <></>
-        // return <Navigate to="/" replace={true}></Navigate>
+        if (!this.nonReactRedirect) {
+            this.nonReactRedirect = true;
+            renderPdf();
+        }
+
+        return <Navigate to="/" replace={true}></Navigate>
     }
 }

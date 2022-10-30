@@ -50,7 +50,6 @@ export class Overview extends React.Component<OverviewProps, OverviewState> {
 
         return (
             <main>
-                <PixmapButton onClick={() => renderPdf()} pixmap="render" text="render"/><br/>
                 <MyCart/>
                 <br />
                 Money Pile: <br/>
