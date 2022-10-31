@@ -27,7 +27,7 @@ export class CustomizeOptionGroup extends React.Component<CustomizeOptionGroupPr
         return (
             <li>
                 <fieldset>
-                    <h2>{this.state.optionGroup.name}</h2>
+                    <h2>{this.state.optionGroup.name}{isOptionGroupMandatory(this.state.optionGroup) && "*"}</h2>
                     {
                         isOptionGroupMandatory(this.state.optionGroup) ? <RadioOptionGroup
                             productId={this.props.productId}

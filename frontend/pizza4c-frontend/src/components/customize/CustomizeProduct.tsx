@@ -63,7 +63,10 @@ class CustomizeClazz extends React.Component<CustomizeProps, CustomizeState> {
 
         if (this.state.selectedVariantId != undefined) {
             console.log("target", "/" + this.props.productId + "/" + this.state.selectedVariantId)
-            return <Navigate to={"/customize/" + this.props.productId + "/" + this.state.selectedVariantId}/>;
+            return <Navigate
+                to={"/customize/" + this.props.productId + "/" + this.state.selectedVariantId}
+                replace={this.state.product.variants.length === 1}
+            />;
         }
 
         return (
@@ -71,28 +74,28 @@ class CustomizeClazz extends React.Component<CustomizeProps, CustomizeState> {
                 <h1>{this.state.product.name}</h1>
                 <ProductInfoView productInfo={this.state.product.productInfo}/>
                 <div className="customizeButtons">
-                {
-                    this.state.product.variants.map((variant, index) => {
-                        return <>
-                            <PixmapButton
-                                onClick={() => this.setState({selectedVariantId: variant.id})}
-                                pixmap="add"
-                                text={
-                                    <>
-                                        {variant.name &&
-                                            <>
-                                                <span>{variant.name}</span>
-                                                <br/>
-                                            </>
-                                        }
-                                        Preis ohne Extras: <b>{variant.prices.deliveryEuro}€</b>
-                                    </>
-                                }
-                                className={joinClasses("grow", index == 0 ? "primary" : "")}
-                            />
-                        </>
-                    })
-                }
+                    {
+                        this.state.product.variants.map((variant, index) => {
+                            return <>
+                                <PixmapButton
+                                    onClick={() => this.setState({selectedVariantId: variant.id})}
+                                    pixmap="add"
+                                    text={
+                                        <>
+                                            {variant.name &&
+                                                <>
+                                                    <span>{variant.name}</span>
+                                                    <br/>
+                                                </>
+                                            }
+                                            Preis ohne Extras: <b>{variant.prices.deliveryEuro}€</b>
+                                        </>
+                                    }
+                                    className={joinClasses("grow", index == 0 ? "primary" : "")}
+                                />
+                            </>
+                        })
+                    }
                 </div>
                 <PixmapButton onClick={this.backToOrder} pixmap="arrow_back" text="Back to product selection"/>
             </div>
