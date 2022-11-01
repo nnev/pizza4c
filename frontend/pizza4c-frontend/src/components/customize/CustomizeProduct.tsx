@@ -70,7 +70,7 @@ class CustomizeClazz extends React.Component<CustomizeProps, CustomizeState> {
         }
 
         return (
-            <div className="customize">
+            <main className="customize">
                 <h1>{this.state.product.name}</h1>
                 <ProductInfoView productInfo={this.state.product.productInfo}/>
                 <div className="customizeButtons">
@@ -91,14 +91,14 @@ class CustomizeClazz extends React.Component<CustomizeProps, CustomizeState> {
                                             Preis ohne Extras: <b>{variant.prices.deliveryEuro}€</b>
                                         </>
                                     }
-                                    className={joinClasses("grow", index == 0 ? "primary" : "")}
+                                    className={joinClasses("", index == 0 ? "primary" : "")}
                                 />
                             </>
                         })
                     }
                 </div>
                 <PixmapButton onClick={this.backToOrder} pixmap="arrow_back" text="Back to product selection"/>
-            </div>
+            </main>
         );
     }
 }

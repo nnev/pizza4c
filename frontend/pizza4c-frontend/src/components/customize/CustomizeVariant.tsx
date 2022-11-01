@@ -120,9 +120,9 @@ class CustomizeVariantClazz extends React.Component<CustomizeVariantProps, Custo
         }
 
         return (
-            <div className="customize">
+            <main className="customize">
                 <h1>{this.state.product.name} {this.state.variant ? this.state.variant!.name : ""}</h1>
-                Preis ohne Extras: <span>{this.state.variant!.prices.deliveryEuro}</span>€<br/>
+                <span className="total">Preis ohne Extras: <span>{this.state.variant!.prices.deliveryEuro}</span>€</span><br/>
                 <div className="variantContent">
                     <ul>
                         {
@@ -139,7 +139,7 @@ class CustomizeVariantClazz extends React.Component<CustomizeVariantProps, Custo
                     </ul>
                 </div>
 
-                <b>Total</b>: {this.getTotalPrice().toFixed(2)}€
+                <span className="total"> <b>Total</b>: {this.getTotalPrice().toFixed(2)}€</span>
                 <PixmapGroup>
                     <PixmapButton onClick={this.backToOrder} pixmap="arrow_back" text="Back to product selection"/>
                     {this.state.product.variants.length != 1 &&
@@ -152,10 +152,10 @@ class CustomizeVariantClazz extends React.Component<CustomizeVariantProps, Custo
                         pixmap="add"
                         text="Add To Cart"
                         disabled={!this.getCustomizationCompleted()}
-                        className="primary"
+                        className="primary right"
                     />
                 </PixmapGroup>
-            </div>
+            </main>
         );
     }
 

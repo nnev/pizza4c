@@ -1,5 +1,4 @@
 :root {
-
     --maincolor: #ECECEC;
     --shades: #90CCF4;
     --borders: #5DA2D5;
@@ -227,7 +226,7 @@ li.product {
     border-top: 2px solid var(--borders);
 }
 
-.optionsContainer {
+.optionsContainer, .customizeButtons {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, max-content));
 }
@@ -315,6 +314,11 @@ button.pixmapButton span:first-child {
     padding-right: 2px;
 }
 
+.pixmapGroup {
+    display: flex;
+    flex-wrap: wrap;
+}
+
 .pixmapGroup button.pixmapButton {
     margin: 0 3px;
 }
@@ -325,6 +329,10 @@ button.pixmapButton span:first-child {
 
 .pixmapGroup button.pixmapButton:last-child {
     margin: 0 0 0 3px;
+}
+
+.pixmapButton.right {
+    margin-left: auto!important;
 }
 
 .textCenter {
@@ -389,8 +397,8 @@ button.pixmapButton span:first-child {
     margin-top: 2px;
 }
 
-.customizeButtons{
-    display: flex;
+.customizeButtons button {
+    min-width: 200px;
 }
 
 .customize fieldset {
@@ -399,4 +407,46 @@ button.pixmapButton span:first-child {
     margin: 5px 0;
     border-radius: 10px;
     padding: 5px;
+}
+
+.total {
+    font-size: 1.2em;
+    line-height: 2em;
+}
+
+@media(max-width: 1200px){
+    /*.container {*/
+    /*    position: initial;*/
+    /*    left: 0;*/
+    /*    right: 0;*/
+    /*    transform: none;*/
+    /*    max-width: none;*/
+    /*}*/
+
+    main:not(.withSide) {
+        position: initial;
+        left: 0;
+        right: 0;
+        overflow-y: initial;
+        padding: 5px;
+    }
+
+    aside {
+        position: absolute;
+        left: 0;
+        top:0;
+        bottom: 0;
+        overflow-y: auto;
+    }
+
+    .customizeButtons button.pixmapButton {
+        line-height: 20px;
+    }
+    .customizeButtons button.pixmapButton span {
+        line-height: 20px;
+    }
+
+    .customizeButtons {
+        grid-template-columns: repeat(2, 1fr);
+    }
 }

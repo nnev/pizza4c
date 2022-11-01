@@ -38,7 +38,7 @@ export class Order extends React.Component<OrderProps, OrderState> {
         return (
             <>
                 <OrderSidebar restaurant={this.state.restaurant}/>
-                <main>
+                <main className="withSide">
                     <OrderList restaurant={this.state.restaurant}/>
                 </main>
             </>
