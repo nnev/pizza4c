@@ -1,53 +1,55 @@
 import React from "react";
-import Restaurant from "../../datamodel/restaurant/restaurant";
-import {CurrentRestaurantObservable} from "../../backend/restaurant";
-import {AllCartsObservable} from "../../backend/Cart";
-import Cart from "../../datamodel/cart/cart";
-import {PixmapButton} from "../Pixmap";
-import {renderPdf} from "../../backend/RenderPdf";
+import {submitOrder} from "../../backend/submitOrder";
+import {Navigate} from "react-router-dom";
+import {fetchAllCarts, fetchMyCart} from "../../backend/Cart";
+import {PixmapButton, PixmapGroup} from "../Pixmap";
 
 
 interface SubmitProps {
 }
 
 interface SubmitState {
-    restaurant?: Restaurant
-    allCarts?: Cart[],
+    success?: boolean;
+    forceReturn: boolean
 }
 
 export class SubmitGroupOrder extends React.Component<SubmitProps, SubmitState> {
     constructor(props: SubmitProps, context: any) {
         super(props, context);
-        this.state = {}
-    }
-
-    restaurantObserver = (value: Restaurant) => {
-        this.setState({restaurant: value});
-    }
-
-    allCartsObserver = (carts: Cart[]) => {
-        this.setState({allCarts: carts});
-    }
-
-    componentDidMount() {
-        CurrentRestaurantObservable.subscribe(this.restaurantObserver);
-        AllCartsObservable.subscribe(this.allCartsObserver);
-    }
-
-    componentWillUnmount() {
-        CurrentRestaurantObservable.unsubscribe(this.restaurantObserver);
-        AllCartsObservable.unsubscribe(this.allCartsObserver);
+        this.state = {
+            forceReturn: false
+        }
     }
 
     render() {
-        if (!this.state.allCarts || !this.state.restaurant) {
-            return <></>
+        if (this.state.success == undefined) {
+            submitOrder().then(value => {
+                console.log(value);
+                if (value) {
+                    fetchMyCart();
+                    fetchAllCarts();
+                }
+                this.setState({success: value})
+            })
+                .catch(reason => {
+                    console.log("++++", reason)
+                    this.setState({success: false})
+                })
+            return <>{this.state.success}</>
+        } else if (this.state.success === true || this.state.forceReturn) {
+            return <Navigate to="/" replace={true}></Navigate>
+        } else {
+            return <div>
+                <div className="error"><span>Fehler beim Versenden vom Fax</span></div>
+                <PixmapGroup>
+                    <PixmapButton
+                        onClick={() => this.setState({forceReturn: true})}
+                        pixmap="arrow_left"
+                        text="Zurück zur Übersicht"
+                        className="primary"
+                    />
+                </PixmapGroup>
+            </div>
         }
-
-        return (
-            <main>
-                <PixmapButton onClick={() => renderPdf()} pixmap="render" text="render"/><br/>
-            </main>
-        )
     }
 }

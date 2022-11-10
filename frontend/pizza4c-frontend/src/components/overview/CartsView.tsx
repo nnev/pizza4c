@@ -3,7 +3,7 @@ import Restaurant from "../../datamodel/restaurant/restaurant";
 import React from "react";
 import {CartView} from "./CartView";
 import {sumReducer} from "../../util/Reducers";
-import {SumPrice} from "./SumPrice";
+import {FormatPrice} from "./FormatPrice";
 
 interface CartsViewProps {
     carts: Cart[];

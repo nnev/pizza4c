@@ -16,6 +16,9 @@ public class Restaurant {
     @JsonProperty
     private Map<String, String> location;
 
+    @JsonProperty
+    private Colophon colophon;
+
     private String restaurantId;
 
     private Menu menu;

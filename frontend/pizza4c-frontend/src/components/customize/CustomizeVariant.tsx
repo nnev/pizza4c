@@ -8,6 +8,9 @@ import {WrapComponent} from "../RouterWrapper";
 import {PixmapButton, PixmapGroup} from "../Pixmap";
 import {Navigate} from "react-router-dom";
 import {addToCart} from "../../backend/Cart";
+import FormattedError from "../../datamodel/error";
+import {Simulate} from "react-dom/test-utils";
+import error = Simulate.error;
 
 interface CustomizeVariantProps {
     productId: string;
@@ -22,6 +25,7 @@ interface CustomizeVariantState {
     backToVariantSelection: boolean
     backToOrder: boolean
     addToCartCompleted: boolean
+    error?: FormattedError
 }
 
 class CustomizeVariantClazz extends React.Component<CustomizeVariantProps, CustomizeVariantState> {
@@ -60,7 +64,7 @@ class CustomizeVariantClazz extends React.Component<CustomizeVariantProps, Custo
                     this.setState({addToCartCompleted: true});
                 })
                 .catch(value => {
-                    console.error("Error", value); // TODO
+                    this.setState({error: value as FormattedError})
                 })
         }
     }
@@ -139,7 +143,10 @@ class CustomizeVariantClazz extends React.Component<CustomizeVariantProps, Custo
                     </ul>
                 </div>
 
-                <span className="total"> <b>Total</b>: {this.getTotalPrice().toFixed(2)}€</span>
+                <span className="total"> <b>Total</b>: {this.getTotalPrice().toFixed(2)}€</span> <br/>
+                {this.state.error &&
+                    <div className="error"><span>{this.state.error.message}</span></div>
+                }
                 <PixmapGroup>
                     <PixmapButton onClick={this.backToOrder} pixmap="arrow_back" text="Back to product selection"/>
                     {this.state.product.variants.length != 1 &&

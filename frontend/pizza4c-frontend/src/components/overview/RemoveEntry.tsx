@@ -1,7 +1,14 @@
 import React from "react";
 import {PixmapButton} from "../Pixmap";
 import Cart from "../../datamodel/cart/cart";
-import {fetchAllCarts, fetchMyCart, markAsPaid, markAsUnpaid, removeEntry} from "../../backend/Cart";
+import {
+    AllCartsObservable,
+    fetchAllCarts,
+    fetchMyCart,
+    markAsPaid,
+    markAsUnpaid,
+    removeEntry
+} from "../../backend/Cart";
 import CartEntry from "../../datamodel/cart/cartEntry";
 
 interface RemoveEntryProps {
@@ -19,8 +26,9 @@ export class RemoveEntry extends React.Component<RemoveEntryProps, RemoveEntrySt
         return <PixmapButton
             onClick={this.onRemoveEntry}
             pixmap="remove"
-            text="Remove from Order"
+            text="Aus Bestellung entfernen"
             className={this.props.className}
+            disabled={AllCartsObservable.getValue().submittedAt > 0}
         />
     }
 }

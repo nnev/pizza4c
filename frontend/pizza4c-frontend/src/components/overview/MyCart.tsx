@@ -1,7 +1,7 @@
 import React, {MouseEvent} from "react";
 import Restaurant from "../../datamodel/restaurant/restaurant";
 import {CurrentRestaurantObservable} from "../../backend/restaurant";
-import {MyCartObservable} from "../../backend/Cart";
+import {AllCartsObservable, MyCartObservable} from "../../backend/Cart";
 import Cart from "../../datamodel/cart/cart";
 import {Pixmap, PixmapButton, PixmapGroup} from "../Pixmap";
 import {Navigate} from "react-router-dom";
@@ -71,12 +71,13 @@ export class MyCart extends React.Component<MyCartProps, MyCartState> {
                     <PixmapGroup>
                         <PixmapButton onClick={this.order}
                                       pixmap="add"
-                                      text="New Order"
+                                      text="Neue Bestellung"
                                       className="primary"
+                                      disabled={AllCartsObservable.getValue().submittedAt > 0}
                         />
                         <PixmapButton onClick={this.logout}
                                       pixmap="logout"
-                                      text={'I am not ' + this.state.myCart.name}/><br/>
+                                      text={'Ich bin nicht ' + this.state.myCart.name}/><br/>
                     </PixmapGroup>
                 </>
             );
@@ -91,18 +92,19 @@ export class MyCart extends React.Component<MyCartProps, MyCartState> {
                     />
                     <PixmapButton onClick={this.order}
                                   pixmap="add"
-                                  text="New Order"
+                                  text="Neue Bestellung"
                                   className="primary"
+                                  disabled={AllCartsObservable.getValue().submittedAt > 0}
                     />
                     <PixmapButton onClick={this.logout} pixmap="logout"
-                                  text={'I am not ' + this.state.myCart.name}/><br/>
+                                  text={'Ich bin nicht ' + this.state.myCart.name}/><br/>
                 </PixmapGroup>
                 <br/>
                 <div className="myOrder">
                     <p>
                         <Pixmap
                             pixmap={this.state.myCart.payed ? "done" : "close"}
-                            text={this.state.myCart.payed ? "You appear marked as payed" : "You still need to pay"}
+                            text={this.state.myCart.payed ? "Du hast schon bezahlt" : "Du musst noch bezahlen"}
                             className={this.state.myCart.getPaymentClass()}
                         /> <br/>
                         {this.state.myCart.getPrice(this.state.restaurant.menu).toFixed(2)} €

@@ -4,7 +4,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import de.noname.pizza4c.datamodel.lieferando.Product;
 import de.noname.pizza4c.datamodel.lieferando.Restaurant;
 import de.noname.pizza4c.datamodel.lieferando.Variant;
+import de.noname.pizza4c.datamodel.pizza4c.AllCartService;
+import de.noname.pizza4c.datamodel.pizza4c.AllCarts;
 import de.noname.pizza4c.datamodel.pizza4c.Cart;
+import de.noname.pizza4c.datamodel.pizza4c.CartService;
+import de.noname.pizza4c.fax.FaxService;
+import de.noname.pizza4c.fax.FaxServiceProvider;
+import de.noname.pizza4c.fax.clicksend.ClickSendResponse;
 import de.noname.pizza4c.pdf.PdfGenerator;
 import de.noname.pizza4c.utils.Name;
 import de.noname.pizza4c.utils.SessionUtils;
@@ -19,19 +25,15 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.view.AbstractView;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
 @RestController
-public class WebpageController {
-    private static final Logger LOG = LoggerFactory.getLogger(WebpageController.class);
+public class ApiController {
+    private static final Logger LOG = LoggerFactory.getLogger(ApiController.class);
 
     @Autowired
     private RestaurantService restaurantService;
@@ -39,9 +41,25 @@ public class WebpageController {
     @Autowired
     private PdfGenerator pdfGenerator;
 
+
+    @Autowired
+    private FaxService faxService;
+
+
+    @Autowired
+    private AllCartService allCartService;
+
+    @Autowired
+    private CartService cartService;
+
     @GetMapping("/api/restaurant/current")
     public Restaurant getRestaurant() {
         return restaurantService.getSelectedRestaurant();
+    }
+
+    @PostMapping("/v3/fax/send")
+    public ClickSendResponse faxtest() {
+        return new ClickSendResponse();
     }
 
     @Data
@@ -49,6 +67,14 @@ public class WebpageController {
         String product;
         String variant;
         Map<String, Set<String>> options;
+    }
+
+    private Variant getSelectedVariant(String variantId, String productId, Product product) {
+        return product.getVariants()
+                .stream()
+                .filter(variant -> Objects.equals(variantId, productId + "-" + variant.getId()))
+                .findFirst()
+                .orElse(null);
     }
 
     @PostMapping("/api/addToCart")
@@ -61,20 +87,22 @@ public class WebpageController {
         var variant = getSelectedVariant(productId + "-" + variantId, productId, product);
 
         Name name = SessionUtils.getOrCreateName(session);
-        Cart cart = restaurantService.allCarts.getOrCreateCart(name);
-        cart.addEntry(productId, variant.getId(), data.options);
-        return cart;
+
+        allCartService.getCurrentAllCarts().ensureNotSubmitted();
+        Cart cart = allCartService.getOrCreateCartByName(name);
+        return cartService.addToCart(cart, productId, variant.getId(), data.options);
     }
 
     @GetMapping("/api/allCarts")
-    public List<Cart> allCarts() {
-        return restaurantService.allCarts.getCarts();
+    public AllCarts allCarts() {
+        return allCartService.getCurrentAllCarts();
     }
 
     @GetMapping("/api/myCart")
     public Cart myCart(HttpSession session) {
         Name name = SessionUtils.getOrCreateName(session);
-        return restaurantService.allCarts.getOrCreateCart(name);
+
+        return allCartService.getOrCreateCartByName(name);
     }
 
     @PostMapping("/api/changeName")
@@ -93,56 +121,62 @@ public class WebpageController {
 
     @PostMapping("/api/markPaid/{cartId}")
     public boolean markAsPaidApi(@PathVariable("cartId") String cartId) {
-        Cart cart = restaurantService.allCarts.getCartById(cartId);
-        if (cart != null) {
-            cart.setPayed(true);
-        }
+        cartService.markAsPaid(cartId);
         return true;
     }
 
     @PostMapping("/api/markUnpaid/{cartId}")
     public boolean markAsUnpaidApi(@PathVariable("cartId") String cartId) {
-        Cart cart = restaurantService.allCarts.getCartById(cartId);
-        if (cart != null) {
-            cart.setPayed(false);
-        }
+        cartService.markAsUnpaid(cartId);
         return true;
     }
 
     @GetMapping("/api/generatePdf")
     public AbstractView generatePdf() {
-        return new AbstractView() {
-
-            @Override
-            protected void renderMergedOutputModel(Map<String, Object> model, HttpServletRequest request,
-                                                   HttpServletResponse response) throws Exception {
-                setContentType("application/pdf");
-                ByteArrayOutputStream baos = createTemporaryOutputStream();
-                pdfGenerator.generate(baos);
-                writeToResponse(response, baos);
-            }
-        };
+        return new PdfView(pdfGenerator);
     }
 
-    private Variant getSelectedVariant(String variantId, String productId, Product product) {
-        return product.getVariants()
-                .stream()
-                .filter(variant -> Objects.equals(variantId, productId + "-" + variant.getId()))
-                .findFirst()
-                .orElse(null);
+    @GetMapping("/api/generatePdf/{:uuid}")
+    public AbstractView generatePdf(@PathVariable("uuid") String uuid) {
+        if (allCartService.getCurrentAllCarts().getSubmittedAt() == 0 ||
+                !Objects.equals(allCartService.getCurrentAllCarts().getUuid(), uuid)) {
+            throw new IllegalStateException("This cart should have been submitted before");
+        }
+
+        return new PdfView(pdfGenerator);
     }
 
     @PostMapping("/api/restaurant/change/{restaurantId}")
     public boolean selectRestaurant(@PathVariable("restaurantId") String restaurantId) {
-        restaurantService.selectRestaurant(restaurantId);
+        allCartService.selectRestaurant(restaurantId);
         return true;
     }
 
     @PostMapping("/api/remove/{entryId}")
     public boolean removeCartEntry(@PathVariable("entryId") String entryId) {
-        restaurantService.allCarts.getCarts()
-                .forEach(cart -> cart.getEntries().removeIf(cartEntry -> cartEntry.getId().equals(entryId)));
+        allCartService.getCurrentAllCarts().ensureNotSubmitted();
+        cartService.removeCartEntry(entryId);
         return true;
     }
 
+    @PostMapping("/api/submitOrder")
+    public boolean submitOrder() {
+        FaxServiceProvider faxServiceProvider = faxService.getSelectedProvider();
+
+        if (faxServiceProvider == null) {
+            LOG.error("No fax service registered");
+            return false;
+        }
+
+        var allCarts = allCartService.getCurrentAllCarts();
+        allCarts.ensureNotSubmitted();
+
+        boolean success = faxServiceProvider.sendFax(allCarts.getUuid(),
+                restaurantService.getSelectedRestaurant().getColophon().getData().getFax());
+
+        if (success) {
+            allCartService.setSubmitted(allCarts);
+        }
+        return success;
+    }
 }

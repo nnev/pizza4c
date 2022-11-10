@@ -20,14 +20,14 @@ export class ToggleCartPaid extends React.Component<ToggleCartPaidProps, ToggleC
             return <PixmapButton
                 onClick={this.onMarkUnpaid}
                 pixmap="money_off"
-                text="Mark as Unpaid"
+                text="Unbezahlt setzen"
                 className={this.props.className}
             />
         }
         return <PixmapButton
             onClick={this.onMarkPaid}
             pixmap="paid"
-            text="Mark as Paid"
+            text="Bezahlt setzen"
             className={this.props.className}
         />
     }

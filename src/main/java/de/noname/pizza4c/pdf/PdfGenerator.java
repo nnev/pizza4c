@@ -15,10 +15,11 @@ import com.itextpdf.text.Rectangle;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 import de.noname.pizza4c.datamodel.lieferando.Variant;
+import de.noname.pizza4c.datamodel.pizza4c.AllCartService;
 import de.noname.pizza4c.datamodel.pizza4c.Cart;
 import de.noname.pizza4c.datamodel.pizza4c.CartEntry;
+import de.noname.pizza4c.webpage.ApiController;
 import de.noname.pizza4c.webpage.RestaurantService;
-import de.noname.pizza4c.webpage.WebpageController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,12 +34,15 @@ import java.util.List;
 
 @Component
 public class PdfGenerator {
-    private static final Logger LOG = LoggerFactory.getLogger(WebpageController.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ApiController.class);
 
     private static final DateTimeFormatter GERMAN_DATE_TIME_MINUTES = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
 
     @Autowired
     private RestaurantService restaurantService;
+
+    @Autowired
+    private AllCartService allCartService;
 
     @Value("${pizza4c.pdf.companyName:NoName e.V.}")
     private String companyName;
@@ -105,7 +109,7 @@ public class PdfGenerator {
 
             document.add(anschrift);
 
-            var nonameLogo = new Jpeg(WebpageController.class.getResource("/pdf/noname.jpeg"));
+            var nonameLogo = new Jpeg(ApiController.class.getResource("/pdf/noname.jpeg"));
             nonameLogo.scalePercent(10);
             nonameLogo.setWidthPercentage(30);
             nonameLogo.setAlignment(Element.ALIGN_RIGHT | Element.ALIGN_TOP);
@@ -131,7 +135,7 @@ public class PdfGenerator {
                     normalFont);
             gmapsCode.render(writer.getDirectContent());
 
-            var allCarts = restaurantService.allCarts;
+            var allCarts = allCartService.getCurrentAllCarts();
             var menu = restaurantService.getSelectedRestaurant().getMenu();
 
             document.add(new Paragraph(new Phrase(" "))); // spacer

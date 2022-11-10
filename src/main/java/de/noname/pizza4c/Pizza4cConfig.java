@@ -9,4 +9,6 @@ public class Pizza4cConfig implements WebMvcConfigurer {
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
     }
+
+
 }

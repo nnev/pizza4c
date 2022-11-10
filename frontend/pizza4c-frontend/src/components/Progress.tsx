@@ -7,7 +7,7 @@ interface ProgressProps {
 
 export class Progress extends React.Component<ProgressProps, any> {
     render() {
-        let percentage = this.props.current > 0 ? this.props.current / this.props.max : 0;
+        let percentage = this.props.current > 0 ? this.props.current / this.props.max : 0.01;
         percentage *= 100;
         return (
             <div className="progress">

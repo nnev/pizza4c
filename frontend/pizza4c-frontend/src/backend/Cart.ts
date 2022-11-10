@@ -2,6 +2,8 @@ import {BACKEND} from "./Constants";
 import {Observable} from "../util/Observable";
 import Cart from "../datamodel/cart/cart";
 import CartEntry from "../datamodel/cart/cartEntry";
+import AllCarts from "../datamodel/cart/allCarts";
+import FormattedError from "../datamodel/error";
 
 export async function addToCart(product: string, variant: string, options: Map<string, Set<string>>): Promise<any> {
     function replacer(key: any, value: any) {
@@ -28,32 +30,33 @@ export async function addToCart(product: string, variant: string, options: Map<s
         }, replacer)
     })
         .then(value => value.json())
-        .then(value => mapCart(value))
         .then(value => {
-            MyCartObservable.setValue(value);
-            return value;
+            if ((<FormattedError>value).error !== undefined) {
+                throw value as FormattedError;
+            } else {
+                let response = mapCart(value);
+                MyCartObservable.setValue(response);
+                return fetchAllCarts();
+            }
         })
-        .then(value => fetchAllCarts());
 }
 
 export const MyCartObservable = new Observable<Cart>();
 
-export async function fetchAllCarts(): Promise<Cart[]> {
+export async function fetchAllCarts(): Promise<AllCarts> {
     return fetch(BACKEND + "/allCarts", {
         method: "GET",
         credentials: "include",
     })
         .then(value => value.json())
-        .then(value => {
-            return value.map(mapCart);
-        })
+        .then(value => mapAllCarts(value))
         .then(value => {
             AllCartsObservable.setValue(value);
             return value;
         })
 }
 
-export const AllCartsObservable = new Observable<Cart[]>();
+export const AllCartsObservable = new Observable<AllCarts>();
 
 export async function fetchMyCart(): Promise<Cart> {
     return fetch(BACKEND + "/myCart", {
@@ -68,10 +71,16 @@ export async function fetchMyCart(): Promise<Cart> {
         })
 }
 
+function mapAllCarts(data: AllCarts): AllCarts {
+    let carts = data.carts;
+    let submittedAt = data.submittedAt;
+    return new AllCarts(carts.map(mapCart), submittedAt);
+}
+
 function mapCart(data: Cart): Cart {
     let id = data.id;
     let name = data.name;
-    let entries = data.entries.map(mapEntries);
+    let entries = data.entries == undefined ? [] : data.entries.map(mapEntries);
     let payed = data.payed;
     let shortName = data.shortName;
     return new Cart(id, name, entries, payed, shortName);
@@ -86,26 +95,47 @@ function mapEntries(data: CartEntry): CartEntry {
     return new CartEntry(id, product, variant, options);
 }
 
-
-export async function markAsPaid(cart: Cart): Promise<Cart> {
+export async function markAsPaid(cart: Cart): Promise<boolean> {
     return fetch(BACKEND + "/markPaid/" + cart.id, {
         method: "POST",
         credentials: "include",
     })
         .then(value => value.json())
+        .then(value => {
+            if ((<FormattedError>value).error !== undefined) {
+                throw value as FormattedError;
+            } else {
+                return value as boolean;
+            }
+        })
 }
 
-export async function markAsUnpaid(cart: Cart): Promise<Cart> {
+export async function markAsUnpaid(cart: Cart): Promise<boolean> {
     return fetch(BACKEND + "/markUnpaid/" + cart.id, {
         method: "POST",
         credentials: "include",
     })
         .then(value => value.json())
+        .then(value => {
+            if ((<FormattedError>value).error !== undefined) {
+                throw value as FormattedError;
+            } else {
+                return value as boolean;
+            }
+        })
 }
-export async function removeEntry(entry: CartEntry): Promise<Cart> {
+
+export async function removeEntry(entry: CartEntry): Promise<boolean> {
     return fetch(BACKEND + "/remove/" + entry.id, {
         method: "POST",
         credentials: "include",
     })
         .then(value => value.json())
+        .then(value => {
+            if ((<FormattedError>value).error !== undefined) {
+                throw value as FormattedError;
+            } else {
+                return value as boolean;
+            }
+        })
 }

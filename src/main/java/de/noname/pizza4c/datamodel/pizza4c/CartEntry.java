@@ -2,18 +2,31 @@ package de.noname.pizza4c.datamodel.pizza4c;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import de.noname.pizza4c.datamodel.lieferando.Menu;
-import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import org.hibernate.annotations.Type;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
 import java.math.BigDecimal;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 @Data
-public class CartEntry {
-    private String id;
+@EqualsAndHashCode(callSuper = true)
+@Entity
+public class CartEntry extends VersionedEntity {
+    @Column(unique = true)
+    private String uuid;
     private String product;
+
     private String variant;
+
+    @Type(type = "json")
+    @Column(columnDefinition = "json")
     private Map<String, Set<String>> options;
 
     @JsonProperty
@@ -40,21 +53,4 @@ public class CartEntry {
                 .forEach(result::add);
         return result;
     }
-
-    public String getOptionListHtml(Menu menu) {
-        StringBuilder result = new StringBuilder();
-        result.append(menu.getProducts().get(product).getName()).append("<br>");
-
-        options
-                .values()
-                .stream()
-                .flatMap(Collection::stream)
-                .map(s -> menu.getOptions().get(s).getName())
-                .forEach(s -> {
-                    result.append("&nbsp;&nbsp;+&nbsp;").append(s).append("<br>");
-                });
-        return result.toString();
-    }
-
-
 }

@@ -285,6 +285,10 @@ button.pixmapButton:hover {
     background-color: var(--shades);
 }
 
+button.pixmapButton:disabled {
+    opacity: 60%;
+}
+
 button.pixmapButton.grow {
     width: 100%;
 }
@@ -297,12 +301,6 @@ button.pixmapButton.primary:hover {
     background-color: var(--borders);
     border-color: var(--shades);
     color: var(--textcolor);
-}
-
-button.pixmapButton.primary:disabled {
-    background-color: var(--shades);
-    color: var(--textcolor);
-    opacity: 60%;
 }
 
 button.pixmapButton span {
@@ -345,14 +343,17 @@ button.pixmapButton span:first-child {
 
 .payed {
     color: var(--success);
+    text-shadow: var(--accent) 0px 0px 1px;
 }
 
 .box.unpayed {
     background-color: var(--failure);
+    text-shadow: var(--accent) 0px 0px 1px;
 }
 
 .box.payed {
     background-color: var(--success);
+    text-shadow: var(--accent) 0px 0px 1px;
 }
 
 .progress {
@@ -370,17 +371,16 @@ button.pixmapButton span:first-child {
 }
 
 .progress .progressText {
-    color: var(--maincolor);
+    color: var(--textcolor);
     display: inline-block;
     position: absolute;
     width: 100%;
     left: 0;
-    text-shadow: white 0px 0px 1px;
+    text-shadow: var(--accent) 0px 0px 1px;
     line-height: 30px;
 }
 
 .myOrder {
-    background-color: var(--shades);
     border: 2px solid var(--borders);
     padding: 10px;
     border-radius: 10px;
@@ -412,6 +412,19 @@ button.pixmapButton span:first-child {
 .total {
     font-size: 1.2em;
     line-height: 2em;
+}
+
+.error {
+    text-align: right;
+}
+
+.error span {
+    display: inline-block;
+    padding: 5px;
+    margin: 5px 0;
+    border-radius: 10px;
+    color: var(--failure);
+    border: 2px solid var(--failure);
 }
 
 @media(max-width: 1200px){

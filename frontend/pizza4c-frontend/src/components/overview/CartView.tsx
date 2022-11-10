@@ -6,6 +6,7 @@ import {OptionListView} from "./OptionListView";
 import {ToggleCartPaid} from "./ToggleCartPaid";
 import {RemoveEntry} from "./RemoveEntry";
 import {joinClasses} from "../../util/JoinClasses";
+import {AllCartsObservable} from "../../backend/Cart";
 
 interface CartViewProps {
     cart: Cart;

@@ -21,8 +21,8 @@ function App() {
             <BrowserRouter>
                 <nav className="menu">
                     <Link to="/">Overview</Link>
-                    <Link to="/renderPdf">Render PDF</Link>
-                    <Link to="/submitGroupOrder">Submit Group Order</Link>
+                    <Link to="/renderPdf">PDF anschauen</Link>
+                    <Link to="/submitGroupOrder">Bestellung abschicken</Link>
                 </nav>
                 <div className="container">
                     <div className="row">
