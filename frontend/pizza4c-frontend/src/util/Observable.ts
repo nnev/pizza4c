@@ -4,8 +4,8 @@ export class Observable<T> {
     private listeners: Listener<T>[] = [];
     private value?: T;
 
-    constructor() {
-        this.value = undefined;
+    constructor(initialValue?: T) {
+        this.value = initialValue;
     }
 
     public subscribe(listener: Listener<T>) {

@@ -70,7 +70,7 @@ class CustomizeClazz extends React.Component<CustomizeProps, CustomizeState> {
         }
 
         return (
-            <main className="customize">
+            <main className="customize notSide">
                 <h1>{this.state.product.name}</h1>
                 <ProductInfoView productInfo={this.state.product.productInfo}/>
                 <div className="customizeButtons">

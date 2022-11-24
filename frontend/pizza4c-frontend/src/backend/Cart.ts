@@ -4,6 +4,7 @@ import Cart from "../datamodel/cart/cart";
 import CartEntry from "../datamodel/cart/cartEntry";
 import AllCarts from "../datamodel/cart/allCarts";
 import FormattedError from "../datamodel/error";
+import {getMyName} from "../datamodel/name";
 
 export async function addToCart(product: string, variant: string, options: Map<string, Set<string>>): Promise<any> {
     function replacer(key: any, value: any) {
@@ -21,12 +22,13 @@ export async function addToCart(product: string, variant: string, options: Map<s
         credentials: "include",
         headers: {
             'Accept': 'application/json',
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
         },
         body: JSON.stringify({
             product: product,
             variant: variant,
-            options: options
+            options: options,
+            name: getMyName().asBody()
         }, replacer)
     })
         .then(value => value.json())
@@ -34,19 +36,16 @@ export async function addToCart(product: string, variant: string, options: Map<s
             if ((<FormattedError>value).error !== undefined) {
                 throw value as FormattedError;
             } else {
-                let response = mapCart(value);
-                MyCartObservable.setValue(response);
                 return fetchAllCarts();
             }
         })
 }
 
-export const MyCartObservable = new Observable<Cart>();
 
 export async function fetchAllCarts(): Promise<AllCarts> {
     return fetch(BACKEND + "/allCarts", {
         method: "GET",
-        credentials: "include",
+        credentials: "include"
     })
         .then(value => value.json())
         .then(value => mapAllCarts(value))
@@ -57,19 +56,6 @@ export async function fetchAllCarts(): Promise<AllCarts> {
 }
 
 export const AllCartsObservable = new Observable<AllCarts>();
-
-export async function fetchMyCart(): Promise<Cart> {
-    return fetch(BACKEND + "/myCart", {
-        method: "GET",
-        credentials: "include",
-    })
-        .then(value => value.json())
-        .then(value => mapCart(value))
-        .then(value => {
-            MyCartObservable.setValue(value);
-            return value;
-        })
-}
 
 function mapAllCarts(data: AllCarts): AllCarts {
     let carts = data.carts;
@@ -99,6 +85,9 @@ export async function markAsPaid(cart: Cart): Promise<boolean> {
     return fetch(BACKEND + "/markPaid/" + cart.id, {
         method: "POST",
         credentials: "include",
+        body: JSON.stringify({
+            name: getMyName().asBody()
+        })
     })
         .then(value => value.json())
         .then(value => {
@@ -114,6 +103,9 @@ export async function markAsUnpaid(cart: Cart): Promise<boolean> {
     return fetch(BACKEND + "/markUnpaid/" + cart.id, {
         method: "POST",
         credentials: "include",
+        body: JSON.stringify({
+            name: getMyName().asBody()
+        })
     })
         .then(value => value.json())
         .then(value => {

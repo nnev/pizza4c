@@ -51,8 +51,8 @@ export class Overview extends React.Component<OverviewProps, OverviewState> {
         let menu =this.state.restaurant.menu;
 
         return (
-            <main>
-                <MyCart/>
+            <main className="notSide">
+                <MyCart allCarts={this.state.allCarts} restaurant={this.state.restaurant}/>
                 <br/>
                 {this.state.allCarts.submittedAt > 0 &&
                     <div className="error">

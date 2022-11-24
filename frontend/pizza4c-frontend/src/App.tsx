@@ -6,7 +6,7 @@ import {CustomizeProduct} from "./components/customize/CustomizeProduct";
 import {getCurrentRestaurant} from "./backend/restaurant";
 import {Overview} from "./components/overview/Overview";
 import ChangeName from "./components/managment/ChangeName";
-import {fetchAllCarts, fetchMyCart} from "./backend/Cart";
+import {fetchAllCarts} from "./backend/Cart";
 import {SubmitGroupOrder} from "./components/submit/SubmitGroupOrder";
 import {RenderPdf} from "./components/submit/RenderPdf";
 import {CustomizeVariant} from "./components/customize/CustomizeVariant";
@@ -14,7 +14,6 @@ import {CustomizeVariant} from "./components/customize/CustomizeVariant";
 function App() {
     getCurrentRestaurant();
     fetchAllCarts();
-    fetchMyCart();
 
     return (
         <>

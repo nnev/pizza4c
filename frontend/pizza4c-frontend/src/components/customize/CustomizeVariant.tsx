@@ -124,7 +124,7 @@ class CustomizeVariantClazz extends React.Component<CustomizeVariantProps, Custo
         }
 
         return (
-            <main className="customize">
+            <main className="notSide customize">
                 <h1>{this.state.product.name} {this.state.variant ? this.state.variant!.name : ""}</h1>
                 <span className="total">Preis ohne Extras: <span>{this.state.variant!.prices.deliveryEuro}</span>€</span><br/>
                 <div className="variantContent">

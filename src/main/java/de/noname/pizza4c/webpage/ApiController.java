@@ -13,19 +13,13 @@ import de.noname.pizza4c.fax.FaxServiceProvider;
 import de.noname.pizza4c.fax.clicksend.ClickSendResponse;
 import de.noname.pizza4c.pdf.PdfGenerator;
 import de.noname.pizza4c.utils.Name;
-import de.noname.pizza4c.utils.SessionUtils;
 import lombok.Data;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.AbstractView;
 
-import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.Map;
 import java.util.Objects;
@@ -67,6 +61,8 @@ public class ApiController {
         String product;
         String variant;
         Map<String, Set<String>> options;
+
+        Name name;
     }
 
     private Variant getSelectedVariant(String variantId, String productId, Product product) {
@@ -78,15 +74,14 @@ public class ApiController {
     }
 
     @PostMapping("/api/addToCart")
-    public Cart addToCart(@RequestBody String rawBody, HttpSession session) throws IOException {
+    public Cart addToCart(@RequestBody String rawBody) throws IOException {
         Restaurant restaurant = restaurantService.getSelectedRestaurant();
         var data = new ObjectMapper().reader().readValue(rawBody, AddToCartDto.class);
         String productId = data.product;
         String variantId = data.variant;
+        Name name = data.name;
         var product = restaurant.getMenu().getProducts().get(productId);
         var variant = getSelectedVariant(productId + "-" + variantId, productId, product);
-
-        Name name = SessionUtils.getOrCreateName(session);
 
         allCartService.getCurrentAllCarts().ensureNotSubmitted();
         Cart cart = allCartService.getOrCreateCartByName(name);
@@ -96,27 +91,6 @@ public class ApiController {
     @GetMapping("/api/allCarts")
     public AllCarts allCarts() {
         return allCartService.getCurrentAllCarts();
-    }
-
-    @GetMapping("/api/myCart")
-    public Cart myCart(HttpSession session) {
-        Name name = SessionUtils.getOrCreateName(session);
-
-        return allCartService.getOrCreateCartByName(name);
-    }
-
-    @PostMapping("/api/changeName")
-    public boolean changeName(@RequestBody String rawBody, HttpSession session) throws IOException {
-        var body = new ObjectMapper().reader().readTree(rawBody);
-
-        String nameText = body.get("name").asText();
-        if (nameText != null && nameText.length() >= 3) {
-            Name name = new Name();
-            name.setLongName(nameText);
-            name.setShortName(nameText.substring(0, 3).toUpperCase());
-            session.setAttribute("name", name);
-        }
-        return true;
     }
 
     @PostMapping("/api/markPaid/{cartId}")

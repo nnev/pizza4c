@@ -86,7 +86,8 @@ main {
 
 .container {
     max-width: 1200px;
-    width: 100%;
+    width: 1200px;
+    /*width: 100%;*/
     position: absolute;
     top: 60px;
     bottom: 0;
@@ -105,6 +106,10 @@ main {
     top: 0;
     bottom: 0;
     overflow-y: auto;
+}
+
+main.notSide {
+    left: 0;
 }
 
 main ol:first-child {
@@ -135,6 +140,7 @@ aside h1.target {
     border-radius: 5px;
     background: var(--shades);
 }
+
 aside h1 a {
     border-radius: 5px;
     color: var(--textcolor);
@@ -244,7 +250,7 @@ li.product {
     display: inline;
 }
 
-.optionName,.optionPrice {
+.optionName, .optionPrice {
     margin-left: 0.3em;
 }
 
@@ -297,6 +303,7 @@ button.pixmapButton.primary {
     background-color: var(--shades);
     color: var(--textcolor);
 }
+
 button.pixmapButton.primary:hover {
     background-color: var(--borders);
     border-color: var(--shades);
@@ -330,7 +337,7 @@ button.pixmapButton span:first-child {
 }
 
 .pixmapButton.right {
-    margin-left: auto!important;
+    margin-left: auto !important;
 }
 
 .textCenter {
@@ -427,14 +434,14 @@ button.pixmapButton span:first-child {
     border: 2px solid var(--failure);
 }
 
-@media(max-width: 1200px){
-    /*.container {*/
-    /*    position: initial;*/
-    /*    left: 0;*/
-    /*    right: 0;*/
-    /*    transform: none;*/
-    /*    max-width: none;*/
-    /*}*/
+@media (max-width: 1200px) {
+    .container {
+        position: initial;
+        left: 0;
+        right: 0;
+        transform: none;
+        max-width: none;
+    }
 
     main:not(.withSide) {
         position: initial;
@@ -447,7 +454,7 @@ button.pixmapButton span:first-child {
     aside {
         position: absolute;
         left: 0;
-        top:0;
+        top: 0;
         bottom: 0;
         overflow-y: auto;
     }
@@ -455,6 +462,7 @@ button.pixmapButton span:first-child {
     .customizeButtons button.pixmapButton {
         line-height: 20px;
     }
+
     .customizeButtons button.pixmapButton span {
         line-height: 20px;
     }

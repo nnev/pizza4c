@@ -1,0 +1,210 @@
+import {Observable} from "../util/Observable";
+import {AsyncLocalStorage} from "async_hooks";
+
+export class Name {
+    private static ADJECTIVES: string[] = [
+        "ravishing",
+        "outstanding",
+        "mimic",
+        "famous",
+        "cheerful",
+        "livid",
+        "obstinate",
+        "exhausted",
+        "graceful",
+        "outrageous",
+        "radical",
+        "childish",
+        "snobbish",
+        "miserly",
+        "amiable",
+        "disgusting",
+        "awful",
+        "humorous",
+        "fanciful",
+        "pathetic",
+        "windy",
+        "dusty",
+        "bashful",
+        "freaky",
+        "chilly",
+        "stormy",
+        "humid",
+        "bountiful",
+        "jubilant",
+        "irritated",
+        "patient",
+        "dizzy",
+        "skeptical",
+        "puzzled",
+        "perplexed",
+        "over-whelmed",
+        "jovial",
+        "hyper",
+        "squirrely",
+        "jittery",
+        "sensational",
+        "elegant",
+        "gleeful",
+        "flabbergasted",
+        "dreary",
+        "impish",
+        "sneaky",
+        "horrid",
+        "monsterous",
+    ]
+
+    private static ANIMALS: string[] = [
+        "Ant",
+        "Antelope",
+        "Ape",
+        "Ass",
+        "Badger",
+        "Bat",
+        "Bear",
+        "Beaver",
+        "Bird",
+        "Boar",
+        "Camel",
+        "Canary",
+        "Cat",
+        "Cheetah",
+        "Chicken",
+        "Chimpanzee",
+        "Chipmunk",
+        "Cow",
+        "Crab",
+        "Crocodile",
+        "Deer",
+        "Dog",
+        "Dolphin",
+        "Donkey",
+        "Duck",
+        "Eagle",
+        "Elephant",
+        "Ferret",
+        "Fish",
+        "Fox",
+        "Frog",
+        "Goat",
+        "Hamster",
+        "Hare",
+        "Horse",
+        "Kangaroo",
+        "Leopard",
+        "Lion",
+        "Lizard",
+        "Mole",
+        "Monkey",
+        "Mousedeer",
+        "Mule",
+        "Ostritch",
+        "Otter",
+        "Panda",
+        "Parrot",
+        "Pig",
+        "Polecat",
+        "Porcupine",
+        "Rabbit",
+        "Rat",
+        "Rhinoceros",
+        "Seal",
+        "Sheep",
+        "Snake",
+        "Squirrel",
+        "Tapir",
+        "Toad",
+        "Tiger",
+        "Tortoise",
+        "Walrus",
+        "Whale",
+        "Wolf",
+        "Zebra",
+    ]
+
+    private static COLORS: string[] = [
+        "Amber",
+        "Beige",
+        "Black",
+        "Blue",
+        "Brown",
+        "Crimson",
+        "Cyan",
+        "Gray",
+        "Green",
+        "Indigo",
+        "Magenta",
+        "Orange",
+        "Pink",
+        "Purple",
+        "Red",
+        "Violet",
+        "White",
+        "Yellow",
+    ]
+
+    public shortName: string;
+    public longName: string;
+
+    constructor(shortName: string, longName: string) {
+        this.shortName = shortName;
+        this.longName = longName;
+    }
+
+    private static randomInt(max: number): number {
+        return Math.floor(Math.random() * max);
+    }
+
+    public static generateNewName(): Name {
+        let adjective = Name.ADJECTIVES[Name.randomInt(Name.ADJECTIVES.length)];
+        let colors = Name.COLORS[Name.randomInt(Name.COLORS.length)];
+        let animal = Name.ANIMALS[Name.randomInt(Name.ANIMALS.length)];
+
+
+        let longName = adjective + colors + animal;
+        let shortName = (adjective.charAt(0) + "" + colors.charAt(0) + "" + animal.charAt(0)).toUpperCase();
+
+        return new Name(shortName, longName);
+    }
+
+    public static fromLongName(longName: string): Name {
+        let shortName = longName.substring(0, 3).toUpperCase();
+        return new Name(shortName, longName);
+    }
+
+    public asBody() {
+        return {
+            longName: this.longName,
+            shortName: this.shortName,
+        }
+    }
+}
+
+export const UserNameObservable = new Observable<Name>();
+
+export function getMyName(): Name {
+    if (!UserNameObservable.hasValue()) {
+        console.log("No Name")
+        let userNameShort = window.localStorage.getItem("userNameShort");
+        let userNameLong = window.localStorage.getItem("userNameLong");
+
+        console.log("short", userNameShort)
+        console.log("long", userNameLong)
+
+        if (userNameShort && userNameLong) {
+            UserNameObservable.setValue(new Name(userNameShort, userNameLong));
+        } else {
+            setMyName(Name.generateNewName());
+        }
+    }
+
+    console.log("haz name", UserNameObservable.getValue());
+
+    return UserNameObservable.getValue();
+}
+
+export function setMyName(name: Name) {
+    UserNameObservable.setValue(name);
+    window.localStorage.setItem("userNameShort", name.shortName);
+    window.localStorage.setItem("userNameLong", name.longName);
+}

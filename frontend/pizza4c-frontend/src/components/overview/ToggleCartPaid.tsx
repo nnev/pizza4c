@@ -1,7 +1,7 @@
 import React from "react";
 import {PixmapButton} from "../Pixmap";
 import Cart from "../../datamodel/cart/cart";
-import {fetchAllCarts, fetchMyCart, markAsPaid, markAsUnpaid} from "../../backend/Cart";
+import {fetchAllCarts, markAsPaid, markAsUnpaid} from "../../backend/Cart";
 
 interface ToggleCartPaidProps {
     cart: Cart;
@@ -12,8 +12,8 @@ interface ToggleCartPaidState {
 }
 
 export class ToggleCartPaid extends React.Component<ToggleCartPaidProps, ToggleCartPaidState> {
-    onMarkPaid = () => markAsPaid(this.props.cart).then(value => fetchMyCart()).then(value => fetchAllCarts())
-    onMarkUnpaid = () => markAsUnpaid(this.props.cart).then(value => fetchMyCart()).then(value => fetchAllCarts())
+    onMarkPaid = () => markAsPaid(this.props.cart).then(value => fetchAllCarts())
+    onMarkUnpaid = () => markAsUnpaid(this.props.cart).then(value => fetchAllCarts())
 
     render() {
         if (this.props.cart.payed) {

@@ -1,20 +1,21 @@
 import React, {MouseEvent} from "react";
 import Restaurant from "../../datamodel/restaurant/restaurant";
-import {CurrentRestaurantObservable} from "../../backend/restaurant";
-import {AllCartsObservable, MyCartObservable} from "../../backend/Cart";
-import Cart from "../../datamodel/cart/cart";
+import {AllCartsObservable} from "../../backend/Cart";
 import {Pixmap, PixmapButton, PixmapGroup} from "../Pixmap";
 import {Navigate} from "react-router-dom";
 import {ToggleCartPaid} from "./ToggleCartPaid";
 import {OptionListView} from "./OptionListView";
+import {getMyName, Name, UserNameObservable} from "../../datamodel/name";
+import AllCarts from "../../datamodel/cart/allCarts";
 
 
 interface MyCartProps {
+    allCarts: AllCarts;
+    restaurant: Restaurant;
 }
 
 interface MyCartState {
-    restaurant?: Restaurant
-    myCart?: Cart
+    userName?: Name
     redirectLogout: boolean;
     redirectOrder: boolean;
 }
@@ -22,25 +23,19 @@ interface MyCartState {
 export class MyCart extends React.Component<MyCartProps, MyCartState> {
     constructor(props: MyCartProps, context: any) {
         super(props, context);
-        this.state = {redirectLogout: false, redirectOrder: false}
+        this.state = {userName:getMyName(), redirectLogout: false, redirectOrder: false}
     }
 
-    restaurantObserver = (value: Restaurant) => {
-        this.setState({restaurant: value});
-    }
-
-    myCartObserver = (cart: Cart) => {
-        this.setState({myCart: cart});
+    nameObserver = (name: Name) => {
+        this.setState({userName: name});
     }
 
     componentDidMount() {
-        CurrentRestaurantObservable.subscribe(this.restaurantObserver);
-        MyCartObservable.subscribe(this.myCartObserver);
+        UserNameObservable.subscribe(this.nameObserver);
     }
 
     componentWillUnmount() {
-        CurrentRestaurantObservable.unsubscribe(this.restaurantObserver);
-        MyCartObservable.unsubscribe(this.myCartObserver);
+        UserNameObservable.unsubscribe(this.nameObserver);
     }
 
     logout = (ev: MouseEvent<any>) => {
@@ -61,13 +56,15 @@ export class MyCart extends React.Component<MyCartProps, MyCartState> {
             return <Navigate to="/order"/>
         }
 
-        if (!this.state.myCart || !this.state.restaurant) {
+        if (!this.state.userName || !this.props.restaurant) {
             return <></>
         }
 
-        if (this.state.myCart.entries.length == 0) {
+        let myCart = this.props.allCarts.carts.find(value => this.state.userName != undefined && value.name == this.state.userName!.longName);
+
+        if (myCart == undefined || myCart.entries.length == 0) {
             return (<>
-                    <h1>Noch keine Bestellung, {this.state.myCart.name}</h1>
+                    <h1>Noch keine Bestellung, {myCart == undefined ? "" : myCart.name}</h1>
                     <PixmapGroup>
                         <PixmapButton onClick={this.order}
                                       pixmap="add"
@@ -77,7 +74,7 @@ export class MyCart extends React.Component<MyCartProps, MyCartState> {
                         />
                         <PixmapButton onClick={this.logout}
                                       pixmap="logout"
-                                      text={'Ich bin nicht ' + this.state.myCart.name}/><br/>
+                                      text={'Ich bin nicht ' + this.state.userName.longName}/><br/>
                     </PixmapGroup>
                 </>
             );
@@ -85,10 +82,11 @@ export class MyCart extends React.Component<MyCartProps, MyCartState> {
 
         return (
             <>
-                <h1>Deine Bestellung, {this.state.myCart!.name}</h1>
+                <h1><>Deine Bestellung, {this.state.userName.longName}</>
+                </h1>
                 <PixmapGroup>
                     <ToggleCartPaid
-                        cart={this.state.myCart!}
+                        cart={myCart}
                     />
                     <PixmapButton onClick={this.order}
                                   pixmap="add"
@@ -97,25 +95,25 @@ export class MyCart extends React.Component<MyCartProps, MyCartState> {
                                   disabled={AllCartsObservable.getValue().submittedAt > 0}
                     />
                     <PixmapButton onClick={this.logout} pixmap="logout"
-                                  text={'Ich bin nicht ' + this.state.myCart.name}/><br/>
+                                  text={'Ich bin nicht ' + myCart.name}/><br/>
                 </PixmapGroup>
                 <br/>
                 <div className="myOrder">
                     <p>
                         <Pixmap
-                            pixmap={this.state.myCart.payed ? "done" : "close"}
-                            text={this.state.myCart.payed ? "Du hast schon bezahlt" : "Du musst noch bezahlen"}
-                            className={this.state.myCart.getPaymentClass()}
+                            pixmap={myCart.payed ? "done" : "close"}
+                            text={myCart.payed ? "Du hast schon bezahlt" : "Du musst noch bezahlen"}
+                            className={myCart.getPaymentClass()}
                         /> <br/>
-                        {this.state.myCart.getPrice(this.state.restaurant.menu).toFixed(2)} €
+                        {myCart.getPrice(this.props.restaurant.menu).toFixed(2)} €
                     </p>
                     <p>
                         {
-                            this.state.myCart.entries.map(entry =>
+                            myCart.entries.map(entry =>
                                 <OptionListView
                                     key={entry.id}
                                     entry={entry}
-                                    restaurant={this.state.restaurant!}
+                                    restaurant={this.props.restaurant!}
                                 />)
                         }
                     </p>

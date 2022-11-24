@@ -1,7 +1,7 @@
 import React from "react";
 import {submitOrder} from "../../backend/submitOrder";
 import {Navigate} from "react-router-dom";
-import {fetchAllCarts, fetchMyCart} from "../../backend/Cart";
+import {fetchAllCarts} from "../../backend/Cart";
 import {PixmapButton, PixmapGroup} from "../Pixmap";
 
 
@@ -26,7 +26,6 @@ export class SubmitGroupOrder extends React.Component<SubmitProps, SubmitState> 
             submitOrder().then(value => {
                 console.log(value);
                 if (value) {
-                    fetchMyCart();
                     fetchAllCarts();
                 }
                 this.setState({success: value})

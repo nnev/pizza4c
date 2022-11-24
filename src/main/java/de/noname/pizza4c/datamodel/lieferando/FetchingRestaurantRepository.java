@@ -23,11 +23,24 @@ public class FetchingRestaurantRepository
     @Override
     @Cacheable("restaurants")
     public Restaurant getByRestaurantId(String restaurantId) {
+        Restaurant restaurant;
         if (staticRestaurantData) {
-            return loadRestaurantDataFromDisk(restaurantId);
+            restaurant = loadRestaurantDataFromDisk(restaurantId);
         } else {
-            return loadRestaurantData(restaurantId);
+            restaurant = loadRestaurantData(restaurantId);
         }
+        if (restaurant != null) {
+            cleanupOptionNames(restaurant);
+        }
+        return restaurant;
+    }
+
+    private void cleanupOptionNames(Restaurant restaurant) {
+        restaurant.getMenu().getOptions().forEach((optionId, option) -> {
+            if (option.getName().startsWith("mit ")) {
+                option.setName(option.getName().substring(4));
+            }
+        });
     }
 
     private Restaurant loadRestaurantData(String restaurantName) {
