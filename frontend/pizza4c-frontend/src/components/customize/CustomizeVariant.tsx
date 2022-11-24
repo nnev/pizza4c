@@ -9,7 +9,6 @@ import {PixmapButton, PixmapGroup} from "../Pixmap";
 import {Navigate} from "react-router-dom";
 import {addToCart} from "../../backend/Cart";
 import FormattedError from "../../datamodel/error";
-import {Simulate} from "react-dom/test-utils";
 import {Error} from "../Error";
 
 interface CustomizeVariantProps {
