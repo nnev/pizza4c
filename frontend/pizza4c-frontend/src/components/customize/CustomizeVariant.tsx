@@ -10,7 +10,7 @@ import {Navigate} from "react-router-dom";
 import {addToCart} from "../../backend/Cart";
 import FormattedError from "../../datamodel/error";
 import {Simulate} from "react-dom/test-utils";
-import error = Simulate.error;
+import {Error} from "../Error";
 
 interface CustomizeVariantProps {
     productId: string;
@@ -123,6 +123,8 @@ class CustomizeVariantClazz extends React.Component<CustomizeVariantProps, Custo
             return <></>;
         }
 
+        let completed = this.getCustomizationCompleted();
+
         return (
             <main className="notSide customize">
                 <h1>{this.state.product.name} {this.state.variant ? this.state.variant!.name : ""}</h1>
@@ -144,23 +146,21 @@ class CustomizeVariantClazz extends React.Component<CustomizeVariantProps, Custo
                 </div>
 
                 <span className="total"> <b>Total</b>: {this.getTotalPrice().toFixed(2)}€</span> <br/>
-                {this.state.error &&
-                    <div className="error"><span>{this.state.error.message}</span></div>
-                }
+                {this.state.error && <Error text={this.state.error.message} />}
                 <PixmapGroup>
-                    <PixmapButton onClick={this.backToOrder} pixmap="arrow_back" text="Back to product selection"/>
+                    <PixmapButton onClick={this.backToOrder} pixmap="arrow_back" text="Zurück zur Produktauswahl"/>
                     {this.state.product.variants.length != 1 &&
                         <PixmapButton onClick={this.backToVariantSelection} pixmap="arrow_back"
-                                      text="Back to variant selection"/>
+                                      text="Zurück zur Größenauswahl"/>
                     }
 
-                    <PixmapButton
-                        onClick={this.addToCart}
-                        pixmap="add"
-                        text="Add To Cart"
-                        disabled={!this.getCustomizationCompleted()}
-                        className="primary right"
-                    />
+                        <PixmapButton
+                            onClick={this.addToCart}
+                            pixmap="add"
+                            text={completed ? "Zur Bestellung hinzufügen" : "Noch nicht alle benötigten Optionen ausgewählt!"}
+                            disabled={!completed}
+                            className="primary right"
+                        />
                 </PixmapGroup>
             </main>
         );

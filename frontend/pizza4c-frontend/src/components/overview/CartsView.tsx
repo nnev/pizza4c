@@ -39,8 +39,6 @@ export class CartsView extends React.Component<CartsViewProps, CartsViewState> {
                         <th>Product</th>
                         <th>Größe</th>
                         <th>Preis (€)</th>
-                        <th>Nick</th>
-                        <th>Beschriftung</th>
                         <th>Aktionen</th>
                     </tr>
                     </thead>

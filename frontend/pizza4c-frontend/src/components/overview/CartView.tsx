@@ -22,31 +22,41 @@ export class CartView extends React.Component<CartViewProps, CartViewState> {
 
         let results: JSX.Element[] = [];
 
+        if (this.props.cart.entries.length === 0) {
+            return <></>
+        }
+
+        results.push(
+            <tr
+                key={this.props.cart.id}
+                className="cartBegin"
+            >
+                <td className={joinClasses("box", this.props.cart.getPaymentClass())}>&nbsp;</td>
+                <td className="grow">{this.props.cart.name}</td>
+                <td>{this.props.cart.shortName}</td>
+                <td></td>
+                <td>
+                    <ToggleCartPaid
+                        cart={this.props.cart}
+                        className="grow"
+                    />
+                </td>
+            </tr>
+        )
         this.props.cart.entries.forEach((entry, index) => {
             let variant = getVariant(menu, entry.product, entry.variant);
             results.push(
-                <tr key={entry.id} className={index == 0 ? "cartBegin" : ""}>
+                <tr key={entry.id}>
                     <td className={joinClasses("box", this.props.cart.getPaymentClass())}>&nbsp;</td>
                     <td className="grow"><OptionListView entry={entry} restaurant={this.props.restaurant}/></td>
                     <td>{variant && variant.name}</td>
                     <td className="textCenter">{entry.getPrice(menu).toFixed(2)} €</td>
-                    {index == 0 && <>
-                        <td className="textCenter" rowSpan={this.props.cart.entries.length}>{this.props.cart.name}</td>
-                        <td className="textCenter"
-                            rowSpan={this.props.cart.entries.length}>{this.props.cart.shortName}</td>
-                        <td className="textCenter" rowSpan={this.props.cart.entries.length}>
-                            <ToggleCartPaid
-                                cart={this.props.cart}
-                                className="grow"
-                            />
-                            <br/>
-                            <RemoveEntry
-                                entry={entry}
-                                className="grow"
-                            />
-                        </td>
-                    </>
-                    }
+                    <td className="textCenter">
+                        <RemoveEntry
+                            entry={entry}
+                            className="grow tiny"
+                        />
+                    </td>
                 </tr>
             )
         })

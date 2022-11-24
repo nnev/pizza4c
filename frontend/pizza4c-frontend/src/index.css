@@ -105,6 +105,9 @@ main {
     left: 200px;
     top: 0;
     bottom: 0;
+}
+
+main.withSide {
     overflow-y: auto;
 }
 
@@ -223,6 +226,10 @@ li.product {
     min-width: 100px;
 }
 
+.orderTable td:last-child {
+    /*vertical-align: top;*/
+}
+
 .orderTable td.grow {
     width: 50%;
     padding-left: 5px;
@@ -297,6 +304,11 @@ button.pixmapButton:disabled {
 
 button.pixmapButton.grow {
     width: 100%;
+}
+button.pixmapButton.tiny {
+    padding: 1px 2px;
+    border-radius: 7px;
+    line-height: 12px;
 }
 
 button.pixmapButton.primary {
@@ -432,6 +444,11 @@ button.pixmapButton span:first-child {
     border-radius: 10px;
     color: var(--failure);
     border: 2px solid var(--failure);
+}
+
+.changeNameInput {
+    padding: 5px 10px;
+    margin-bottom: 10px;
 }
 
 @media (max-width: 1200px) {

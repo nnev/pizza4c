@@ -17,7 +17,7 @@ export class RemoveEntry extends React.Component<RemoveEntryProps, RemoveEntrySt
     render() {
         return <PixmapButton
             onClick={this.onRemoveEntry}
-            pixmap="remove"
+            pixmap="delete"
             text="Aus Bestellung entfernen"
             className={this.props.className}
             disabled={AllCartsObservable.getValue().submittedAt > 0}

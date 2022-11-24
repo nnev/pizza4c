@@ -20,6 +20,7 @@ import java.util.Set;
 @Entity
 public class CartEntry extends VersionedEntity {
     @Column(unique = true)
+    @JsonProperty("id")
     private String uuid;
     private String product;
 
