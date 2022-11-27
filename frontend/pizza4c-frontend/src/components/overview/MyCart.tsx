@@ -23,7 +23,7 @@ interface MyCartState {
 export class MyCart extends React.Component<MyCartProps, MyCartState> {
     constructor(props: MyCartProps, context: any) {
         super(props, context);
-        this.state = {userName:getMyName(), redirectLogout: false, redirectOrder: false}
+        this.state = {userName: getMyName(), redirectLogout: false, redirectOrder: false}
     }
 
     nameObserver = (name: Name) => {
@@ -64,7 +64,7 @@ export class MyCart extends React.Component<MyCartProps, MyCartState> {
 
         if (myCart == undefined || myCart.entries.length == 0) {
             return (<>
-                    <h1>Noch keine Bestellung, {myCart == undefined ? "" : myCart.name}</h1>
+                    <h1>Noch keine Bestellung, {myCart == undefined ? this.state.userName.longName : myCart.name}</h1>
                     <PixmapGroup>
                         <PixmapButton onClick={this.order}
                                       pixmap="add"
@@ -107,16 +107,17 @@ export class MyCart extends React.Component<MyCartProps, MyCartState> {
                         /> <br/>
                         {myCart.getPrice(this.props.restaurant.menu).toFixed(2)} €
                     </p>
-                    <p>
+                    <ol>
                         {
                             myCart.entries.map(entry =>
-                                <OptionListView
-                                    key={entry.id}
-                                    entry={entry}
-                                    restaurant={this.props.restaurant!}
-                                />)
+                                <li key={entry.id}>
+                                    <OptionListView
+                                        entry={entry}
+                                        restaurant={this.props.restaurant!}
+                                    />
+                                </li>)
                         }
-                    </p>
+                    </ol>
                 </div>
             </>
         )

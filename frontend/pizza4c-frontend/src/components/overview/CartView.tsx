@@ -29,16 +29,15 @@ export class CartView extends React.Component<CartViewProps, CartViewState> {
         results.push(
             <tr
                 key={this.props.cart.id}
-                className="cartBegin"
+                className="cartOwner"
             >
                 <td className={joinClasses("box", this.props.cart.getPaymentClass())}>&nbsp;</td>
-                <td className="grow">{this.props.cart.name}</td>
-                <td>{this.props.cart.shortName}</td>
-                <td></td>
+                <td className="grow textCenter" colSpan={2}>{this.props.cart.name}</td>
+                <td className="textCenter">{this.props.cart.shortName}</td>
                 <td>
                     <ToggleCartPaid
                         cart={this.props.cart}
-                        className="grow"
+                        className="grow tiny"
                     />
                 </td>
             </tr>
@@ -46,7 +45,7 @@ export class CartView extends React.Component<CartViewProps, CartViewState> {
         this.props.cart.entries.forEach((entry, index) => {
             let variant = getVariant(menu, entry.product, entry.variant);
             results.push(
-                <tr key={entry.id}>
+                <tr key={entry.id} className={index == 0 ? "cartBegin" : ""}>
                     <td className={joinClasses("box", this.props.cart.getPaymentClass())}>&nbsp;</td>
                     <td className="grow"><OptionListView entry={entry} restaurant={this.props.restaurant}/></td>
                     <td>{variant && variant.name}</td>

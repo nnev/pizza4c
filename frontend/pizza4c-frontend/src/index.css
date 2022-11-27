@@ -105,6 +105,7 @@ main {
     left: 200px;
     top: 0;
     bottom: 0;
+    right:0;
 }
 
 main.withSide {
@@ -224,10 +225,7 @@ li.product {
     width: 1%;
     white-space: nowrap;
     min-width: 100px;
-}
-
-.orderTable td:last-child {
-    /*vertical-align: top;*/
+    vertical-align: top;
 }
 
 .orderTable td.grow {
@@ -235,8 +233,16 @@ li.product {
     padding-left: 5px;
 }
 
-.orderTable .cartBegin {
+.orderTable .cartOwner {
     border-top: 2px solid var(--borders);
+}
+
+.orderTable .cartOwner td {
+    vertical-align: middle;
+}
+
+.orderTable .cartBegin {
+    border-top: 1px solid var(--borders);
 }
 
 .optionsContainer, .customizeButtons {
@@ -305,10 +311,14 @@ button.pixmapButton:disabled {
 button.pixmapButton.grow {
     width: 100%;
 }
+
 button.pixmapButton.tiny {
-    padding: 1px 2px;
-    border-radius: 7px;
-    line-height: 12px;
+    line-height: 20px;
+    padding: 3px;
+    margin: 0;
+}
+button.pixmapButton.tiny span{
+    line-height: 20px;
 }
 
 button.pixmapButton.primary {
@@ -350,6 +360,10 @@ button.pixmapButton span:first-child {
 
 .pixmapButton.right {
     margin-left: auto !important;
+}
+
+.pixmapIcon {
+    vertical-align: middle;
 }
 
 .textCenter {
@@ -405,9 +419,21 @@ button.pixmapButton span:first-child {
     border-radius: 10px;
 }
 
+.myOrder > p {
+    margin-bottom: 20px;
+}
+
+.myOrder ol {
+    list-style: unset;
+    padding-left: 10px;
+}
+
+.orderTable {
+    vertical-align: top;
+}
+
 .orderTable td.box {
     max-width: 1em;
-    width: 1em;
     min-width: 1em;
 }
 
@@ -451,6 +477,10 @@ button.pixmapButton span:first-child {
     margin-bottom: 10px;
 }
 
+tr.cartOwner td {
+    font-weight: bold;
+}
+
 @media (max-width: 1200px) {
     .container {
         position: initial;
@@ -461,7 +491,7 @@ button.pixmapButton span:first-child {
     }
 
     main:not(.withSide) {
-        position: initial;
+        position: absolute;
         left: 0;
         right: 0;
         overflow-y: initial;
