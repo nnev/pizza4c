@@ -3,9 +3,14 @@ export type Listener<T> = (t: T) => void
 export class Observable<T> {
     private listeners: Listener<T>[] = [];
     private value?: T;
+    private readonly initializer: () => (T | undefined);
 
-    constructor(initialValue?: T) {
-        this.value = initialValue;
+    constructor({initializer, initialValue}: { initializer?: () => T, initialValue?: T }) {
+        if (initializer != undefined) {
+            this.initializer = initializer!;
+        } else {
+            this.initializer = () => initialValue;
+        }
     }
 
     public subscribe(listener: Listener<T>) {
@@ -19,14 +24,15 @@ export class Observable<T> {
         this.listeners = this.listeners.filter(value => value !== listener)
     }
 
-    public setValue(value: T) {
+    public setValue(value: T | undefined) {
         this.value = value;
-        if (this.value) {
-            this.listeners.forEach(listener => listener.call(listener, this.value!))
-        }
+        this.listeners.forEach(listener => listener.call(listener, this.value!))
     }
 
     public getValue(): T {
+        if (this.value === undefined) {
+            this.setValue(this.initializer());
+        }
         return this.value!;
     }
 

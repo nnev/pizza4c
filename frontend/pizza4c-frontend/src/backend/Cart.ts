@@ -55,7 +55,7 @@ export async function fetchAllCarts(): Promise<AllCarts> {
         })
 }
 
-export const AllCartsObservable = new Observable<AllCarts>();
+export const AllCartsObservable = new Observable<AllCarts>({});
 
 function mapAllCarts(data: AllCarts): AllCarts {
     let carts = data.carts;

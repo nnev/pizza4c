@@ -490,6 +490,10 @@ tr.cartOwner td {
         max-width: none;
     }
 
+    main.notSide {
+        margin-top: 60px;
+    }
+
     main:not(.withSide) {
         position: absolute;
         left: 0;

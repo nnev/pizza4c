@@ -145,10 +145,12 @@ export class Name {
 
     public shortName: string;
     public longName: string;
+    public stored: boolean;
 
-    constructor(shortName: string, longName: string) {
+    constructor(shortName: string, longName: string, stored: boolean) {
         this.shortName = shortName;
         this.longName = longName;
+        this.stored = stored;
     }
 
     private static randomInt(max: number): number {
@@ -164,12 +166,12 @@ export class Name {
         let longName = adjective + colors + animal;
         let shortName = (adjective.charAt(0) + "" + colors.charAt(0) + "" + animal.charAt(0)).toUpperCase();
 
-        return new Name(shortName, longName);
+        return new Name(shortName, longName, false);
     }
 
     public static fromLongName(longName: string): Name {
         let shortName = longName.substring(0, 3).toUpperCase();
-        return new Name(shortName, longName);
+        return new Name(shortName, longName, false);
     }
 
     public asBody() {
@@ -180,7 +182,7 @@ export class Name {
     }
 }
 
-export const UserNameObservable = new Observable<Name>();
+export const UserNameObservable = new Observable<Name>({});
 
 export function getMyName(): Name {
     if (!UserNameObservable.hasValue()) {
@@ -192,9 +194,9 @@ export function getMyName(): Name {
         console.log("long", userNameLong)
 
         if (userNameShort && userNameLong) {
-            UserNameObservable.setValue(new Name(userNameShort, userNameLong));
+            UserNameObservable.setValue(new Name(userNameShort, userNameLong, true));
         } else {
-            setMyName(Name.generateNewName());
+            setMyName(Name.generateNewName(), false);
         }
     }
 
@@ -203,8 +205,12 @@ export function getMyName(): Name {
     return UserNameObservable.getValue();
 }
 
-export function setMyName(name: Name) {
+export function setMyName(name: Name, mayStore: boolean) {
     UserNameObservable.setValue(name);
-    window.localStorage.setItem("userNameShort", name.shortName);
-    window.localStorage.setItem("userNameLong", name.longName);
+    if (mayStore) {
+        window.localStorage.setItem("userNameShort", name.shortName);
+        window.localStorage.setItem("userNameLong", name.longName);
+    } else {
+        window.localStorage.clear();
+    }
 }

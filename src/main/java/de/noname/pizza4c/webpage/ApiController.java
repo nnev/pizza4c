@@ -1,9 +1,7 @@
 package de.noname.pizza4c.webpage;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import de.noname.pizza4c.datamodel.lieferando.Product;
 import de.noname.pizza4c.datamodel.lieferando.Restaurant;
-import de.noname.pizza4c.datamodel.lieferando.Variant;
 import de.noname.pizza4c.datamodel.pizza4c.AllCartService;
 import de.noname.pizza4c.datamodel.pizza4c.AllCarts;
 import de.noname.pizza4c.datamodel.pizza4c.Cart;
@@ -12,8 +10,6 @@ import de.noname.pizza4c.fax.FaxService;
 import de.noname.pizza4c.fax.FaxServiceProvider;
 import de.noname.pizza4c.fax.clicksend.ClickSendResponse;
 import de.noname.pizza4c.pdf.PdfGenerator;
-import de.noname.pizza4c.utils.Name;
-import lombok.Data;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,9 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.AbstractView;
 
 import java.io.IOException;
-import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
 
 @RestController
 public class ApiController {
@@ -56,36 +50,16 @@ public class ApiController {
         return new ClickSendResponse();
     }
 
-    @Data
-    public static class AddToCartDto {
-        String product;
-        String variant;
-        Map<String, Set<String>> options;
-
-        Name name;
-    }
-
-    private Variant getSelectedVariant(String variantId, String productId, Product product) {
-        return product.getVariants()
-                .stream()
-                .filter(variant -> Objects.equals(variantId, productId + "-" + variant.getId()))
-                .findFirst()
-                .orElse(null);
-    }
-
     @PostMapping("/api/addToCart")
     public Cart addToCart(@RequestBody String rawBody) throws IOException {
         Restaurant restaurant = restaurantService.getSelectedRestaurant();
         var data = new ObjectMapper().reader().readValue(rawBody, AddToCartDto.class);
-        String productId = data.product;
-        String variantId = data.variant;
-        Name name = data.name;
-        var product = restaurant.getMenu().getProducts().get(productId);
-        var variant = getSelectedVariant(productId + "-" + variantId, productId, product);
+        var validData = data.ensureValid(restaurant.getMenu());
 
         allCartService.getCurrentAllCarts().ensureNotSubmitted();
-        Cart cart = allCartService.getOrCreateCartByName(name);
-        return cartService.addToCart(cart, productId, variant.getId(), data.options);
+        Cart cart = allCartService.getOrCreateCartByName(validData.name);
+        return cartService.addToCart(cart, validData.productId, validData.variantId,
+                validData.options);
     }
 
     @GetMapping("/api/allCarts")

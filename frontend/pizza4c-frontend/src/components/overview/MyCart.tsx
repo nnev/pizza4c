@@ -82,7 +82,8 @@ export class MyCart extends React.Component<MyCartProps, MyCartState> {
 
         return (
             <>
-                <h1><>Deine Bestellung, {this.state.userName.longName}</>
+                <h1>
+                    <>Deine Bestellung, {this.state.userName.longName}</>
                 </h1>
                 <PixmapGroup>
                     <ToggleCartPaid
