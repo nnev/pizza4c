@@ -7,16 +7,39 @@ import {ToggleCartPaid} from "./ToggleCartPaid";
 import {RemoveEntry} from "./RemoveEntry";
 import {joinClasses} from "../../util/JoinClasses";
 import {AllCartsObservable} from "../../backend/Cart";
+import {getMyName, Name, UserNameObservable} from "../../datamodel/name";
 
 interface CartViewProps {
     cart: Cart;
     restaurant: Restaurant;
+
+    isAdmin: boolean;
 }
 
 interface CartViewState {
+    userName?: Name
 }
 
+
 export class CartView extends React.Component<CartViewProps, CartViewState> {
+
+    constructor(props: CartViewProps, context: any) {
+        super(props, context);
+        this.state = {userName: getMyName()}
+    }
+
+    nameObserver = (name: Name) => {
+        this.setState({userName: name});
+    }
+
+    componentDidMount() {
+        UserNameObservable.subscribe(this.nameObserver);
+    }
+
+    componentWillUnmount() {
+        UserNameObservable.unsubscribe(this.nameObserver);
+    }
+
     render() {
         let menu = this.props.restaurant.menu;
 
@@ -25,6 +48,9 @@ export class CartView extends React.Component<CartViewProps, CartViewState> {
         if (this.props.cart.entries.length === 0) {
             return <></>
         }
+
+        let canEditCart = this.props.isAdmin || this.props.cart.isMyCart(this.state.userName);
+
 
         results.push(
             <tr
@@ -35,15 +61,19 @@ export class CartView extends React.Component<CartViewProps, CartViewState> {
                 <td className="grow textCenter" colSpan={2}>{this.props.cart.name}</td>
                 <td className="textCenter">{this.props.cart.shortName}</td>
                 <td>
-                    <ToggleCartPaid
-                        cart={this.props.cart}
-                        className="grow tiny"
-                    />
+                    {
+                        canEditCart &&
+                        <ToggleCartPaid
+                            cart={this.props.cart}
+                            className="grow tiny"
+                        />
+                    }
                 </td>
             </tr>
         )
         this.props.cart.entries.forEach((entry, index) => {
             let variant = getVariant(menu, entry.product, entry.variant);
+
             results.push(
                 <tr key={entry.id} className={index == 0 ? "cartBegin" : ""}>
                     <td className={joinClasses("box", this.props.cart.getPaymentClass())}>&nbsp;</td>
@@ -51,10 +81,13 @@ export class CartView extends React.Component<CartViewProps, CartViewState> {
                     <td>{variant && variant.name}</td>
                     <td className="textCenter">{entry.getPrice(menu).toFixed(2)} €</td>
                     <td className="textCenter">
-                        <RemoveEntry
-                            entry={entry}
-                            className="grow tiny"
-                        />
+                        {
+                            canEditCart &&
+                            <RemoveEntry
+                                entry={entry}
+                                className="grow tiny"
+                            />
+                        }
                     </td>
                 </tr>
             )

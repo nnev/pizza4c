@@ -46,7 +46,7 @@ export default class BecomeAdmin extends React.Component<BecomeAdminProps, Becom
     private ready(): NameValidation {
         let name = this.state.magicWords;
 
-        return name === "sudo make me admin" ? "VALID" : "INVALID";
+        return name === "sudo make me a pizza" ? "VALID" : "INVALID";
     }
 
     render() {
@@ -58,10 +58,14 @@ export default class BecomeAdmin extends React.Component<BecomeAdminProps, Becom
             return (
                 <main className="notSide">
                     <form>
+                        <h1>TODO: Mache Restaurant auswählbar</h1>
+                        <h1>TODO: Force update Restaurant Menu</h1>
+                        <h1>TODO: Cancel Order</h1>
+
                         <h1>Ich will nicht mehr Admin sein</h1>
                         <PixmapButton
                             onClick={this.dropAdmin}
-                            pixmap="person_delete"
+                            pixmap="person_remove"
                             text="Admin Rechte abgeben"
                         />
                     </form>
@@ -75,8 +79,8 @@ export default class BecomeAdmin extends React.Component<BecomeAdminProps, Becom
             <main className="notSide">
 
                 <form>
-                    <h1>I want to become an Admin</h1>
-                    Type <b>sudo make me admin</b> below.
+                    <h1>Ich will Admin-Rechte haben</h1>
+                    Bestätige durch schreiben von <b>sudo make me a pizza</b>.
                     <br/>
                     <br/>
 

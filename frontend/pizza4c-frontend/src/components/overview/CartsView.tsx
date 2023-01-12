@@ -8,6 +8,8 @@ import {FormatPrice} from "./FormatPrice";
 interface CartsViewProps {
     carts: Cart[];
     restaurant: Restaurant;
+
+    isAdmin: boolean;
 }
 
 interface CartsViewState {
@@ -27,6 +29,7 @@ export class CartsView extends React.Component<CartsViewProps, CartsViewState> {
                 key={cart.id}
                 cart={cart}
                 restaurant={this.props.restaurant}
+                isAdmin={this.props.isAdmin}
             />)
         });
 

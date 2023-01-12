@@ -200,12 +200,11 @@ export function getMyName(): Name {
         }
     }
 
-    console.log("haz name", UserNameObservable.getValue());
-
     return UserNameObservable.getValue();
 }
 
 export function setMyName(name: Name, mayStore: boolean) {
+    name.stored = mayStore;
     UserNameObservable.setValue(name);
     if (mayStore) {
         window.localStorage.setItem("userNameShort", name.shortName);

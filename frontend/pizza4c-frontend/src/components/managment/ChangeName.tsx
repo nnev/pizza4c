@@ -68,38 +68,40 @@ export default class ChangeName extends React.Component<ChangeNameProps, ChangeN
         let ready = this.ready();
 
         return (
-            <form>
-                <label htmlFor="name"><h1>Mein Name ist:</h1></label>
-                <input type="text"
-                       name="name"
-                       id="name"
-                       className="changeNameInput"
-                       value={this.state.name}
-                       placeholder="Set a name"
-                       minLength={3}
-                       maxLength={20}
-                       onChange={this.changeName}
-                />
-                <br/>
-                <label htmlFor="name">Für das nächste mal Speichern?:</label>
-                <input type="checkbox"
-                       name="mayStore"
-                       id="mayStore"
-                       className="changeNameInput"
-                       checked={this.state.mayStore}
-                       onChange={this.changeMayStore}
-                />
-                <br/>
-                {ready == "SHORT" && <Error text="Der Name muss mindestens 3 Zeichen lang sein" /> }
-                {ready == "LONG" && <Error text="Der Name darf höchstens 20 Zeichen lang sein" /> }
-                {ready == "INVALID_CHAR" && <Error text="Der Name darf nur aus Buchstaben und Zahlen bestehen" /> }
-                <PixmapButton
-                    onClick={this.changeNameSubmit}
-                    pixmap="person_add"
-                    text="Name ändern"
-                    disabled={ready != "VALID"}
-                />
-            </form>
+            <main className="notSide">
+                <form>
+                    <label htmlFor="name"><h1>Mein Name ist:</h1></label>
+                    <input type="text"
+                           name="name"
+                           id="name"
+                           className="changeNameInput"
+                           value={this.state.name}
+                           placeholder="Set a name"
+                           minLength={3}
+                           maxLength={20}
+                           onChange={this.changeName}
+                    />
+                    <br/>
+                    <label htmlFor="name">Für das nächste mal Speichern?:</label>
+                    <input type="checkbox"
+                           name="mayStore"
+                           id="mayStore"
+                           className="changeNameInput"
+                           checked={this.state.mayStore}
+                           onChange={this.changeMayStore}
+                    />
+                    <br/>
+                    {ready == "SHORT" && <Error text="Der Name muss mindestens 3 Zeichen lang sein"/>}
+                    {ready == "LONG" && <Error text="Der Name darf höchstens 20 Zeichen lang sein"/>}
+                    {ready == "INVALID_CHAR" && <Error text="Der Name darf nur aus Buchstaben und Zahlen bestehen"/>}
+                    <PixmapButton
+                        onClick={this.changeNameSubmit}
+                        pixmap="person_add"
+                        text="Name ändern"
+                        disabled={ready != "VALID"}
+                    />
+                </form>
+            </main>
         );
     }
 }

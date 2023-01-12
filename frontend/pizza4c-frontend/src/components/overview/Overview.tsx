@@ -9,6 +9,7 @@ import AllCarts from "../../datamodel/cart/allCarts";
 import formatUnixTimestamp from "../../util/Time";
 import {FormatPrice} from "./FormatPrice";
 import {Progress} from "../Progress";
+import {AdminObservable} from "../../datamodel/admin";
 
 
 interface OverviewProps {
@@ -16,13 +17,18 @@ interface OverviewProps {
 
 interface OverviewState {
     restaurant?: Restaurant
-    allCarts?: AllCarts,
+    allCarts?: AllCarts;
+    isAdmin: boolean
 }
 
 export class Overview extends React.Component<OverviewProps, OverviewState> {
     constructor(props: OverviewProps, context: any) {
         super(props, context);
-        this.state = {}
+        this.state = {isAdmin: false}
+    }
+
+    adminObserver = (value: boolean) => {
+        this.setState({isAdmin: value});
     }
 
     restaurantObserver = (value: Restaurant) => {
@@ -36,11 +42,13 @@ export class Overview extends React.Component<OverviewProps, OverviewState> {
     componentDidMount() {
         CurrentRestaurantObservable.subscribe(this.restaurantObserver);
         AllCartsObservable.subscribe(this.allCartsObserver);
+        AdminObservable.subscribe(this.adminObserver)
     }
 
     componentWillUnmount() {
         CurrentRestaurantObservable.unsubscribe(this.restaurantObserver);
         AllCartsObservable.unsubscribe(this.allCartsObserver);
+        AdminObservable.unsubscribe(this.adminObserver);
     }
 
     render() {
@@ -73,7 +81,11 @@ export class Overview extends React.Component<OverviewProps, OverviewState> {
                     max={this.state.allCarts.getTotalValue(menu)}
                 />
                 <h1>The Orders of Others</h1>
-                <OtherCarts restaurant={this.state.restaurant} allCarts={this.state.allCarts}/>
+                <OtherCarts
+                    restaurant={this.state.restaurant}
+                    allCarts={this.state.allCarts}
+                    isAdmin={this.state.isAdmin}
+                />
             </main>
         )
     }

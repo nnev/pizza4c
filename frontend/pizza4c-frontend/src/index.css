@@ -58,6 +58,10 @@ body {
     font-feature-settings: 'liga';
 }
 
+.variableSpacer {
+    margin-left: auto;
+}
+
 /**
 Layout
  */
@@ -82,6 +86,9 @@ main {
     top: 0;
     left: 0;
     right: 0;
+    display: flex;
+    flex-direction: row;
+    justify-items: left;
 }
 
 .container {
@@ -282,11 +289,12 @@ li.product {
 .menu {
     background: var(--shades);
     line-height: 60px;
+    height: 60px;
 }
 
 .menu a {
     color: var(--textcolor);
-    padding: 20px;
+    padding: 0px 20px;
 }
 
 button.pixmapButton {

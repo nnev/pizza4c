@@ -14,8 +14,7 @@ import {AdminObservable} from "./datamodel/admin";
 import BecomeAdmin from "./components/managment/BecomeAdmin";
 import FormattedError, {ErrorObservable} from "./datamodel/error";
 import {Error} from "./components/Error";
-import Restaurant from "./datamodel/restaurant/restaurant";
-import {OrderList} from "./components/order/OrderList";
+import Privacy from "./components/Privacy";
 
 interface AppProps {
 }
@@ -34,7 +33,6 @@ class App extends React.Component<AppProps, AppState> {
     }
 
     adminListener = (value: boolean) => {
-        console.log("+++++++++++" + value);
         this.setState({admin: value});
     }
     errorListener = (value: FormattedError) => {
@@ -45,13 +43,11 @@ class App extends React.Component<AppProps, AppState> {
     componentDidMount() {
         getCurrentRestaurant();
         fetchAllCarts();
-        console.log("##### subscribe")
         AdminObservable.subscribe(this.adminListener)
         ErrorObservable.subscribe(this.errorListener)
     }
 
     componentWillUnmount() {
-        console.log("----- unsubscribe")
         AdminObservable.unsubscribe(this.adminListener)
         ErrorObservable.unsubscribe(this.errorListener)
     }
@@ -61,10 +57,13 @@ class App extends React.Component<AppProps, AppState> {
             <>
                 <BrowserRouter>
                     <nav className="menu">
-                        <Link to="/">Overview</Link>
+                        <Link to="/">Pizza4C</Link>
                         <Link to="/renderPdf">PDF anschauen</Link>
                         {this.state.admin && <Link to="/submitGroupOrder">Bestellung abschicken</Link>}
-                        <Link to="/becomeAdmin">{this.state.admin ? "Admin droppen" : "Admin werden"}</Link>
+                        <Link to="/becomeAdmin">{this.state.admin ? "Admin stuff" : "Admin werden"}</Link>
+                        <span className="variableSpacer"/>
+                        <Link to="/privacy">Privacy</Link>
+                        <a href="https://github.com/k0rmarun/pizza4c/issues" target="_blank">Report Bugs</a>
 
                     </nav>
                     <div className="container">
@@ -85,6 +84,7 @@ class App extends React.Component<AppProps, AppState> {
                                 <Route path="/submitGroupOrder" element={<SubmitGroupOrder/>}/>
                                 <Route path="/becomeAdmin" element={<BecomeAdmin/>}/>
                                 <Route path="/renderPdf" element={<RenderPdf/>}/>
+                                <Route path="/privacy" element={<Privacy/>}/>
                             </Routes>
                         </div>
                     </div>

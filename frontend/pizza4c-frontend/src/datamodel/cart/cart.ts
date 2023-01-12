@@ -1,6 +1,7 @@
 import CartEntry from "./cartEntry";
 import {Menu} from "../restaurant/menu";
 import {sumReducer} from "../../util/Reducers";
+import {Name} from "../name";
 
 export default class Cart {
     id: string;
@@ -23,5 +24,12 @@ export default class Cart {
 
     public getPaymentClass(): string {
         return this.payed ? "payed" : "unpayed"
+    }
+
+    public isMyCart(name?: Name): boolean {
+        if (name === undefined) {
+            return false;
+        }
+        return this.name === name.longName;
     }
 }

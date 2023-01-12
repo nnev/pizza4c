@@ -7,8 +7,10 @@ import {FormatPrice} from "./FormatPrice";
 import AllCarts from "../../datamodel/cart/allCarts";
 
 interface OtherCartsProps {
-    restaurant: Restaurant
-    allCarts: AllCarts
+    restaurant: Restaurant;
+    allCarts: AllCarts;
+
+    isAdmin: boolean;
 }
 
 interface OtherCartsState {
@@ -32,7 +34,9 @@ export class OtherCarts extends React.Component<OtherCartsProps, OtherCartsState
         return (
             <>
                 <CartsView carts={this.props.allCarts.carts}
-                           restaurant={this.props.restaurant}/>
+                           restaurant={this.props.restaurant}
+                           isAdmin={this.props.isAdmin}
+                />
             </>
         )
     }
