@@ -1,6 +1,6 @@
 import React from "react";
 import Restaurant from "../../datamodel/restaurant/restaurant";
-import {CurrentRestaurantObservable, getCurrentRestaurant} from "../../backend/restaurant";
+import {CurrentRestaurantObservable} from "../../backend/restaurant";
 import {OrderSidebar} from "./OrderSidebar";
 import {OrderList} from "./OrderList";
 

@@ -1,5 +1,4 @@
 import React from "react";
-import {WrapComponent} from "../RouterWrapper";
 import {CurrentRestaurantObservable} from "../../backend/restaurant";
 import Restaurant from "../../datamodel/restaurant/restaurant";
 import Product from "../../datamodel/restaurant/product";
@@ -103,4 +102,4 @@ class CustomizeClazz extends React.Component<CustomizeProps, CustomizeState> {
     }
 }
 
-export const CustomizeProduct = WrapComponent(CustomizeClazz);
+export const CustomizeProduct = (props: any) => <CustomizeClazz {...props} />;

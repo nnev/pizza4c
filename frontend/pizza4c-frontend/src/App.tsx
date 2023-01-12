@@ -30,6 +30,9 @@ class App extends React.Component<AppProps, AppState> {
     constructor(props: AppProps, context: any) {
         super(props, context);
         this.state = {admin: false}
+
+        window.setInterval(() => fetchAllCarts(), 30 * 1000)
+        window.setInterval(() => getCurrentRestaurant(), 30 * 60 * 1000)
     }
 
     adminListener = (value: boolean) => {
@@ -39,12 +42,11 @@ class App extends React.Component<AppProps, AppState> {
         this.setState({error: value});
     }
 
-
     componentDidMount() {
-        getCurrentRestaurant();
-        fetchAllCarts();
         AdminObservable.subscribe(this.adminListener)
         ErrorObservable.subscribe(this.errorListener)
+        fetchAllCarts();
+        getCurrentRestaurant()
     }
 
     componentWillUnmount() {
