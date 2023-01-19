@@ -55,6 +55,11 @@ public class CartEntry extends VersionedEntity {
                 .flatMap(Collection::stream)
                 .map(s -> menu.getOptions().get(s).getName())
                 .forEach(result::add);
+
+        if (comment != null && !comment.isBlank()) {
+            result.add(comment);
+        }
+
         return result;
     }
 }
