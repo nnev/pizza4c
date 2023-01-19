@@ -23,6 +23,7 @@ public class AddToCartDto {
         }
 
         ValidatedAddToCartDto result = new ValidatedAddToCartDto();
+        result.productId = getProduct();
         result.product = menu.getProducts().get(getProduct());
         if (result.product == null) {
             throw new NoSuchProductException(getProduct());
