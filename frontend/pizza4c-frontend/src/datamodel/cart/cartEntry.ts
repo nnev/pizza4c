@@ -17,12 +17,14 @@ export default class CartEntry {
     public getPrice(menu: Menu): number {
         let total = 0;
         let variant = getVariant(menu, this.product, this.variant);
-        total += variant!.prices.delivery;
-        let selectedOptions = this.options;
-        if (selectedOptions != undefined) {
-            for (let optionKey in selectedOptions) {
-                let options = selectedOptions[optionKey];
-                options.forEach(optionId => total += menu.options[optionId].prices.delivery)
+        if (variant != undefined) {
+            total += variant!.prices.delivery;
+            let selectedOptions = this.options;
+            if (selectedOptions != undefined) {
+                for (let optionKey in selectedOptions) {
+                    let options = selectedOptions[optionKey];
+                    options.forEach(optionId => total += menu.options[optionId].prices.delivery)
+                }
             }
         }
         return total / 100;
