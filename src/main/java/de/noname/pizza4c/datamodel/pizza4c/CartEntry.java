@@ -30,6 +30,8 @@ public class CartEntry extends VersionedEntity {
     @Column(columnDefinition = "json")
     private Map<String, Set<String>> options;
 
+    private String comment;
+
     @JsonProperty
     public BigDecimal getPrice(Menu menu) {
         return new BigDecimal(menu.getVariant(product, variant).getPrices().getDeliveryEuro()).add(

@@ -6,7 +6,7 @@ import AllCarts from "../datamodel/cart/allCarts";
 import FormattedError from "../datamodel/error";
 import {getMyName} from "../datamodel/name";
 
-export async function addToCart(product: string, variant: string, options: Map<string, Set<string>>): Promise<any> {
+export async function addToCart(product: string, variant: string, options: Map<string, Set<string>>, comment?: string): Promise<any> {
     function replacer(key: any, value: any) {
         if (value instanceof Map) {
             return Object.fromEntries(value);
@@ -28,7 +28,8 @@ export async function addToCart(product: string, variant: string, options: Map<s
             product: product,
             variant: variant,
             options: options,
-            name: getMyName().asBody()
+            name: getMyName().asBody(),
+            comment: comment
         }, replacer)
     })
         .then(value => value.json())
@@ -77,8 +78,9 @@ function mapEntries(data: CartEntry): CartEntry {
     let product = data.product;
     let variant = data.variant;
     let options = data.options;
+    let comment = data.comment;
 
-    return new CartEntry(id, product, variant, options);
+    return new CartEntry(id, product, variant, options, comment);
 }
 
 export async function markAsPaid(cart: Cart): Promise<boolean> {

@@ -7,11 +7,14 @@ export default class CartEntry {
     variant: string;
     options: Dictionary<string[]>
 
-    constructor(id: string, product: string, variant: string, options: Dictionary<string[]>) {
+    comment?: string;
+
+    constructor(id: string, product: string, variant: string, options: Dictionary<string[]>, comment?: string) {
         this.id = id;
         this.product = product;
         this.variant = variant;
         this.options = options;
+        this.comment = comment;
     }
 
     public getPrice(menu: Menu): number {

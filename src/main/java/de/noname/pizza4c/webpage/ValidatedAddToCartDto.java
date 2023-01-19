@@ -15,4 +15,6 @@ public class ValidatedAddToCartDto {
     Map<String, Set<String>> options;
 
     Name name;
+
+    String comment;
 }

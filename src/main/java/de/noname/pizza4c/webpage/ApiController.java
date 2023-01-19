@@ -58,8 +58,7 @@ public class ApiController {
 
         allCartService.getCurrentAllCarts().ensureNotSubmitted();
         Cart cart = allCartService.getOrCreateCartByName(validData.name);
-        return cartService.addToCart(cart, validData.productId, validData.variantId,
-                validData.options);
+        return cartService.addToCart(cart, validData);
     }
 
     @GetMapping("/api/allCarts")

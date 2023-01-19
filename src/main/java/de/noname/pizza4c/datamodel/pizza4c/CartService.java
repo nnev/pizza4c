@@ -1,5 +1,6 @@
 package de.noname.pizza4c.datamodel.pizza4c;
 
+import de.noname.pizza4c.webpage.ValidatedAddToCartDto;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
@@ -37,17 +38,18 @@ public class CartService {
         return cartRepository.findCartByUuid(cartId);
     }
 
-    public Cart addToCart(Cart cart, String productId, String variantId, Map<String, Set<String>> optionIds) {
-        cart.getEntries().add(createEntry(productId, variantId, optionIds));
+    public Cart addToCart(Cart cart, ValidatedAddToCartDto validData) {
+        cart.getEntries().add(createEntry(validData));
         return cartRepository.save(cart);
     }
 
-    private CartEntry createEntry(String product, String variant, Map<String, Set<String>> selectedOptions) {
+    private CartEntry createEntry(ValidatedAddToCartDto validData) {
         CartEntry cartEntry = new CartEntry();
         cartEntry.setUuid(UUID.randomUUID().toString());
-        cartEntry.setProduct(product);
-        cartEntry.setVariant(variant);
-        cartEntry.setOptions(selectedOptions);
+        cartEntry.setProduct(validData.getProductId());
+        cartEntry.setVariant(validData.getVariantId());
+        cartEntry.setOptions(validData.getOptions());
+        cartEntry.setComment(validData.getComment());
         return cartEntryRepository.save(cartEntry);
     }
 

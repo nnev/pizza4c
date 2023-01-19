@@ -16,6 +16,8 @@ public class AddToCartDto {
 
     Name name;
 
+    String comment;
+
     public ValidatedAddToCartDto ensureValid(Menu menu) {
         Name.ensureValid(name);
         if (getProduct() == null) {
@@ -39,6 +41,8 @@ public class AddToCartDto {
 
         Name.ensureValid(getName());
         result.name = getName();
+
+        result.comment = getComment();
 
         return result;
     }

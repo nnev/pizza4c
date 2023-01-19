@@ -1,6 +1,6 @@
 import Variant from "../../datamodel/restaurant/variant";
 import Restaurant from "../../datamodel/restaurant/restaurant";
-import React from "react";
+import React, {ChangeEvent} from "react";
 import {CustomizeOptionGroup} from "./CustomizeOptionGroup";
 import {CurrentRestaurantObservable} from "../../backend/restaurant";
 import Product from "../../datamodel/restaurant/product";
@@ -24,6 +24,7 @@ interface CustomizeVariantState {
     backToOrder: boolean
     addToCartCompleted: boolean
     error?: FormattedError
+    comment?: string
 }
 
 class CustomizeVariantClazz extends React.Component<CustomizeVariantProps, CustomizeVariantState> {
@@ -33,7 +34,7 @@ class CustomizeVariantClazz extends React.Component<CustomizeVariantProps, Custo
             selectedOptions: new Map<string, Set<string>>(),
             backToVariantSelection: false,
             backToOrder: false,
-            addToCartCompleted: false
+            addToCartCompleted: false,
         };
     }
 
@@ -57,7 +58,7 @@ class CustomizeVariantClazz extends React.Component<CustomizeVariantProps, Custo
 
     addToCart = () => {
         if (this.props.productId && this.state.variant && this.getCustomizationCompleted()) {
-            addToCart(this.props.productId, this.state.variant.id, this.state.selectedOptions)
+            addToCart(this.props.productId, this.state.variant.id, this.state.selectedOptions, this.state.comment)
                 .then(value => {
                     this.setState({addToCartCompleted: true});
                 })
@@ -107,6 +108,14 @@ class CustomizeVariantClazz extends React.Component<CustomizeVariantProps, Custo
         return total / 100;
     }
 
+    changeComment = (ev: ChangeEvent<HTMLTextAreaElement>) => {
+        let value = ev.target.value;
+        this.setState({
+            comment: value
+        })
+    }
+
+
     render() {
         if (this.state.backToVariantSelection) {
             return <Navigate to={"/customize/" + this.props.productId}/>;
@@ -142,6 +151,18 @@ class CustomizeVariantClazz extends React.Component<CustomizeVariantProps, Custo
                             )
                         }
                     </ul>
+                </div>
+
+                <div>
+                    <label htmlFor="comment">Extrawünsche:</label> <br/>
+                    <textarea
+                        name="comment"
+                        id="comment"
+                        cols={80}
+                        rows={10}
+                        value={this.state.comment}
+                        onChange={this.changeComment}
+                    />
                 </div>
 
                 <span className="total"> <b>Total</b>: {this.getTotalPrice().toFixed(2)}€</span> <br/>

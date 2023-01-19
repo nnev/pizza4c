@@ -29,6 +29,14 @@ export class OptionListView extends React.Component<OptionListViewProps, OptionL
             }
         }
 
+        if(this.props.entry.comment != undefined && this.props.entry.comment != "") {
+            mappedOptions.push(
+                <span key="comment">
+                &nbsp;&nbsp;+&nbsp;{this.props.entry.comment}<br/>
+            </span>
+            )
+        }
+
         return (
             <>
                 {menu.products[this.props.entry.product] != undefined && menu.products[this.props.entry.product].name}
