@@ -18,9 +18,11 @@ public class AddToCartDto {
 
     public ValidatedAddToCartDto ensureValid(Menu menu) {
         Name.ensureValid(name);
+        if (getProduct() == null) {
+            throw new NoSuchProductException(null);
+        }
 
         ValidatedAddToCartDto result = new ValidatedAddToCartDto();
-
         result.product = menu.getProducts().get(getProduct());
         if (result.product == null) {
             throw new NoSuchProductException(getProduct());
