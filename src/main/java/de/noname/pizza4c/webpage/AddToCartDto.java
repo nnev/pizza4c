@@ -42,9 +42,19 @@ public class AddToCartDto {
         Name.ensureValid(getName());
         result.name = getName();
 
+        ensureValidComment();
         result.comment = getComment();
 
         return result;
+    }
+
+    private void ensureValidComment() {
+        if (getComment() == null || getComment().isBlank()) {
+            comment = comment.trim();
+        }
+        if(comment.length() > 2_000) {
+            comment = comment.replaceAll("([\\W]+)", "INVALID");
+        }
     }
 
     private Variant getSelectedVariant(String variantId, String productId, Product product) {

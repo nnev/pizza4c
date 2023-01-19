@@ -30,6 +30,7 @@ public class CartEntry extends VersionedEntity {
     @Column(columnDefinition = "json")
     private Map<String, Set<String>> options;
 
+    @Column(columnDefinition = "TEXT")
     private String comment;
 
     @JsonProperty
