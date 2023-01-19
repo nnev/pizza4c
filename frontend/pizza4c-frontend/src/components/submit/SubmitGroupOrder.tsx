@@ -31,7 +31,6 @@ export class SubmitGroupOrder extends React.Component<SubmitProps, SubmitState> 
                 this.setState({success: value})
             })
                 .catch(reason => {
-                    console.log("++++", reason)
                     this.setState({success: false})
                 })
             return <>{this.state.success}</>

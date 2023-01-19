@@ -3,7 +3,7 @@ import {CurrentRestaurantObservable} from "../../backend/restaurant";
 import Restaurant from "../../datamodel/restaurant/restaurant";
 import Product from "../../datamodel/restaurant/product";
 import {ProductInfoView} from "../order/ProductInfo";
-import {Navigate} from "react-router-dom";
+import {Navigate, useParams} from "react-router-dom";
 import {PixmapButton} from "../Pixmap";
 import {joinClasses} from "../../util/JoinClasses";
 
@@ -102,4 +102,7 @@ class CustomizeClazz extends React.Component<CustomizeProps, CustomizeState> {
     }
 }
 
-export const CustomizeProduct = (props: any) => <CustomizeClazz {...props} />;
+export const CustomizeProduct = () => {
+    let props = useParams();
+    return <CustomizeClazz productId={props.productId || "määh"}/>
+}

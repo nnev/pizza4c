@@ -5,7 +5,7 @@ import {CustomizeOptionGroup} from "./CustomizeOptionGroup";
 import {CurrentRestaurantObservable} from "../../backend/restaurant";
 import Product from "../../datamodel/restaurant/product";
 import {PixmapButton, PixmapGroup} from "../Pixmap";
-import {Navigate} from "react-router-dom";
+import {Navigate, useParams} from "react-router-dom";
 import {addToCart} from "../../backend/Cart";
 import FormattedError from "../../datamodel/error";
 import {Error} from "../Error";
@@ -172,4 +172,10 @@ class CustomizeVariantClazz extends React.Component<CustomizeVariantProps, Custo
     };
 }
 
-export const CustomizeVariant = (props: any) => <CustomizeVariantClazz {...props} />;
+export const CustomizeVariant = () => {
+    let props = useParams();
+    return <CustomizeVariantClazz
+        productId={props.productId || "määh"}
+        variantId={props.variantId || "mäh"}
+    />
+}
