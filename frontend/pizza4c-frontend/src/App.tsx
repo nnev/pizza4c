@@ -59,13 +59,13 @@ class App extends React.Component<AppProps, AppState> {
             <>
                 <BrowserRouter>
                     <nav className="menu">
-                        <Link to="/">Pizza4C</Link>
-                        <Link to="/renderPdf">PDF anschauen</Link>
-                        {this.state.admin && <Link to="/submitGroupOrder">Bestellung abschicken</Link>}
-                        <Link to="/becomeAdmin">{this.state.admin ? "Admin stuff" : "Admin werden"}</Link>
+                        <Link to="/" className="borderRight">Pizza4C</Link>
+                        <Link to="/renderPdf" className="borderRight">PDF anschauen</Link>
+                        {this.state.admin && <Link to="/submitGroupOrder" className="borderRight">Bestellung abschicken</Link>}
+                        <Link to="/becomeAdmin" className="borderRight">{this.state.admin ? "Admin stuff" : "Admin werden"}</Link>
                         <span className="variableSpacer"/>
-                        <Link to="/privacy">Privacy</Link>
-                        <a href="https://github.com/k0rmarun/pizza4c/issues" target="_blank">Report Bugs</a>
+                        <Link to="/privacy" className="borderLeft">Privacy</Link>
+                        <a href="https://github.com/k0rmarun/pizza4c/issues" target="_blank" className="borderLeft">Report Bugs</a>
 
                     </nav>
                     <div className="container">
