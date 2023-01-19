@@ -89,6 +89,7 @@ main {
     display: flex;
     flex-direction: row;
     justify-items: left;
+    border-bottom: 2px solid var(--borders);
 }
 
 .container {
@@ -295,6 +296,17 @@ li.product {
 .menu a {
     color: var(--textcolor);
     padding: 0px 20px;
+}
+.menu a:hover {
+    background-color: var(--borders);
+    border-color: var(--shades);
+}
+
+.menu a.borderRight {
+    border-right: 2px solid var(--borders);
+}
+.menu a.borderLeft {
+    border-left: 2px solid var(--borders);
 }
 
 button.pixmapButton {
