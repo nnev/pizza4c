@@ -1,6 +1,10 @@
 package de.noname.pizza4c.webpage;
 
-import de.noname.pizza4c.datamodel.lieferando.*;
+import de.noname.pizza4c.datamodel.lieferando.Menu;
+import de.noname.pizza4c.datamodel.lieferando.Option;
+import de.noname.pizza4c.datamodel.lieferando.OptionGroup;
+import de.noname.pizza4c.datamodel.lieferando.Product;
+import de.noname.pizza4c.datamodel.lieferando.Variant;
 import de.noname.pizza4c.utils.Name;
 import lombok.Data;
 
@@ -49,11 +53,11 @@ public class AddToCartDto {
     }
 
     private void ensureValidComment() {
-        if (getComment() == null || getComment().isBlank()) {
+        if (getComment() != null) {
             comment = comment.trim();
-        }
-        if(comment.length() > 2_000) {
-            comment = comment.replaceAll("([\\W]+)", "INVALID");
+            if (comment.length() > 2_000) {
+                comment = comment.replaceAll("([\\W]+)", "INVALID");
+            }
         }
     }
 
@@ -73,20 +77,24 @@ public class AddToCartDto {
         var variant = getSelectedVariant(getProduct() + "-" + getVariant(), getProduct(), validated.product);
         for (String optionGroundId : getOptions().keySet()) {
             if (!variant.getOptionGroupIds().contains(optionGroundId)) {
-                throw new NoSuchOptionGroupException(validated.getProductId(), validated.getVariantId(), optionGroundId);
+                throw new NoSuchOptionGroupException(validated.getProductId(), validated.getVariantId(),
+                        optionGroundId);
             }
             OptionGroup optionGroup = menu.getOptionGroups().get(optionGroundId);
             if (optionGroup == null) {
-                throw new NoSuchOptionGroupException(validated.getProductId(), validated.getVariantId(), optionGroundId);
+                throw new NoSuchOptionGroupException(validated.getProductId(), validated.getVariantId(),
+                        optionGroundId);
             }
 
             for (String optionId : getOptions().get(optionGroundId)) {
                 if (!optionGroup.getOptionIds().contains(optionId)) {
-                    throw new NoSuchOptionException(validated.getProductId(), validated.getVariantId(), optionGroundId, optionId);
+                    throw new NoSuchOptionException(validated.getProductId(), validated.getVariantId(), optionGroundId,
+                            optionId);
                 }
                 Option option = menu.getOptions().get(optionId);
                 if (option == null) {
-                    throw new NoSuchOptionException(validated.getProductId(), validated.getVariantId(), optionGroundId, optionId);
+                    throw new NoSuchOptionException(validated.getProductId(), validated.getVariantId(), optionGroundId,
+                            optionId);
                 }
             }
         }
