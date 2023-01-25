@@ -2,11 +2,11 @@ import {BACKEND} from "./Constants";
 import Restaurant from "../datamodel/restaurant/restaurant";
 import {Observable} from "../util/Observable";
 import {ErrorObservable} from "../datamodel/error";
+import KnownRestaurant from "../datamodel/restaurant/knownRestaurant";
 
 export async function getCurrentRestaurant() {
     fetch(BACKEND + "/restaurant/current", {
         method: "GET",
-        credentials: "include"
     })
         .then(value => value.json())
         .then(value => {
@@ -21,6 +21,26 @@ export async function getCurrentRestaurant() {
             path: ""
         });
     })
+}
+
+export async function getKnownRestaurants(): Promise<KnownRestaurant[]> {
+    return fetch(BACKEND + "/restaurant/list", {
+        method: "GET",
+    })
+        .then(value => value.json())
+}
+
+export async function setCurrentRestaurant(restaurant: string): Promise<boolean> {
+    return fetch(BACKEND + "/restaurant/change/" + restaurant, {
+        method: "POST",
+    })
+        .then(value => value.json())
+        .then(value => {
+            if (value) {
+                return getCurrentRestaurant().then(value => true)
+            }
+            return false;
+        })
 }
 
 export const CurrentRestaurantObservable = new Observable<Restaurant>({initialValue: undefined});

@@ -5,11 +5,13 @@ import de.noname.pizza4c.webpage.RestaurantService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.io.IOException;
+import java.net.URL;
 
 @Component
 public class FetchingRestaurantRepository
@@ -22,17 +24,23 @@ public class FetchingRestaurantRepository
 
     @Override
     @Cacheable("restaurants")
-    public Restaurant getByRestaurantId(String restaurantId) {
+    public Restaurant getByRestaurantSlug(String restaurantSlug) {
         Restaurant restaurant;
         if (staticRestaurantData) {
-            restaurant = loadRestaurantDataFromDisk(restaurantId);
+            restaurant = loadRestaurantDataFromDisk(restaurantSlug);
         } else {
-            restaurant = loadRestaurantData(restaurantId);
+            restaurant = loadRestaurantData(restaurantSlug);
         }
         if (restaurant != null) {
             cleanupOptionNames(restaurant);
+            restaurant.setRestaurantSlug(restaurantSlug);
         }
         return restaurant;
+    }
+
+    @Override
+    @CacheEvict(value = "restaurants", allEntries = true)
+    public void evictAllCacheValues() {
     }
 
     private void cleanupOptionNames(Restaurant restaurant) {
@@ -50,7 +58,7 @@ public class FetchingRestaurantRepository
                 ).build();
         Restaurant restaurant = client
                 .get()
-                .uri("https://cw-api.takeaway.com/api/v32/restaurant?slug=" + restaurantName)
+                .uri("https://cw-api.takeaway.com/api/v33/restaurant?slug=" + restaurantName)
                 .header("X-Country-Code", "de")
                 .retrieve()
                 .bodyToMono(Restaurant.class)
@@ -58,7 +66,7 @@ public class FetchingRestaurantRepository
 
         restaurant.getMenu().getProducts().forEach((productId, product) -> {
             ProductInfo productInfo = client.get()
-                    .uri("https://cw-api.takeaway.com/api/v32/restaurant/product_info?restaurantId=" +
+                    .uri("https://cw-api.takeaway.com/api/v33/restaurant/product_info?restaurantId=" +
                             restaurant.getRestaurantId() + "&productId=" + productId)
                     .header("X-Country-Code", "de")
                     .retrieve()
@@ -73,7 +81,14 @@ public class FetchingRestaurantRepository
     private Restaurant loadRestaurantDataFromDisk(String restaurantName) {
         try {
             ObjectMapper mapper = new ObjectMapper();
-            return mapper.readValue(RestaurantService.class.getResource("/static/testdata.json"), Restaurant.class);
+
+            String fileName = "/static/" + restaurantName + ".json";
+            URL resource = RestaurantService.class.getResource(fileName);
+            if (resource == null) {
+                return null;
+            }
+
+            return mapper.readValue(resource, Restaurant.class);
         } catch (IOException e) {
             LOG.error("Failed to retrieve new restaurant data for {}", restaurantName, e);
         }

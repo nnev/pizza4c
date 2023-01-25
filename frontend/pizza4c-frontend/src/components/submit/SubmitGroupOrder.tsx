@@ -24,7 +24,6 @@ export class SubmitGroupOrder extends React.Component<SubmitProps, SubmitState> 
     render() {
         if (this.state.success == undefined) {
             submitOrder().then(value => {
-                console.log(value);
                 if (value) {
                     fetchAllCarts();
                 }

@@ -6,5 +6,6 @@ export default interface Restaurant {
     rating: Map<string, Number> ;
     location: Map<string, string> ;
     restaurantId: string;
+    restaurantSlug: string;
     menu: Menu;
 }

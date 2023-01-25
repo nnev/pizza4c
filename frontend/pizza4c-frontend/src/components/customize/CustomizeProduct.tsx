@@ -61,7 +61,6 @@ class CustomizeClazz extends React.Component<CustomizeProps, CustomizeState> {
         }
 
         if (this.state.selectedVariantId != undefined) {
-            console.log("target", "/" + this.props.productId + "/" + this.state.selectedVariantId)
             return <Navigate
                 to={"/customize/" + this.props.productId + "/" + this.state.selectedVariantId}
                 replace={this.state.product.variants.length === 1}

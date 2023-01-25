@@ -1,10 +1,12 @@
 package de.noname.pizza4c.datamodel.pizza4c;
 
+import de.noname.pizza4c.datamodel.lieferando.RestaurantRepository;
 import de.noname.pizza4c.utils.Name;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.util.ArrayList;
 import java.util.UUID;
 
 @Service
@@ -12,7 +14,10 @@ public class AllCartService {
     private final AllCartRepository allCartRepository;
     private final CartRepository cartRepository;
 
-    @Value("${pizza4c.defaultRestaurant:3Q3N1P1}") // Default to pizza rapido
+    @Autowired
+    private RestaurantRepository restaurantRepository;
+
+    @Value("${pizza4c.defaultRestaurant:pizza-rapido-eppelheim}") // Default to pizza rapido
     private String defaultRestaurantId;
 
     public AllCartService(AllCartRepository allCartRepository, CartRepository cartRepository) {
@@ -24,7 +29,7 @@ public class AllCartService {
         return allCartRepository.findById(1L).orElseGet(this::createDefaultAllCarts);
     }
 
-    private AllCarts createDefaultAllCarts(){
+    private AllCarts createDefaultAllCarts() {
         AllCarts allCarts = new AllCarts();
         allCarts.setId(1L);
         allCarts.setUuid(UUID.randomUUID().toString());
@@ -55,7 +60,7 @@ public class AllCartService {
         return optionalCart.get();
     }
 
-    public void selectRestaurant(String restaurantId) {
+    public boolean selectRestaurant(String restaurantId) {
         String newRestaurantId;
         if (restaurantId == null) {
             newRestaurantId = defaultRestaurantId;
@@ -66,13 +71,19 @@ public class AllCartService {
         AllCarts allCarts = getCurrentAllCarts();
 
         if (allCarts.getSelectedRestaurant().equals(newRestaurantId)) {
-            return;
+            return true;
+        }
+
+        var restaurant = restaurantRepository.getByRestaurantSlug(newRestaurantId);
+        if (restaurant == null) {
+            return false;
         }
 
         allCarts.ensureNotSubmitted();
         allCarts.setSelectedRestaurant(newRestaurantId);
-        allCarts.setCarts(List.of());
+        allCarts.setCarts(new ArrayList<>());
         allCartRepository.save(allCarts);
+        return true;
     }
 
     public void setSubmitted(AllCarts allCarts) {

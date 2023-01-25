@@ -20,6 +20,7 @@ public class Restaurant {
     private Colophon colophon;
 
     private String restaurantId;
+    private String restaurantSlug;
 
     private Menu menu;
 }

@@ -6,7 +6,6 @@ export function renderPdf() {
     /*
     return fetch(BACKEND + "/generatePdf", {
         method: "POST",
-        credentials: "include",
         headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json'

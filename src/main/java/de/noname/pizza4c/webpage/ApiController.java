@@ -6,6 +6,7 @@ import de.noname.pizza4c.datamodel.pizza4c.AllCartService;
 import de.noname.pizza4c.datamodel.pizza4c.AllCarts;
 import de.noname.pizza4c.datamodel.pizza4c.Cart;
 import de.noname.pizza4c.datamodel.pizza4c.CartService;
+import de.noname.pizza4c.datamodel.pizza4c.KnownRestaurant;
 import de.noname.pizza4c.fax.FaxService;
 import de.noname.pizza4c.fax.FaxServiceProvider;
 import de.noname.pizza4c.fax.clicksend.ClickSendResponse;
@@ -13,10 +14,15 @@ import de.noname.pizza4c.pdf.PdfGenerator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.view.AbstractView;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Objects;
 
 @RestController
@@ -95,8 +101,18 @@ public class ApiController {
 
     @PostMapping("/api/restaurant/change/{restaurantId}")
     public boolean selectRestaurant(@PathVariable("restaurantId") String restaurantId) {
-        allCartService.selectRestaurant(restaurantId);
+        return allCartService.selectRestaurant(restaurantId);
+    }
+
+    @PostMapping("/api/restaurant/refresh")
+    public boolean selectRestaurant() {
+        restaurantService.forceRefreshRestaurantData();
         return true;
+    }
+
+    @GetMapping("/api/restaurant/list")
+    public List<KnownRestaurant> listKnownRestaurants() {
+        return restaurantService.listAllKnownRestaurants();
     }
 
     @PostMapping("/api/remove/{entryId}")

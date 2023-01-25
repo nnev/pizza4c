@@ -1,37 +1,79 @@
 :root {
-    --maincolor: #ECECEC;
-    --shades: #90CCF4;
-    --borders: #5DA2D5;
-    --accent: #F3D250;
-    --textcolor: #000000;
-
     --success: #6a994e;
     --failure: #d90429;
-}
+    --accent: #F3D250;
 
-* {
-    margin: 0;
-    padding: 0;
-    text-decoration: none;
-    font-family: sans-serif;
-}
+    --backgroundColor: #EBE9E3;
 
-body {
-    color: var(--textcolor);
-    background-color: var(--maincolor);
+    --menuNormal: #403329;
+    --menuHover: #4A3D34;
+
+    --buttonNormal: #cccac5;
+    --buttonHighlight: #CCBD8F;
+    --buttonBorder: #6E5E52;
+
+    --buttonPrimaryNormal: #2697de;
+    --buttonPrimaryHighlight: #48aeef;
+    --buttonPrimaryBorder: #6E5E52;
+
+    --textNormal: #000000;
+    --textHighlightNormal: #2697de;
+    --textHighlightHover: #48aeef;
+    --textMenu: #ffffff;
 }
 
 @font-face {
     font-family: 'Material Icons';
     font-style: normal;
     font-weight: 400;
-    src: url(./MaterialIcons-Regular.eot); /* For IE6-8 */
+    src: url(./material/MaterialIcons-Regular.eot); /* For IE6-8 */
     src: local('Material Icons'),
     local('MaterialIcons-Regular'),
-    url(./MaterialIcons-Regular.woff2) format('woff2'),
-    url(./MaterialIcons-Regular.woff) format('woff'),
-    url(./MaterialIcons-Regular.ttf) format('truetype');
+    url(./material/MaterialIcons-Regular.woff2) format('woff2'),
+    url(./material/MaterialIcons-Regular.woff) format('woff'),
+    url(./material/MaterialIcons-Regular.ttf) format('truetype');
 }
+
+@font-face {
+    font-family: 'Lato';
+    font-style: normal;
+    font-weight: 400;
+    src: local('Lato Regular'),
+    url(./lato/Lato-Regular.woff2) format('woff2'),
+    url(./lato/Lato-Regular.woff) format('woff'),
+    url(./lato/Lato-Regular.ttf) format('truetype');
+}
+
+@font-face {
+    font-family: 'Lato Bold';
+    font-style: normal;
+    font-weight: 400;
+    src: local('Lato Bold'),
+    url(./lato/Lato-Bold.woff2) format('woff2'),
+    url(./lato/Lato-Bold.woff) format('woff'),
+    url(./lato/Lato-Bold.ttf) format('truetype');
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    text-decoration: none;
+    font-family: Lato, sans-serif;
+}
+
+body {
+    color: var(--textNormal);
+    background-color: var(--backgroundColor);
+}
+
+h1, th {
+    font-family: 'Lato Bold', Lato, sans-serif;
+}
+
+h1 {
+    padding: 10px 0;
+}
+
 
 .material-icons {
     font-family: 'Material Icons';
@@ -71,12 +113,10 @@ aside {
     left: 0;
     width: 180px;
     top: 0;
-    background-color: var(--maincolor);
 }
 
 main {
     top: 50px;
-    background-color: var(--maincolor);
 }
 
 .menu {
@@ -89,7 +129,7 @@ main {
     display: flex;
     flex-direction: row;
     justify-items: left;
-    border-bottom: 2px solid var(--borders);
+    border-bottom: 2px solid var(--menuHover);
 }
 
 .container {
@@ -113,7 +153,7 @@ main {
     left: 200px;
     top: 0;
     bottom: 0;
-    right:0;
+    right: 0;
 }
 
 main.withSide {
@@ -141,21 +181,21 @@ Rest
 
 aside h1, main h2 {
     margin-bottom: 0;
-    padding: 0 5px;
+    padding: 5px 5px;
 }
 
 aside li {
-    margin: 10px 0;
+    margin: 5px 0;
 }
 
-aside h1.target {
+aside h1.target, aside h1:hover {
     border-radius: 5px;
-    background: var(--shades);
+    background: var(--buttonHighlight);
 }
 
 aside h1 a {
     border-radius: 5px;
-    color: var(--textcolor);
+    color: var(--textNormal);
 }
 
 ol {
@@ -164,7 +204,7 @@ ol {
 
 aside .categoryDescription {
     font-size: small;
-    color: var(--textcolor);
+    color: var(--textNormal);
 }
 
 main .product > ol {
@@ -172,7 +212,7 @@ main .product > ol {
 }
 
 .category, .product {
-    border-top: 2px solid var(--borders);
+    border-top: 2px solid var(--buttonBorder);
 }
 
 .category {
@@ -181,7 +221,7 @@ main .product > ol {
 }
 
 .category:last-child, .product:last-child {
-    border-bottom: 2px solid var(--borders);
+    border-bottom: 2px solid var(--buttonBorder);
 }
 
 li.product {
@@ -216,7 +256,7 @@ li.product {
 
 .productSelect a {
     padding: 20px;
-    border: 2px solid var(--borders);
+    border: 2px solid var(--buttonBorder);
     text-decoration: none;
 }
 
@@ -226,7 +266,7 @@ li.product {
 }
 
 .orderTable thead {
-    border-bottom: 2px solid var(--borders);
+    border-bottom: 2px solid var(--buttonBorder);
 }
 
 .orderTable td {
@@ -242,7 +282,11 @@ li.product {
 }
 
 .orderTable .cartOwner {
-    border-top: 2px solid var(--borders);
+    border-top: 2px solid var(--buttonBorder);
+    background-color: var(--menuHover);
+    color: var(--textMenu);
+    height: 30px;
+    font-family: 'Lato Bold', Lato, sans-serif;
 }
 
 .orderTable .cartOwner td {
@@ -250,7 +294,7 @@ li.product {
 }
 
 .orderTable .cartBegin {
-    border-top: 1px solid var(--borders);
+    /*border-top: 1px solid var(--buttonBorder);*/
 }
 
 .optionsContainer, .customizeButtons {
@@ -288,25 +332,27 @@ li.product {
 }
 
 .menu {
-    background: var(--shades);
+    background: var(--menuNormal);
     line-height: 60px;
     height: 60px;
 }
 
 .menu a {
-    color: var(--textcolor);
+    color: var(--textMenu);
     padding: 0px 20px;
 }
+
 .menu a:hover {
-    background-color: var(--borders);
-    border-color: var(--shades);
+    background-color: var(--menuHover);
+    border-color: var(--menuNormal);
 }
 
 .menu a.borderRight {
-    border-right: 2px solid var(--borders);
+    border-right: 2px solid var(--menuHover);
 }
+
 .menu a.borderLeft {
-    border-left: 2px solid var(--borders);
+    border-left: 2px solid var(--menuHover);
 }
 
 button.pixmapButton {
@@ -314,14 +360,15 @@ button.pixmapButton {
     padding: 5px 10px;
     font-weight: bold;
     border-radius: 7px;
-    border: 2px solid var(--borders);
-    background-color: var(--maincolor);
-    color: var(--textcolor);
+    border: 2px solid var(--buttonBorder);
+    background-color: var(--buttonNormal);
+    color: var(--textNormal);
 }
 
 button.pixmapButton:hover {
-    border: 2px solid var(--borders);
-    background-color: var(--shades);
+    border: 2px solid var(--buttonNormal);
+    background-color: var(--buttonHighlight);
+    color: var(--textNormal);
 }
 
 button.pixmapButton:disabled {
@@ -337,19 +384,20 @@ button.pixmapButton.tiny {
     padding: 3px;
     margin: 0;
 }
-button.pixmapButton.tiny span{
+
+button.pixmapButton.tiny span {
     line-height: 20px;
 }
 
 button.pixmapButton.primary {
-    background-color: var(--shades);
-    color: var(--textcolor);
+    background-color: var(--buttonPrimaryNormal);
+    color: var(--textNormal);
 }
 
 button.pixmapButton.primary:hover {
-    background-color: var(--borders);
-    border-color: var(--shades);
-    color: var(--textcolor);
+    background-color: var(--buttonPrimaryHighlight);
+    border-color: var(--buttonBorder);
+    color: var(--textNormal);
 }
 
 button.pixmapButton span {
@@ -410,7 +458,7 @@ button.pixmapButton span:first-child {
 }
 
 .progress {
-    background: var(--shades);
+    background: var(--buttonPrimaryHighlight);
     position: relative;
     height: 30px;
     padding: 5px;
@@ -424,7 +472,7 @@ button.pixmapButton span:first-child {
 }
 
 .progress .progressText {
-    color: var(--textcolor);
+    color: var(--textNormal);
     display: inline-block;
     position: absolute;
     width: 100%;
@@ -434,7 +482,7 @@ button.pixmapButton span:first-child {
 }
 
 .myOrder {
-    border: 2px solid var(--borders);
+    border: 2px solid var(--buttonBorder);
     padding: 10px;
     border-radius: 10px;
 }
@@ -467,8 +515,7 @@ button.pixmapButton span:first-child {
 }
 
 .customize fieldset {
-    border: 2px solid var(--borders);
-    background-color: var(--shades);
+    border: 2px solid var(--buttonBorder);
     margin: 5px 0;
     border-radius: 10px;
     padding: 5px;
@@ -492,7 +539,7 @@ button.pixmapButton span:first-child {
     border: 2px solid var(--failure);
 }
 
-.changeNameInput {
+input[type=text] {
     padding: 5px 10px;
     margin-bottom: 10px;
 }

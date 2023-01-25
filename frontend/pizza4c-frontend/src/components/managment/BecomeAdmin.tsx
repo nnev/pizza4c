@@ -1,8 +1,6 @@
 import React, {ChangeEvent, MouseEvent} from "react";
 import {Navigate} from "react-router-dom";
-import {Name, setMyName} from "../../datamodel/name";
 import {PixmapButton} from "../Pixmap";
-import {Error} from "../Error"
 import {AdminObservable} from "../../datamodel/admin";
 
 interface BecomeAdminProps {
@@ -37,15 +35,8 @@ export default class BecomeAdmin extends React.Component<BecomeAdminProps, Becom
         return;
     }
 
-    dropAdmin = (ev: MouseEvent<HTMLInputElement>) => {
-        ev.preventDefault();
-        AdminObservable.setValue(false);
-        this.setState({nameChanged: true})
-    }
-
     private ready(): NameValidation {
         let name = this.state.magicWords;
-
         return name === "sudo make me a pizza" ? "VALID" : "INVALID";
     }
 
@@ -53,54 +44,32 @@ export default class BecomeAdmin extends React.Component<BecomeAdminProps, Becom
         if (this.state.nameChanged) {
             return <Navigate to="/"/>;
         }
-
-        if (AdminObservable.getValue()) {
-            return (
-                <main className="notSide">
-                    <form>
-                        <h1>TODO: Mache Restaurant auswählbar</h1>
-                        <h1>TODO: Force update Restaurant Menu</h1>
-                        <h1>TODO: Cancel Order</h1>
-
-                        <h1>Ich will nicht mehr Admin sein</h1>
-                        <PixmapButton
-                            onClick={this.dropAdmin}
-                            pixmap="person_remove"
-                            text="Admin Rechte abgeben"
-                        />
-                    </form>
-                </main>
-            );
-        }
-
         let ready = this.ready();
 
         return (
-            <main className="notSide">
+            <>
+                <h1>Ich will Admin-Rechte haben</h1>
+                Bestätige durch schreiben von <b>sudo make me a pizza</b>.
+                <br/>
+                <br/>
 
-                <form>
-                    <h1>Ich will Admin-Rechte haben</h1>
-                    Bestätige durch schreiben von <b>sudo make me a pizza</b>.
-                    <br/>
-                    <br/>
-
-                    <input type="text"
-                           name="magicWords"
-                           id="magicWords"
-                           className="magicWords"
-                           value={this.state.magicWords}
-                           placeholder="Fill me in"
-                           onChange={this.magicWords}
-                    />
-                    <br/>
-                    <PixmapButton
-                        onClick={this.changeNameSubmit}
-                        pixmap="person_add"
-                        text="Mach mich admin"
-                        disabled={ready != "VALID"}
-                    />
-                </form>
-            </main>
+                <input type="text"
+                       name="magicWords"
+                       id="magicWords"
+                       className="magicWords"
+                       value={this.state.magicWords}
+                       placeholder="Sag die magischen Worte"
+                       onChange={this.magicWords}
+                />
+                <br/>
+                <br/>
+                <PixmapButton
+                    onClick={this.changeNameSubmit}
+                    pixmap="person_add"
+                    text="Mach mich Admin"
+                    disabled={ready != "VALID"}
+                />
+            </>
         );
     }
 }

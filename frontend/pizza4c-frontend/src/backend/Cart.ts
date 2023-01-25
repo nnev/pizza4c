@@ -19,7 +19,6 @@ export async function addToCart(product: string, variant: string, options: Map<s
 
     return fetch(BACKEND + "/addToCart", {
         method: "POST",
-        credentials: "include",
         headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json',
@@ -46,7 +45,6 @@ export async function addToCart(product: string, variant: string, options: Map<s
 export async function fetchAllCarts(): Promise<AllCarts> {
     return fetch(BACKEND + "/allCarts", {
         method: "GET",
-        credentials: "include"
     })
         .then(value => value.json())
         .then(value => mapAllCarts(value))
@@ -86,7 +84,6 @@ function mapEntries(data: CartEntry): CartEntry {
 export async function markAsPaid(cart: Cart): Promise<boolean> {
     return fetch(BACKEND + "/markPaid/" + cart.id, {
         method: "POST",
-        credentials: "include",
         body: JSON.stringify({
             name: getMyName().asBody()
         })
@@ -104,7 +101,6 @@ export async function markAsPaid(cart: Cart): Promise<boolean> {
 export async function markAsUnpaid(cart: Cart): Promise<boolean> {
     return fetch(BACKEND + "/markUnpaid/" + cart.id, {
         method: "POST",
-        credentials: "include",
         body: JSON.stringify({
             name: getMyName().asBody()
         })
@@ -122,7 +118,6 @@ export async function markAsUnpaid(cart: Cart): Promise<boolean> {
 export async function removeEntry(entry: CartEntry): Promise<boolean> {
     return fetch(BACKEND + "/remove/" + entry.id, {
         method: "POST",
-        credentials: "include",
     })
         .then(value => value.json())
         .then(value => {

@@ -186,12 +186,8 @@ export const UserNameObservable = new Observable<Name>({});
 
 export function getMyName(): Name {
     if (!UserNameObservable.hasValue()) {
-        console.log("No Name")
         let userNameShort = window.localStorage.getItem("userNameShort");
         let userNameLong = window.localStorage.getItem("userNameLong");
-
-        console.log("short", userNameShort)
-        console.log("long", userNameLong)
 
         if (userNameShort && userNameLong) {
             UserNameObservable.setValue(new Name(userNameShort, userNameLong, true));

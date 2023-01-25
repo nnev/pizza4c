@@ -11,10 +11,10 @@ import {SubmitGroupOrder} from "./components/submit/SubmitGroupOrder";
 import {RenderPdf} from "./components/submit/RenderPdf";
 import {CustomizeVariant} from "./components/customize/CustomizeVariant";
 import {AdminObservable} from "./datamodel/admin";
-import BecomeAdmin from "./components/managment/BecomeAdmin";
 import FormattedError, {ErrorObservable} from "./datamodel/error";
 import {Error} from "./components/Error";
 import Privacy from "./components/Privacy";
+import Admin from "./components/managment/Admin";
 
 interface AppProps {
 }
@@ -84,7 +84,7 @@ class App extends React.Component<AppProps, AppState> {
                                 <Route index element={<Overview/>}/>
                                 <Route path="*" element={<Navigate to="/" replace/>}/>
                                 <Route path="/submitGroupOrder" element={<SubmitGroupOrder/>}/>
-                                <Route path="/becomeAdmin" element={<BecomeAdmin/>}/>
+                                <Route path="/becomeAdmin" element={<Admin/>}/>
                                 <Route path="/renderPdf" element={<RenderPdf/>}/>
                                 <Route path="/privacy" element={<Privacy/>}/>
                             </Routes>
