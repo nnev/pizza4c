@@ -21,6 +21,9 @@ public class AllCartService {
     @Autowired
     private RestaurantRepository restaurantRepository;
 
+    @Autowired
+    private KnownRestaurantRepository knownRestaurantRepository;
+
     @Value("${pizza4c.defaultRestaurant:pizza-rapido-eppelheim}") // Default to pizza rapido
     private String defaultRestaurantId;
 
@@ -30,7 +33,15 @@ public class AllCartService {
     }
 
     public AllCarts getCurrentAllCarts() {
-        return allCartRepository.findById(1L).orElseGet(this::createDefaultAllCarts);
+        var allCarts = allCartRepository.findById(1L).orElseGet(this::createDefaultAllCarts);
+        LOG.info("++++++"+allCarts);
+        if (!knownRestaurantRepository.existsByLieferandoName(allCarts.getSelectedRestaurant())) {
+            allCarts.setSelectedRestaurant(defaultRestaurantId);
+            LOG.info("-----"+allCarts);
+            allCarts = allCartRepository.save(allCarts);
+        }
+
+        return allCarts;
     }
 
     private AllCarts createDefaultAllCarts() {

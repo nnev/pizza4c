@@ -90,7 +90,7 @@ export default class ChangeRestaurant extends React.Component<ChangeRestaurantPr
                     text="Restaurant ändern"
                 />
                 {this.state.nameChanged != undefined && <br/>}
-                {this.state.nameChanged === true && <span className="payed">Geändert</span>}
+                {this.state.nameChanged === true && <span className="payed">Geändert auf {this.state.currentRestaurant.restaurantSlug}</span>}
                 {this.state.nameChanged === false && <span className="unpayed">Änderung fehlgeschlagen</span>}
             </>
         );

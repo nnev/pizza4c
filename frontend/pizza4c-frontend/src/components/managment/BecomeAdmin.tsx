@@ -13,6 +13,7 @@ interface BecomeAdminState {
 
 type NameValidation = "VALID" | "INVALID";
 
+const magicWords = "sudo make me a pizza";
 export default class BecomeAdmin extends React.Component<BecomeAdminProps, BecomeAdminState> {
 
     constructor(props: BecomeAdminProps, context: any) {
@@ -37,7 +38,7 @@ export default class BecomeAdmin extends React.Component<BecomeAdminProps, Becom
 
     private ready(): NameValidation {
         let name = this.state.magicWords;
-        return name === "sudo make me a pizza" ? "VALID" : "INVALID";
+        return name === magicWords ? "VALID" : "INVALID";
     }
 
     render() {
@@ -49,7 +50,7 @@ export default class BecomeAdmin extends React.Component<BecomeAdminProps, Becom
         return (
             <>
                 <h1>Ich will Admin-Rechte haben</h1>
-                Bestätige durch schreiben von <b>sudo make me a pizza</b>.
+                Bestätige durch schreiben von <b>{magicWords}</b>.
                 <br/>
                 <br/>
 
@@ -60,7 +61,10 @@ export default class BecomeAdmin extends React.Component<BecomeAdminProps, Becom
                        value={this.state.magicWords}
                        placeholder="Sag die magischen Worte"
                        onChange={this.magicWords}
+                       autoFocus={true}
                 />
+
+                <input/>
                 <br/>
                 <br/>
                 <PixmapButton
