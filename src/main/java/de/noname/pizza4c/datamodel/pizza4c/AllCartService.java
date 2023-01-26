@@ -2,6 +2,8 @@ package de.noname.pizza4c.datamodel.pizza4c;
 
 import de.noname.pizza4c.datamodel.lieferando.RestaurantRepository;
 import de.noname.pizza4c.utils.Name;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -13,6 +15,8 @@ import java.util.UUID;
 public class AllCartService {
     private final AllCartRepository allCartRepository;
     private final CartRepository cartRepository;
+
+    private static final Logger LOG = LoggerFactory.getLogger(AllCartService.class);
 
     @Autowired
     private RestaurantRepository restaurantRepository;
@@ -34,7 +38,7 @@ public class AllCartService {
         allCarts.setId(1L);
         allCarts.setUuid(UUID.randomUUID().toString());
         allCarts.setSelectedRestaurant(defaultRestaurantId);
-        System.out.println("########" + defaultRestaurantId);
+        LOG.info("########" + defaultRestaurantId);
         return allCartRepository.save(allCarts);
     }
 
