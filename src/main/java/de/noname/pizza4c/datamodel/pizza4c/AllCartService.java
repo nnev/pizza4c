@@ -34,6 +34,7 @@ public class AllCartService {
         allCarts.setId(1L);
         allCarts.setUuid(UUID.randomUUID().toString());
         allCarts.setSelectedRestaurant(defaultRestaurantId);
+        System.out.println("########" + defaultRestaurantId);
         return allCartRepository.save(allCarts);
     }
 
