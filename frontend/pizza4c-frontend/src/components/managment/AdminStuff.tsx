@@ -2,7 +2,7 @@ import React, {MouseEvent} from "react";
 import {PixmapButton} from "../Pixmap";
 import {AdminObservable} from "../../datamodel/admin";
 import ChangeRestaurant from "./ChangeRestaurant";
-import {Link} from "react-router-dom";
+import {Link, Navigate} from "react-router-dom";
 
 interface AdminStuffProps {
 }
@@ -28,7 +28,7 @@ export default class AdminStuff extends React.Component<AdminStuffProps, AdminSt
 
     render() {
         if (this.state.submitOrder) {
-            return <Link to="/submitGroupOrder" className="borderRight">Bestellung abschicken</Link>
+            return <Navigate to="/submitGroupOrder" />
         }
         return (
             <>
