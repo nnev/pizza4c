@@ -36,17 +36,19 @@ export class SubmitGroupOrder extends React.Component<SubmitProps, SubmitState> 
         } else if (this.state.success === true || this.state.forceReturn) {
             return <Navigate to="/" replace={true}></Navigate>
         } else {
-            return <div>
-                <div className="error"><span>Fehler beim Versenden vom Fax</span></div>
-                <PixmapGroup>
-                    <PixmapButton
-                        onClick={() => this.setState({forceReturn: true})}
-                        pixmap="arrow_left"
-                        text="Zurück zur Übersicht"
-                        className="primary"
-                    />
-                </PixmapGroup>
-            </div>
+            return (
+                <main className="notSide">
+                    <div className="error"><span>Fehler beim Versenden vom Fax</span></div>
+                    <PixmapGroup>
+                        <PixmapButton
+                            onClick={() => this.setState({forceReturn: true})}
+                            pixmap="arrow_left"
+                            text="Zurück zur Übersicht"
+                            className="primary"
+                        />
+                    </PixmapGroup>
+                </main>
+            );
         }
     }
 }
