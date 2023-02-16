@@ -61,7 +61,6 @@ class App extends React.Component<AppProps, AppState> {
                     <nav className="menu">
                         <Link to="/" className="borderRight">Pizza4C</Link>
                         <Link to="/renderPdf" className="borderRight">PDF anschauen</Link>
-                        {this.state.admin && <Link to="/submitGroupOrder" className="borderRight">Bestellung abschicken</Link>}
                         <Link to="/becomeAdmin" className="borderRight">{this.state.admin ? "Admin stuff" : "Admin werden"}</Link>
                         <span className="variableSpacer"/>
                         <Link to="/privacy" className="borderLeft">Privacy</Link>

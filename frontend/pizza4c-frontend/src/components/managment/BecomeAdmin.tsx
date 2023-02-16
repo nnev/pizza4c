@@ -64,7 +64,6 @@ export default class BecomeAdmin extends React.Component<BecomeAdminProps, Becom
                        autoFocus={true}
                 />
 
-                <input/>
                 <br/>
                 <br/>
                 <PixmapButton
