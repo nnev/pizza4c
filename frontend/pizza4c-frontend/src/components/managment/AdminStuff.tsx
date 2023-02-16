@@ -52,7 +52,7 @@ export default class AdminStuff extends React.Component<AdminStuffProps, AdminSt
         )
     }
 
-    private handleSubmitOrder(ev: MouseEvent<HTMLInputElement>) {
+    handleSubmitOrder = (ev: MouseEvent<HTMLInputElement>) => {
         ev.preventDefault();
         this.setState({submitOrder: true});
     }
