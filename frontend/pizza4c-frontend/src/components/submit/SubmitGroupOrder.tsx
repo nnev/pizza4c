@@ -3,6 +3,7 @@ import {submitOrder} from "../../backend/submitOrder";
 import {Navigate} from "react-router-dom";
 import {fetchAllCarts} from "../../backend/Cart";
 import {PixmapButton, PixmapGroup} from "../Pixmap";
+import {AdminObservable} from "../../datamodel/admin";
 
 
 interface SubmitProps {
@@ -22,6 +23,9 @@ export class SubmitGroupOrder extends React.Component<SubmitProps, SubmitState> 
     }
 
     render() {
+        if (!AdminObservable.getValue()) {
+            return <Navigate to="/"/>
+        }
         if (this.state.success == undefined) {
             submitOrder().then(value => {
                 if (value) {
