@@ -3,6 +3,7 @@ import {PixmapButton} from "../Pixmap";
 import {AdminObservable} from "../../datamodel/admin";
 import ChangeRestaurant from "./ChangeRestaurant";
 import {Link, Navigate} from "react-router-dom";
+import {cancelAllOrders} from "../../backend/Cart";
 
 interface AdminStuffProps {
 }
@@ -40,7 +41,13 @@ export default class AdminStuff extends React.Component<AdminStuffProps, AdminSt
                 />
                 <ChangeRestaurant/>
                 <h1>TODO: Force update Restaurant Menu</h1>
-                <h1>TODO: Cancel All Orders</h1>
+                <h1>Alle Bestellungen stornieren</h1>
+                <PixmapButton
+                    onClick={this.handleCancelAllOrders}
+                    pixmap="person_remove"
+                    text="Alle Bestellungen stornieren"
+                />
+
 
                 <h1>Ich will nicht mehr Admin sein</h1>
                 <PixmapButton
@@ -54,6 +61,13 @@ export default class AdminStuff extends React.Component<AdminStuffProps, AdminSt
 
     handleSubmitOrder = (ev: MouseEvent<HTMLInputElement>) => {
         ev.preventDefault();
+        this.setState({submitOrder: true});
+    }
+    handleCancelAllOrders = (ev: MouseEvent<HTMLInputElement>) => {
+        ev.preventDefault();
+        cancelAllOrders().then(value => {
+
+        })
         this.setState({submitOrder: true});
     }
 }

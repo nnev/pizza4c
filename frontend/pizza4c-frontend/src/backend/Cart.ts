@@ -128,3 +128,16 @@ export async function removeEntry(entry: CartEntry): Promise<boolean> {
             }
         })
 }
+export async function cancelAllOrders(): Promise<boolean> {
+    return fetch(BACKEND + "/cancelAllOrders", {
+        method: "POST",
+    })
+        .then(value => value.json())
+        .then(value => {
+            if ((<FormattedError>value).error !== undefined) {
+                throw value as FormattedError;
+            } else {
+                return value as boolean;
+            }
+        })
+}

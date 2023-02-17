@@ -142,4 +142,15 @@ public class ApiController {
         }
         return success;
     }
+
+    @PostMapping("/api/cancelAllOrders")
+    public boolean cancelAllOrders() {
+        var allCarts = allCartService.getCurrentAllCarts();
+        allCarts.ensureNotSubmitted();
+
+        for (Cart cart : allCarts.getCarts()) {
+            cartService.markAsUnpaid(cart.getUuid());
+        }
+        return true;
+    }
 }
