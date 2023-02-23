@@ -34,10 +34,8 @@ public class AllCartService {
 
     public AllCarts getCurrentAllCarts() {
         var allCarts = allCartRepository.findById(1L).orElseGet(this::createDefaultAllCarts);
-        LOG.info("++++++"+allCarts);
         if (!knownRestaurantRepository.existsByLieferandoName(allCarts.getSelectedRestaurant())) {
             allCarts.setSelectedRestaurant(defaultRestaurantId);
-            LOG.info("-----"+allCarts);
             allCarts = allCartRepository.save(allCarts);
         }
 

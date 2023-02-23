@@ -27,7 +27,6 @@ public class RestaurantService {
 
     public Restaurant getSelectedRestaurant() {
         var allCarts = allCartService.getCurrentAllCarts();
-        LOG.info("+++++++++" + allCarts.getSelectedRestaurant());
         return restaurantRepository.getByRestaurantSlug(allCarts.getSelectedRestaurant());
     }
 

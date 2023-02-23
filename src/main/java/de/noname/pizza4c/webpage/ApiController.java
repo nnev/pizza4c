@@ -146,11 +146,12 @@ public class ApiController {
     @PostMapping("/api/cancelAllOrders")
     public boolean cancelAllOrders() {
         var allCarts = allCartService.getCurrentAllCarts();
-        allCarts.ensureNotSubmitted();
 
         for (Cart cart : allCarts.getCarts()) {
             cartService.markAsUnpaid(cart.getUuid());
         }
+
+        allCartService.setSubmitted(allCarts);
         return true;
     }
 }
