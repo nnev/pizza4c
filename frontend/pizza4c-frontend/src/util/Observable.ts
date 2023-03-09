@@ -35,6 +35,12 @@ export class Observable<T> {
         }
         return this.value!;
     }
+    public getValueMaybe(): T | undefined {
+        if (this.value === undefined) {
+            this.setValue(this.initializer());
+        }
+        return this.value;
+    }
 
     public hasValue(): boolean {
         return this.value !== undefined;

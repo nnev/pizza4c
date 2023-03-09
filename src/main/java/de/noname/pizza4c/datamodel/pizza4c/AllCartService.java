@@ -1,6 +1,5 @@
 package de.noname.pizza4c.datamodel.pizza4c;
 
-import de.noname.pizza4c.datamodel.lieferando.RestaurantRepository;
 import de.noname.pizza4c.utils.Name;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,7 +18,7 @@ public class AllCartService {
     private static final Logger LOG = LoggerFactory.getLogger(AllCartService.class);
 
     @Autowired
-    private RestaurantRepository restaurantRepository;
+    private KnownRestaurantService knownRestaurantService;
 
     @Autowired
     private KnownRestaurantRepository knownRestaurantRepository;
@@ -34,7 +33,7 @@ public class AllCartService {
 
     public AllCarts getCurrentAllCarts() {
         var allCarts = allCartRepository.findById(1L).orElseGet(this::createDefaultAllCarts);
-        if (!knownRestaurantRepository.existsByLieferandoName(allCarts.getSelectedRestaurant())) {
+        if (knownRestaurantRepository.getByLieferandoName(allCarts.getSelectedRestaurant()) != null) {
             allCarts.setSelectedRestaurant(defaultRestaurantId);
             allCarts = allCartRepository.save(allCarts);
         }
@@ -87,7 +86,7 @@ public class AllCartService {
             return true;
         }
 
-        var restaurant = restaurantRepository.getByRestaurantSlug(newRestaurantId);
+        var restaurant = knownRestaurantService.getByRestaurantSlug(newRestaurantId);
         if (restaurant == null) {
             return false;
         }

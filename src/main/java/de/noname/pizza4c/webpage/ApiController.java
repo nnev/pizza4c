@@ -105,7 +105,7 @@ public class ApiController {
     }
 
     @PostMapping("/api/restaurant/refresh")
-    public boolean selectRestaurant() {
+    public boolean forceRefreshRestaurant() {
         restaurantService.forceRefreshRestaurantData();
         return true;
     }

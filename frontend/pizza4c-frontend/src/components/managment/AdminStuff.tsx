@@ -4,6 +4,7 @@ import {AdminObservable} from "../../datamodel/admin";
 import ChangeRestaurant from "./ChangeRestaurant";
 import CancelAllOrders from "./CancelAllOrders.";
 import SubmitOrder from "./SubmitOrder.";
+import ForceRestaurantUpdate from "./ForceRestaurantUpdate";
 
 interface AdminStuffProps {
 }
@@ -29,7 +30,7 @@ export default class AdminStuff extends React.Component<AdminStuffProps, AdminSt
             <>
                 <SubmitOrder/>
                 <ChangeRestaurant/>
-                <h1>TODO: Force update Restaurant Menu</h1>
+                <ForceRestaurantUpdate/>
                 <CancelAllOrders/>
 
                 <h1>Ich will nicht mehr Admin sein</h1>

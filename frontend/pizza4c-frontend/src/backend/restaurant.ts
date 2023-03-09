@@ -44,3 +44,16 @@ export async function setCurrentRestaurant(restaurant: string): Promise<boolean>
 }
 
 export const CurrentRestaurantObservable = new Observable<Restaurant>({initialValue: undefined});
+
+export async function forceRestaurantRefresh() {
+    return fetch(BACKEND + "/restaurant/refresh", {
+        method: "POST"
+    })
+        .then(value => value.json())
+        .then(value => {
+            if (value) {
+                return getCurrentRestaurant().then(value => true)
+            }
+            return false;
+        });
+}

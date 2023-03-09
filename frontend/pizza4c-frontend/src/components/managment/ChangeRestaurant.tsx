@@ -18,8 +18,9 @@ export default class ChangeRestaurant extends React.Component<ChangeRestaurantPr
 
     constructor(props: ChangeRestaurantProps, context: any) {
         super(props, context);
+        let value = CurrentRestaurantObservable.getValueMaybe();
         this.state = {
-            restaurantName: CurrentRestaurantObservable.getValue().restaurantSlug,
+            restaurantName: value?.restaurantSlug || "unknown",
             nameChanged: undefined
         }
     }
@@ -58,7 +59,7 @@ export default class ChangeRestaurant extends React.Component<ChangeRestaurantPr
     }
 
     render() {
-        if (this.state.knownRestaurants === undefined || this.state.currentRestaurant === undefined) {
+        if (this.state.knownRestaurants === undefined) {
             return <></>;
         }
         return (
@@ -90,7 +91,7 @@ export default class ChangeRestaurant extends React.Component<ChangeRestaurantPr
                     text="Restaurant ändern"
                 />
                 {this.state.nameChanged != undefined && <br/>}
-                {this.state.nameChanged === true && <span className="payed">Geändert auf {this.state.currentRestaurant.restaurantSlug}</span>}
+                {this.state.nameChanged === true && <span className="payed">Geändert auf {this.state.currentRestaurant?.restaurantSlug}</span>}
                 {this.state.nameChanged === false && <span className="unpayed">Änderung fehlgeschlagen</span>}
             </>
         );

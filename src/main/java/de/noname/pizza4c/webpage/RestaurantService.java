@@ -1,10 +1,10 @@
 package de.noname.pizza4c.webpage;
 
 import de.noname.pizza4c.datamodel.lieferando.Restaurant;
-import de.noname.pizza4c.datamodel.lieferando.RestaurantRepository;
 import de.noname.pizza4c.datamodel.pizza4c.AllCartService;
 import de.noname.pizza4c.datamodel.pizza4c.KnownRestaurant;
 import de.noname.pizza4c.datamodel.pizza4c.KnownRestaurantRepository;
+import de.noname.pizza4c.datamodel.pizza4c.KnownRestaurantService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,21 +20,22 @@ public class RestaurantService {
     public AllCartService allCartService;
 
     @Autowired
-    private RestaurantRepository restaurantRepository;
+    private KnownRestaurantService knownRestaurantService;
 
     @Autowired
     private KnownRestaurantRepository knownRestaurantRepository;
 
     public Restaurant getSelectedRestaurant() {
         var allCarts = allCartService.getCurrentAllCarts();
-        return restaurantRepository.getByRestaurantSlug(allCarts.getSelectedRestaurant());
+        return knownRestaurantService.getByRestaurantSlug(allCarts.getSelectedRestaurant());
     }
 
-    public void forceRefreshRestaurantData(){
-        restaurantRepository.evictAllCacheValues();
+    public void forceRefreshRestaurantData() {
+        var allCarts = allCartService.getCurrentAllCarts();
+        knownRestaurantService.refreshRestaurantData(allCarts.getSelectedRestaurant());
     }
 
-    public List<KnownRestaurant> listAllKnownRestaurants(){
+    public List<KnownRestaurant> listAllKnownRestaurants() {
         return knownRestaurantRepository.findAll();
     }
 }
