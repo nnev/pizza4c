@@ -92,13 +92,13 @@ public class ClickSendFaxServiceProvider implements FaxServiceProvider {
 
     ExchangeFilterFunction logRequest() {
         return ExchangeFilterFunction.ofRequestProcessor(clientRequest -> {
-            if (LOG.isDebugEnabled()) {
+            if (LOG.isInfoEnabled()) {
                 StringBuilder sb = new StringBuilder("Request: \n");
                 //append clientRequest method and url
                 clientRequest
                         .headers()
                         .forEach((name, values) -> values.forEach(value -> sb.append(name).append(": ").append(values)));
-                LOG.debug(sb.toString());
+                LOG.info(sb.toString());
             }
             return Mono.just(clientRequest);
         });
@@ -106,7 +106,7 @@ public class ClickSendFaxServiceProvider implements FaxServiceProvider {
 
     ExchangeFilterFunction logResponse() {
         return ExchangeFilterFunction.ofResponseProcessor(clientResponse -> {
-            if (LOG.isDebugEnabled()) {
+            if (LOG.isInfoEnabled()) {
                 StringBuilder sb = new StringBuilder("Response: \n");
                 //append clientResponse method and url
                 clientResponse
@@ -114,7 +114,7 @@ public class ClickSendFaxServiceProvider implements FaxServiceProvider {
                             LOG.debug(inputMessage.getBody().blockFirst().toString(StandardCharsets.UTF_8));
                             return inputMessage;
                         });
-                LOG.debug(sb.toString());
+                LOG.info(sb.toString());
             }
             return Mono.just(clientResponse);
         });
