@@ -10,8 +10,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.BodyInserters;
+import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientException;
+import reactor.core.publisher.Mono;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
@@ -64,7 +66,12 @@ public class ClickSendFaxServiceProvider implements FaxServiceProvider {
         }
 
         try {
-            WebClient client = WebClient.create();
+            WebClient client = WebClient.builder()
+                    .filters(exchangeFilterFunctions -> {
+                        exchangeFilterFunctions.add(logRequest());
+                        exchangeFilterFunctions.add(logResponse());
+                    })
+                    .build();
             var response = client.post()
                     .uri("https://rest.clicksend.com/v3/fax/send")
                     .header("Authorization", "Basic " + authorization)
@@ -81,5 +88,35 @@ public class ClickSendFaxServiceProvider implements FaxServiceProvider {
             LOG.error("Failed to send ClickSend request", e);
             return false;
         }
+    }
+
+    ExchangeFilterFunction logRequest() {
+        return ExchangeFilterFunction.ofRequestProcessor(clientRequest -> {
+            if (LOG.isDebugEnabled()) {
+                StringBuilder sb = new StringBuilder("Request: \n");
+                //append clientRequest method and url
+                clientRequest
+                        .headers()
+                        .forEach((name, values) -> values.forEach(value -> sb.append(name).append(": ").append(values)));
+                LOG.debug(sb.toString());
+            }
+            return Mono.just(clientRequest);
+        });
+    }
+
+    ExchangeFilterFunction logResponse() {
+        return ExchangeFilterFunction.ofResponseProcessor(clientResponse -> {
+            if (LOG.isDebugEnabled()) {
+                StringBuilder sb = new StringBuilder("Response: \n");
+                //append clientResponse method and url
+                clientResponse
+                        .body((inputMessage, context) -> {
+                            LOG.debug(inputMessage.getBody().blockFirst().toString(StandardCharsets.UTF_8));
+                            return inputMessage;
+                        });
+                LOG.debug(sb.toString());
+            }
+            return Mono.just(clientResponse);
+        });
     }
 }
