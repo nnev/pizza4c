@@ -6,7 +6,7 @@ import lombok.Data;
 @Data
 public class ClickSendMessage {
     public ClickSendMessage(String to, String customString, String fromEmail) {
-        this.source = "pizza4c";
+        this.source = "sdk";
         this.to = to;
         this.customString = customString;
         this.country = "DE";
