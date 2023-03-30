@@ -58,7 +58,7 @@ public class ClickSendFaxServiceProvider implements FaxServiceProvider {
                 Base64.getEncoder().encodeToString((username + ":" + password).getBytes(StandardCharsets.UTF_8));
 
         ClickSendRequest clickSendRequest = new ClickSendRequest();
-        clickSendRequest.setFileUrl("https://" + fileUrlBase + "/api/generatePdf/" + uuid);
+        clickSendRequest.setFileUrl("https://" + fileUrlBase + "/api/generatePdf/" + uuid + ".pdf");
         clickSendRequest.setMessages(List.of(new ClickSendMessage(to, uuid, replyEmail)));
         String body;
         try {
