@@ -91,8 +91,8 @@ public class ApiController {
 
     @GetMapping("/api/generatePdf/{:uuid}")
     public AbstractView generatePdf(@PathVariable("uuid") String uuid) {
-        if (allCartService.getCurrentAllCarts().getSubmittedAt() == 0 ||
-                !Objects.equals(allCartService.getCurrentAllCarts().getUuid(), uuid)) {
+        if (!Objects.equals(allCartService.getCurrentAllCarts().getUuid(), uuid)) {
+            LOG.error("Got PDF request for old allCarts");
             throw new IllegalStateException("This cart should have been submitted before");
         }
 
