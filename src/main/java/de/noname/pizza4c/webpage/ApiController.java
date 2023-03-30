@@ -89,7 +89,7 @@ public class ApiController {
         return new PdfView(pdfGenerator);
     }
 
-    @GetMapping("/api/generatePdf/{:uuid}")
+    @GetMapping("/api/generatePdf/{uuid}")
     public AbstractView generatePdf(@PathVariable("uuid") String uuid) {
         if (!Objects.equals(allCartService.getCurrentAllCarts().getUuid(), uuid)) {
             LOG.error("Got PDF request for old allCarts");
