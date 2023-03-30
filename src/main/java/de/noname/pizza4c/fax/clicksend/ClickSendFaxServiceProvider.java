@@ -49,9 +49,6 @@ public class ClickSendFaxServiceProvider implements FaxServiceProvider {
             return false;
         }
 
-        LOG.info("to: "+to);
-        return false;
-/*
         String authorization =
                 Base64.getEncoder().encodeToString((username + ":" + password).getBytes(StandardCharsets.UTF_8));
 
@@ -84,6 +81,5 @@ public class ClickSendFaxServiceProvider implements FaxServiceProvider {
             LOG.error("Failed to send ClickSend request", e);
             return false;
         }
- */
     }
 }
