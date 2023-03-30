@@ -82,6 +82,7 @@ public class ClickSendFaxServiceProvider implements FaxServiceProvider {
                     .body(BodyInserters.fromValue(body))
                     .retrieve()
                     .toEntity(ClickSendResponse.class)
+                    .doOnError(throwable -> LOG.error("Failure to send fax", throwable))
                     .block();
 
             if (response == null || response.getStatusCode() != HttpStatus.OK || response.getBody() == null) {
