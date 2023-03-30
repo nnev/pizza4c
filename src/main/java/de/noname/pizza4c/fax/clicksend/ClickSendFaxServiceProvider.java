@@ -40,15 +40,18 @@ public class ClickSendFaxServiceProvider implements FaxServiceProvider {
     @Override
     public boolean sendFax(String uuid, String toAddress) {
         String to = toAddress;
-        if (to == null || toAddressOverride != null) {
+        if (to == null || (toAddressOverride != null && !toAddressOverride.isBlank())) {
             to = toAddressOverride;
         }
 
-        if (to == null) {
+        if (to == null || to.isBlank()) {
             LOG.error("Missing fax address from lieferando and no override set");
             return false;
         }
 
+        LOG.info("to: "+to);
+        return false;
+/*
         String authorization =
                 Base64.getEncoder().encodeToString((username + ":" + password).getBytes(StandardCharsets.UTF_8));
 
@@ -81,5 +84,6 @@ public class ClickSendFaxServiceProvider implements FaxServiceProvider {
             LOG.error("Failed to send ClickSend request", e);
             return false;
         }
+ */
     }
 }
