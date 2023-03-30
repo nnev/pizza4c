@@ -4,16 +4,19 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.noname.pizza4c.fax.FaxServiceProvider;
 import de.noname.pizza4c.webpage.RestaurantService;
+import io.netty.handler.logging.LogLevel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.client.reactive.ClientHttpConnector;
+import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.BodyInserters;
-import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientException;
-import reactor.core.publisher.Mono;
+import reactor.netty.http.client.HttpClient;
+import reactor.netty.transport.logging.AdvancedByteBufFormat;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
@@ -66,11 +69,12 @@ public class ClickSendFaxServiceProvider implements FaxServiceProvider {
         }
 
         try {
+            HttpClient httpClient = HttpClient.create()
+                    .wiretap(this.getClass().getCanonicalName(), LogLevel.INFO, AdvancedByteBufFormat.TEXTUAL);
+            ClientHttpConnector conn = new ReactorClientHttpConnector(httpClient);
+
             WebClient client = WebClient.builder()
-                    .filters(exchangeFilterFunctions -> {
-                        exchangeFilterFunctions.add(logRequest());
-                        exchangeFilterFunctions.add(logResponse());
-                    })
+                    .clientConnector(conn)
                     .build();
             var response = client.post()
                     .uri("https://rest.clicksend.com/v3/fax/send")
@@ -88,35 +92,5 @@ public class ClickSendFaxServiceProvider implements FaxServiceProvider {
             LOG.error("Failed to send ClickSend request", e);
             return false;
         }
-    }
-
-    ExchangeFilterFunction logRequest() {
-        return ExchangeFilterFunction.ofRequestProcessor(clientRequest -> {
-            if (LOG.isInfoEnabled()) {
-                StringBuilder sb = new StringBuilder("Request: \n");
-                //append clientRequest method and url
-                clientRequest
-                        .headers()
-                        .forEach((name, values) -> values.forEach(value -> sb.append(name).append(": ").append(values)));
-                LOG.info(sb.toString());
-            }
-            return Mono.just(clientRequest);
-        });
-    }
-
-    ExchangeFilterFunction logResponse() {
-        return ExchangeFilterFunction.ofResponseProcessor(clientResponse -> {
-            if (LOG.isInfoEnabled()) {
-                StringBuilder sb = new StringBuilder("Response: \n");
-                //append clientResponse method and url
-                clientResponse
-                        .body((inputMessage, context) -> {
-                            LOG.debug(inputMessage.getBody().blockFirst().toString(StandardCharsets.UTF_8));
-                            return inputMessage;
-                        });
-                LOG.info(sb.toString());
-            }
-            return Mono.just(clientResponse);
-        });
     }
 }
