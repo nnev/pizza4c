@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.client.reactive.ClientHttpConnector;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.stereotype.Service;
@@ -79,6 +80,7 @@ public class ClickSendFaxServiceProvider implements FaxServiceProvider {
             var response = client.post()
                     .uri("https://rest.clicksend.com/v3/fax/send")
                     .header("Authorization", "Basic " + authorization)
+                    .contentType(MediaType.APPLICATION_JSON)
                     .body(BodyInserters.fromValue(body))
                     .retrieve()
                     .toEntity(ClickSendResponse.class)
