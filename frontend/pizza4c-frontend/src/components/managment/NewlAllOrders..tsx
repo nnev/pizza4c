@@ -43,7 +43,7 @@ export default class NewAllOrders extends React.Component<NewAllOrdersProps, New
                 {this.state.error && <Error text={this.state.error.message}/>}
                 <PixmapButton
                     onClick={this.handleNewAllOrders}
-                    pixmap="reset"
+                    pixmap="delete_forever"
                     text="Gruppenbestellung neu aufbauen"
                 />
             </>
