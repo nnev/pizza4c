@@ -5,13 +5,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.UUID;
 
 @Service
 public class AllCartService {
+    public static final int MIN_TIME_AFTER_CREATION = 6 * 60 * 60 * 1000;
     private final AllCartRepository allCartRepository;
     private final CartRepository cartRepository;
 
@@ -31,6 +34,20 @@ public class AllCartService {
         this.cartRepository = cartRepository;
     }
 
+    public AllCarts newAllCarts() {
+        var allCarts = allCartRepository.findById(1L).orElseGet(this::createDefaultAllCarts);
+        if (allCarts.getCreatedAt() + MIN_TIME_AFTER_CREATION > System.currentTimeMillis()) {
+            return allCarts;
+        }
+
+        if (allCarts.getSubmittedAt() > 0 && allCarts.getSubmittedAt() + MIN_TIME_AFTER_CREATION > System.currentTimeMillis()) {
+            return allCarts;
+        }
+
+        allCartRepository.delete(allCarts);
+        return getCurrentAllCarts();
+    }
+
     public AllCarts getCurrentAllCarts() {
         var allCarts = allCartRepository.findById(1L).orElseGet(this::createDefaultAllCarts);
         if (knownRestaurantRepository.getByLieferandoName(allCarts.getSelectedRestaurant()) != null) {
@@ -41,11 +58,18 @@ public class AllCartService {
         return allCarts;
     }
 
+    @Scheduled(cron = "0 0 6 * * *")
+    private void dailyCartReset() {
+        createDefaultAllCarts();
+    }
+
     private AllCarts createDefaultAllCarts() {
         AllCarts allCarts = new AllCarts();
         allCarts.setId(1L);
         allCarts.setUuid(UUID.randomUUID().toString());
         allCarts.setSelectedRestaurant(defaultRestaurantId);
+        allCarts.setCreatedAt(System.currentTimeMillis());
+        allCarts.setCarts(Collections.emptyList());
         return allCartRepository.save(allCarts);
     }
 

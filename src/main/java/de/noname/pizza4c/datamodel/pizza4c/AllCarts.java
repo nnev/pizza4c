@@ -26,6 +26,7 @@ public class AllCarts extends VersionedEntity {
     private List<Cart> carts = new ArrayList<>();
 
     private long submittedAt;
+    private long createdAt;
 
     public void ensureNotSubmitted() {
         if (submittedAt > 0) {

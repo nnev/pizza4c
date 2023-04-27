@@ -5,6 +5,7 @@ import ChangeRestaurant from "./ChangeRestaurant";
 import CancelAllOrders from "./CancelAllOrders.";
 import SubmitOrder from "./SubmitOrder.";
 import ForceRestaurantUpdate from "./ForceRestaurantUpdate";
+import NewAllOrders from "./NewlAllOrders.";
 
 interface AdminStuffProps {
 }
@@ -32,6 +33,7 @@ export default class AdminStuff extends React.Component<AdminStuffProps, AdminSt
                 <ChangeRestaurant/>
                 <ForceRestaurantUpdate/>
                 <CancelAllOrders/>
+                <NewAllOrders/>
 
                 <h1>Ich will nicht mehr Admin sein</h1>
                 <PixmapButton

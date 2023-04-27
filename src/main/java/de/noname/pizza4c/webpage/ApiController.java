@@ -72,6 +72,11 @@ public class ApiController {
         return allCartService.getCurrentAllCarts();
     }
 
+    @PostMapping("/api/allCarts/new")
+    public AllCarts newAllCarts() {
+        return allCartService.newAllCarts();
+    }
+
     @PostMapping("/api/markPaid/{cartId}")
     public boolean markAsPaidApi(@PathVariable("cartId") String cartId) {
         cartService.markAsPaid(cartId);

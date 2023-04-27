@@ -128,6 +128,7 @@ export async function removeEntry(entry: CartEntry): Promise<boolean> {
             }
         })
 }
+
 export async function cancelAllOrders(): Promise<boolean> {
     return fetch(BACKEND + "/cancelAllOrders", {
         method: "POST",
@@ -139,5 +140,17 @@ export async function cancelAllOrders(): Promise<boolean> {
             } else {
                 return value as boolean;
             }
+        })
+}
+
+export async function newAllOrders(): Promise<AllCarts> {
+    return fetch(BACKEND + "/allCarts/new", {
+        method: "POST",
+    })
+        .then(value => value.json())
+        .then(value => mapAllCarts(value))
+        .then(value => {
+            AllCartsObservable.setValue(value);
+            return value;
         })
 }
