@@ -1,6 +1,6 @@
-import Cart from "./cart";
-import {sumReducer} from "../../util/Reducers";
-import {Menu} from "../restaurant/menu";
+import Cart from "./cart.ts";
+import {sumReducer} from "../../util/Reducers.ts";
+import {Menu} from "../restaurant/menu.ts";
 
 export default class AllCarts {
     carts: Cart[];

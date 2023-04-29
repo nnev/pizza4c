@@ -3,9 +3,7 @@ package de.noname.pizza4c.datamodel.pizza4c;
 import de.noname.pizza4c.webpage.ValidatedAddToCartDto;
 import org.springframework.stereotype.Service;
 
-import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
 import java.util.UUID;
 
 @Service

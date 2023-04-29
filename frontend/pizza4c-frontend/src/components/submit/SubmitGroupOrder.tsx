@@ -1,9 +1,9 @@
 import React from "react";
-import {submitOrder} from "../../backend/submitOrder";
+import {submitOrder} from "../../backend/submitOrder.ts";
 import {Navigate} from "react-router-dom";
-import {fetchAllCarts} from "../../backend/Cart";
-import {PixmapButton, PixmapGroup} from "../Pixmap";
-import {AdminObservable} from "../../datamodel/admin";
+import {fetchAllCarts} from "../../backend/Cart.ts";
+import {PixmapButton, PixmapGroup} from "../Pixmap.tsx";
+import {AdminObservable} from "../../datamodel/admin.ts";
 
 
 interface SubmitProps {
@@ -33,7 +33,7 @@ export class SubmitGroupOrder extends React.Component<SubmitProps, SubmitState> 
                 }
                 this.setState({success: value})
             })
-                .catch(reason => {
+                .catch(_ => {
                     this.setState({success: false})
                 })
             return <>{this.state.success}</>

@@ -1,7 +1,7 @@
 import React, {ChangeEvent, MouseEvent} from "react";
 import {Navigate} from "react-router-dom";
-import {PixmapButton} from "../Pixmap";
-import {AdminObservable} from "../../datamodel/admin";
+import {PixmapButton} from "../Pixmap.tsx";
+import {AdminObservable} from "../../datamodel/admin.ts";
 
 interface BecomeAdminProps {
 }

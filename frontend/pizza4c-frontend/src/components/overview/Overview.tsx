@@ -1,15 +1,14 @@
 import React from "react";
-import Restaurant from "../../datamodel/restaurant/restaurant";
-import {CurrentRestaurantObservable} from "../../backend/restaurant";
-import {AllCartsObservable} from "../../backend/Cart";
-import {MyCart} from "./MyCart";
-import {sumReducer} from "../../util/Reducers";
-import {OtherCarts} from "./OtherCarts";
-import AllCarts from "../../datamodel/cart/allCarts";
-import formatUnixTimestamp from "../../util/Time";
-import {FormatPrice} from "./FormatPrice";
-import {Progress} from "../Progress";
-import {AdminObservable} from "../../datamodel/admin";
+import Restaurant from "../../datamodel/restaurant/restaurant.ts";
+import {CurrentRestaurantObservable} from "../../backend/restaurant.ts";
+import {AllCartsObservable} from "../../backend/Cart.ts";
+import {MyCart} from "./MyCart.tsx";
+import {OtherCarts} from "./OtherCarts.tsx";
+import AllCarts from "../../datamodel/cart/allCarts.ts";
+import formatUnixTimestamp from "../../util/Time.ts";
+import {FormatPrice} from "./FormatPrice.tsx";
+import {Progress} from "../Progress.tsx";
+import {AdminObservable} from "../../datamodel/admin.ts";
 
 
 interface OverviewProps {

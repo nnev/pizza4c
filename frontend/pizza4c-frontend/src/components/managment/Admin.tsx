@@ -1,7 +1,7 @@
 import React from "react";
-import {AdminObservable} from "../../datamodel/admin";
-import BecomeAdmin from "./BecomeAdmin";
-import AdminStuff from "./AdminStuff";
+import {AdminObservable} from "../../datamodel/admin.ts";
+import BecomeAdmin from "./BecomeAdmin.tsx";
+import AdminStuff from "./AdminStuff.tsx";
 
 interface AdminProps {
 }

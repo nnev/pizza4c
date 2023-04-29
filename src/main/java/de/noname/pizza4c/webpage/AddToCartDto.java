@@ -6,6 +6,10 @@ import de.noname.pizza4c.datamodel.lieferando.OptionGroup;
 import de.noname.pizza4c.datamodel.lieferando.Product;
 import de.noname.pizza4c.datamodel.lieferando.Variant;
 import de.noname.pizza4c.utils.Name;
+import de.noname.pizza4c.webpage.error.NoSuchOptionException;
+import de.noname.pizza4c.webpage.error.NoSuchOptionGroupException;
+import de.noname.pizza4c.webpage.error.NoSuchProductException;
+import de.noname.pizza4c.webpage.error.NoSuchVariantException;
 import lombok.Data;
 
 import java.util.Map;

@@ -1,8 +1,8 @@
 import React, {ChangeEvent, MouseEvent} from "react";
 import {Navigate} from "react-router-dom";
-import {getMyName, Name, setMyName} from "../../datamodel/name";
-import {PixmapButton} from "../Pixmap";
-import {Error} from "../Error"
+import {getMyName, Name, setMyName} from "../../datamodel/name.ts";
+import {PixmapButton} from "../Pixmap.tsx";
+import {Error} from "../Error.tsx"
 
 interface ChangeNameProps {
 }

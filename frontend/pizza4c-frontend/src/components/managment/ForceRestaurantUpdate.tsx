@@ -1,10 +1,9 @@
 import React, {MouseEvent} from "react";
-import {PixmapButton} from "../Pixmap";
-import {cancelAllOrders} from "../../backend/Cart";
+import {PixmapButton} from "../Pixmap.tsx";
 import {Navigate} from "react-router-dom";
-import FormattedError from "../../datamodel/error";
-import {Error} from "../Error";
-import {forceRestaurantRefresh} from "../../backend/restaurant";
+import FormattedError from "../../datamodel/error.ts";
+import {Error} from "../Error.tsx";
+import {forceRestaurantRefresh} from "../../backend/restaurant.ts";
 
 interface ForceRestaurantUpdateProps {
 }

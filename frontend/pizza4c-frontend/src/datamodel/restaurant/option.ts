@@ -1,4 +1,4 @@
-import Prices from "./prices";
+import Prices from "./prices.ts";
 
 export default interface Option {
     name: string;

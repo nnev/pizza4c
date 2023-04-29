@@ -1,9 +1,7 @@
-import Cart from "../../datamodel/cart/cart";
-import Restaurant from "../../datamodel/restaurant/restaurant";
+import Cart from "../../datamodel/cart/cart.ts";
+import Restaurant from "../../datamodel/restaurant/restaurant.ts";
 import React from "react";
-import {CartView} from "./CartView";
-import {sumReducer} from "../../util/Reducers";
-import {FormatPrice} from "./FormatPrice";
+import {CartView} from "./CartView.tsx";
 
 interface CartsViewProps {
     carts: Cart[];

@@ -1,4 +1,4 @@
-import {BACKEND} from "./Constants";
+import {BACKEND} from "./Constants.ts";
 
 export async function submitOrder(): Promise<boolean> {
     return fetch(BACKEND + "/submitOrder", {

@@ -1,11 +1,11 @@
 import React, {MouseEvent} from "react";
-import {PixmapButton} from "../Pixmap";
-import {AdminObservable} from "../../datamodel/admin";
-import ChangeRestaurant from "./ChangeRestaurant";
-import CancelAllOrders from "./CancelAllOrders.";
-import SubmitOrder from "./SubmitOrder.";
-import ForceRestaurantUpdate from "./ForceRestaurantUpdate";
-import NewAllOrders from "./NewlAllOrders.";
+import {PixmapButton} from "../Pixmap.tsx";
+import {AdminObservable} from "../../datamodel/admin.ts";
+import ChangeRestaurant from "./ChangeRestaurant.tsx";
+import CancelAllOrders from "./CancelAllOrders..tsx";
+import SubmitOrder from "./SubmitOrder..tsx";
+import ForceRestaurantUpdate from "./ForceRestaurantUpdate.tsx";
+import NewAllOrders from "./NewAllOrders..tsx";
 
 interface AdminStuffProps {
 }

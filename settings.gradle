@@ -1,1 +1,2 @@
 rootProject.name = 'pizza4c'
+include("frontend")

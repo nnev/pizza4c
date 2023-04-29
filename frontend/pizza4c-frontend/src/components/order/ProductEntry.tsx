@@ -1,11 +1,11 @@
 import React from "react";
-import {isConfigurableProduct} from "../../datamodel/restaurant/menu";
-import {PixmapButton} from "../Pixmap";
-import {ProductInfoView} from "./ProductInfo";
-import Restaurant from "../../datamodel/restaurant/restaurant";
-import Product from "../../datamodel/restaurant/product";
+import {isConfigurableProduct} from "../../datamodel/restaurant/menu.ts";
+import {PixmapButton} from "../Pixmap.tsx";
+import {ProductInfoView} from "./ProductInfo.tsx";
+import Restaurant from "../../datamodel/restaurant/restaurant.ts";
+import Product from "../../datamodel/restaurant/product.ts";
 import {Navigate} from "react-router-dom";
-import {addToCart as addToCartApi} from "../../backend/Cart";
+import {addToCart as addToCartApi} from "../../backend/Cart.ts";
 
 interface ProductEntryProps {
     restaurant: Restaurant
@@ -39,7 +39,7 @@ export class ProductEntry extends React.Component<ProductEntryProps, ProductEntr
     addToCart = () => {
         if (this.props.productId) {
             addToCartApi(this.props.productId, this.state.product.variants[0].id, new Map<string, Set<string>>())
-                .then(value => {
+                .then(_ => {
                     this.setState({addToCartCompleted: true});
                 })
                 .catch(value => {

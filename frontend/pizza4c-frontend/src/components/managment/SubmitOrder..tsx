@@ -1,5 +1,5 @@
 import React, {MouseEvent} from "react";
-import {PixmapButton} from "../Pixmap";
+import {PixmapButton} from "../Pixmap.tsx";
 import {Navigate} from "react-router-dom";
 
 interface SubmitOrderProps {

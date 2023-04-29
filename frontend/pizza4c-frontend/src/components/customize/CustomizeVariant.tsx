@@ -1,14 +1,14 @@
-import Variant from "../../datamodel/restaurant/variant";
-import Restaurant from "../../datamodel/restaurant/restaurant";
+import Variant from "../../datamodel/restaurant/variant.ts";
+import Restaurant from "../../datamodel/restaurant/restaurant.ts";
 import React, {ChangeEvent} from "react";
-import {CustomizeOptionGroup} from "./CustomizeOptionGroup";
-import {CurrentRestaurantObservable} from "../../backend/restaurant";
-import Product from "../../datamodel/restaurant/product";
-import {PixmapButton, PixmapGroup} from "../Pixmap";
+import {CustomizeOptionGroup} from "./CustomizeOptionGroup.tsx";
+import {CurrentRestaurantObservable} from "../../backend/restaurant.ts";
+import Product from "../../datamodel/restaurant/product.ts";
+import {PixmapButton, PixmapGroup} from "../Pixmap.tsx";
 import {Navigate, useParams} from "react-router-dom";
-import {addToCart} from "../../backend/Cart";
-import FormattedError from "../../datamodel/error";
-import {Error} from "../Error";
+import {addToCart} from "../../backend/Cart.ts";
+import FormattedError from "../../datamodel/error.ts";
+import {Error} from "../Error.tsx";
 
 interface CustomizeVariantProps {
     productId: string;
@@ -59,7 +59,7 @@ class CustomizeVariantClazz extends React.Component<CustomizeVariantProps, Custo
     addToCart = () => {
         if (this.props.productId && this.state.variant && this.getCustomizationCompleted()) {
             addToCart(this.props.productId, this.state.variant.id, this.state.selectedOptions, this.state.comment)
-                .then(value => {
+                .then(_ => {
                     this.setState({addToCartCompleted: true});
                 })
                 .catch(value => {

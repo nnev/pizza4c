@@ -1,13 +1,13 @@
-import {BACKEND} from "./Constants";
-import {Observable} from "../util/Observable";
-import Cart from "../datamodel/cart/cart";
-import CartEntry from "../datamodel/cart/cartEntry";
-import AllCarts from "../datamodel/cart/allCarts";
-import FormattedError from "../datamodel/error";
-import {getMyName} from "../datamodel/name";
+import {BACKEND} from "./Constants.ts";
+import {Observable} from "../util/Observable.ts";
+import Cart from "../datamodel/cart/cart.ts";
+import CartEntry from "../datamodel/cart/cartEntry.ts";
+import AllCarts from "../datamodel/cart/allCarts.ts";
+import FormattedError from "../datamodel/error.ts";
+import {getMyName} from "../datamodel/name.ts";
 
 export async function addToCart(product: string, variant: string, options: Map<string, Set<string>>, comment?: string): Promise<any> {
-    function replacer(key: any, value: any) {
+    function replacer(_: any, value: any) {
         if (value instanceof Map) {
             return Object.fromEntries(value);
         } else if (value instanceof Set) {

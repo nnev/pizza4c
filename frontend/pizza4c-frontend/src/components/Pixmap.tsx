@@ -1,6 +1,6 @@
 import React, {MouseEventHandler} from "react";
 import {Link} from "react-router-dom";
-import {joinClasses} from "../util/JoinClasses";
+import {joinClasses} from "../util/JoinClasses.ts";
 
 interface PixmapProps {
     pixmap: string;

@@ -1,10 +1,7 @@
 import React from "react";
-import {sumReducer} from "../../util/Reducers";
-import {Progress} from "../Progress";
-import {CartsView} from "./CartsView";
-import Restaurant from "../../datamodel/restaurant/restaurant";
-import {FormatPrice} from "./FormatPrice";
-import AllCarts from "../../datamodel/cart/allCarts";
+import {CartsView} from "./CartsView.tsx";
+import Restaurant from "../../datamodel/restaurant/restaurant.ts";
+import AllCarts from "../../datamodel/cart/allCarts.ts";
 
 interface OtherCartsProps {
     restaurant: Restaurant;

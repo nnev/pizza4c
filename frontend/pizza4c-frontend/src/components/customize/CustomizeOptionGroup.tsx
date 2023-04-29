@@ -1,9 +1,9 @@
-import Variant from "../../datamodel/restaurant/variant";
-import Restaurant from "../../datamodel/restaurant/restaurant";
-import {RadioOptionGroup, SelectedOptionCallback} from "./RadioOptionGroup";
-import {isOptionGroupMandatory, OptionGroup} from "../../datamodel/restaurant/optionGroup";
+import Variant from "../../datamodel/restaurant/variant.ts";
+import Restaurant from "../../datamodel/restaurant/restaurant.ts";
+import {RadioOptionGroup, SelectedOptionCallback} from "./RadioOptionGroup.tsx";
+import {isOptionGroupMandatory, OptionGroup} from "../../datamodel/restaurant/optionGroup.ts";
 import React from "react";
-import {CheckboxOptionGroup} from "./CheckboxOptionGroup";
+import {CheckboxOptionGroup} from "./CheckboxOptionGroup.tsx";
 
 interface CustomizeOptionGroupProps {
     productId: string;

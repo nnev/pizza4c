@@ -1,11 +1,11 @@
 import React from "react";
-import {CurrentRestaurantObservable} from "../../backend/restaurant";
-import Restaurant from "../../datamodel/restaurant/restaurant";
-import Product from "../../datamodel/restaurant/product";
-import {ProductInfoView} from "../order/ProductInfo";
+import {CurrentRestaurantObservable} from "../../backend/restaurant.ts";
+import Restaurant from "../../datamodel/restaurant/restaurant.ts";
+import Product from "../../datamodel/restaurant/product.ts";
+import {ProductInfoView} from "../order/ProductInfo.tsx";
 import {Navigate, useParams} from "react-router-dom";
-import {PixmapButton} from "../Pixmap";
-import {joinClasses} from "../../util/JoinClasses";
+import {PixmapButton} from "../Pixmap.tsx";
+import {joinClasses} from "../../util/JoinClasses.ts";
 
 
 interface CustomizeProps {

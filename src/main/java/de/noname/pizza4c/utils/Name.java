@@ -1,6 +1,6 @@
 package de.noname.pizza4c.utils;
 
-import de.noname.pizza4c.webpage.InvalidNameException;
+import de.noname.pizza4c.webpage.error.InvalidNameException;
 import lombok.Data;
 
 @Data

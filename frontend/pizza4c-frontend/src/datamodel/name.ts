@@ -1,5 +1,4 @@
-import {Observable} from "../util/Observable";
-import {AsyncLocalStorage} from "async_hooks";
+import {Observable} from "../util/Observable.ts";
 
 export class Name {
     private static ADJECTIVES: string[] = [

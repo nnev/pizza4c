@@ -1,7 +1,7 @@
-import CartEntry from "./cartEntry";
-import {Menu} from "../restaurant/menu";
-import {sumReducer} from "../../util/Reducers";
-import {Name} from "../name";
+import CartEntry from "./cartEntry.ts";
+import {Menu} from "../restaurant/menu.ts";
+import {sumReducer} from "../../util/Reducers.ts";
+import {Name} from "../name.ts";
 
 export default class Cart {
     id: string;

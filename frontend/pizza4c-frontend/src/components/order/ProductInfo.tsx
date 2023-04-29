@@ -1,5 +1,5 @@
 import React from "react";
-import ProductInfo from "../../datamodel/restaurant/productInfo";
+import ProductInfo from "../../datamodel/restaurant/productInfo.ts";
 
 interface ProductInfoProps {
     productInfo: ProductInfo;

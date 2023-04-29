@@ -1,5 +1,5 @@
-import Dictionary from "../../util/Dictionary";
-import {getVariant, Menu} from "../restaurant/menu";
+import Dictionary from "../../util/Dictionary.ts";
+import {getVariant, Menu} from "../restaurant/menu.ts";
 
 export default class CartEntry {
     id: string;

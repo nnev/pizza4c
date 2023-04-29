@@ -1,5 +1,5 @@
-import CartEntry from "../../datamodel/cart/cartEntry";
-import Restaurant from "../../datamodel/restaurant/restaurant";
+import CartEntry from "../../datamodel/cart/cartEntry.ts";
+import Restaurant from "../../datamodel/restaurant/restaurant.ts";
 import React from "react";
 
 interface OptionListViewProps {

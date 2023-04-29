@@ -1,9 +1,9 @@
-import Category from "./category";
-import {isConfigurableOptionGroup, OptionGroup} from "./optionGroup";
-import Option from "./option";
-import Product from "./product";
-import Dictionary from "../../util/Dictionary";
-import Variant from "./variant";
+import Category from "./category.ts";
+import {isConfigurableOptionGroup, OptionGroup} from "./optionGroup.ts";
+import Option from "./option.ts";
+import Product from "./product.ts";
+import Dictionary from "../../util/Dictionary.ts";
+import Variant from "./variant.ts";
 
 
 export interface Menu {

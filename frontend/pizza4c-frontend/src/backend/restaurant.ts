@@ -1,8 +1,8 @@
-import {BACKEND} from "./Constants";
-import Restaurant from "../datamodel/restaurant/restaurant";
-import {Observable} from "../util/Observable";
-import {ErrorObservable} from "../datamodel/error";
-import KnownRestaurant from "../datamodel/restaurant/knownRestaurant";
+import {BACKEND} from "./Constants.ts";
+import Restaurant from "../datamodel/restaurant/restaurant.ts";
+import {Observable} from "../util/Observable.ts";
+import {ErrorObservable} from "../datamodel/error.ts";
+import KnownRestaurant from "../datamodel/restaurant/knownRestaurant.ts";
 
 export async function getCurrentRestaurant() {
     fetch(BACKEND + "/restaurant/current", {
@@ -12,7 +12,7 @@ export async function getCurrentRestaurant() {
         .then(value => {
             CurrentRestaurantObservable.setValue(value);
             return value;
-        }).catch(reason => {
+        }).catch(_ => {
         ErrorObservable.setValue({
             timestamp: "",
             status: 0,
@@ -37,7 +37,7 @@ export async function setCurrentRestaurant(restaurant: string): Promise<boolean>
         .then(value => value.json())
         .then(value => {
             if (value) {
-                return getCurrentRestaurant().then(value => true)
+                return getCurrentRestaurant().then(_ => true)
             }
             return false;
         })
@@ -52,7 +52,7 @@ export async function forceRestaurantRefresh() {
         .then(value => value.json())
         .then(value => {
             if (value) {
-                return getCurrentRestaurant().then(value => true)
+                return getCurrentRestaurant().then(_ => true)
             }
             return false;
         });

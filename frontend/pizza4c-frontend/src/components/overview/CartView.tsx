@@ -1,13 +1,12 @@
-import Cart from "../../datamodel/cart/cart";
-import Restaurant from "../../datamodel/restaurant/restaurant";
+import Cart from "../../datamodel/cart/cart.ts";
+import Restaurant from "../../datamodel/restaurant/restaurant.ts";
 import React from "react";
-import {getVariant} from "../../datamodel/restaurant/menu";
-import {OptionListView} from "./OptionListView";
-import {ToggleCartPaid} from "./ToggleCartPaid";
-import {RemoveEntry} from "./RemoveEntry";
-import {joinClasses} from "../../util/JoinClasses";
-import {AllCartsObservable} from "../../backend/Cart";
-import {getMyName, Name, UserNameObservable} from "../../datamodel/name";
+import {getVariant} from "../../datamodel/restaurant/menu.ts";
+import {OptionListView} from "./OptionListView.tsx";
+import {ToggleCartPaid} from "./ToggleCartPaid.tsx";
+import {RemoveEntry} from "./RemoveEntry.tsx";
+import {joinClasses} from "../../util/JoinClasses.ts";
+import {getMyName, Name, UserNameObservable} from "../../datamodel/name.ts";
 
 interface CartViewProps {
     cart: Cart;

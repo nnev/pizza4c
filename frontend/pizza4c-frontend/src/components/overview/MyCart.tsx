@@ -1,12 +1,12 @@
 import React, {MouseEvent} from "react";
-import Restaurant from "../../datamodel/restaurant/restaurant";
-import {AllCartsObservable} from "../../backend/Cart";
-import {Pixmap, PixmapButton, PixmapGroup} from "../Pixmap";
+import Restaurant from "../../datamodel/restaurant/restaurant.ts";
+import {AllCartsObservable} from "../../backend/Cart.ts";
+import {Pixmap, PixmapButton, PixmapGroup} from "../Pixmap.tsx";
 import {Navigate} from "react-router-dom";
-import {ToggleCartPaid} from "./ToggleCartPaid";
-import {OptionListView} from "./OptionListView";
-import {getMyName, Name, UserNameObservable} from "../../datamodel/name";
-import AllCarts from "../../datamodel/cart/allCarts";
+import {ToggleCartPaid} from "./ToggleCartPaid.tsx";
+import {OptionListView} from "./OptionListView.tsx";
+import {getMyName, Name, UserNameObservable} from "../../datamodel/name.ts";
+import AllCarts from "../../datamodel/cart/allCarts.ts";
 
 
 interface MyCartProps {

@@ -1,0 +1,43 @@
+plugins {
+    id "com.github.node-gradle.node" version "4.0.0"
+    id 'java'
+}
+
+node {
+    allowInsecureProtocol = false
+    npmInstallCommand = "ci"
+    nodeProjectDir = file("${project.projectDir}/pizza4c-frontend")
+}
+
+npm_run_build {
+    inputs.files fileTree("pizza4c-frontend/public")
+    inputs.files fileTree("pizza4c-frontend/src")
+
+    inputs.file 'pizza4c-frontend/package.json'
+    inputs.file 'pizza4c-frontend/package-lock.json'
+
+    outputs.dir 'pizza4c-frontend/build'
+}
+
+
+var buildTask = tasks.register('packageNpmApp', Copy) {
+    dependsOn npm_run_build
+    destinationDir = file("${projectDir}/build_packageNpmApp")
+    from('pizza4c-frontend/build') {
+        // optional path under which output will be visible in Java classpath, e.g. static resources path
+        into 'static'
+    }
+}
+sourceSets {
+    main {
+        resources {
+            // This makes the processResources task automatically depend on the buildWebapp one
+            srcDir(buildTask)
+        }
+    }
+}
+
+clean {
+    delete packageNpmApp.destinationDir
+    delete 'pizza4c-frontend/build'
+}

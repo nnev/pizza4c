@@ -1,8 +1,8 @@
 import React from "react";
-import Restaurant from "../../datamodel/restaurant/restaurant";
-import {CurrentRestaurantObservable} from "../../backend/restaurant";
-import {OrderSidebar} from "./OrderSidebar";
-import {OrderList} from "./OrderList";
+import Restaurant from "../../datamodel/restaurant/restaurant.ts";
+import {CurrentRestaurantObservable} from "../../backend/restaurant.ts";
+import {OrderSidebar} from "./OrderSidebar.tsx";
+import {OrderList} from "./OrderList.tsx";
 
 interface OrderProps {
 }

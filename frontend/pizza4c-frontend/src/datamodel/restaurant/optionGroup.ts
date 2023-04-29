@@ -2,8 +2,8 @@ export interface OptionGroup {
     name: string;
     isTypeMulti: boolean;
     isRequired: boolean;
-    minChoices: Number;
-    maxChoices: Number;
+    minChoices: number;
+    maxChoices: number;
     optionIds: string[];
 }
 

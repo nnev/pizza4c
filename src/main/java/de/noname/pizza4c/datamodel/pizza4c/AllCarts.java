@@ -2,7 +2,7 @@ package de.noname.pizza4c.datamodel.pizza4c;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import de.noname.pizza4c.datamodel.lieferando.Menu;
-import de.noname.pizza4c.webpage.AlreadySubmittedException;
+import de.noname.pizza4c.webpage.error.AlreadySubmittedException;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 

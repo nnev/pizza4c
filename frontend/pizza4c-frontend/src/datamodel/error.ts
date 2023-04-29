@@ -1,5 +1,4 @@
-import {Observable} from "../util/Observable";
-import Restaurant from "./restaurant/restaurant";
+import {Observable} from "../util/Observable.ts";
 
 export default interface FormattedError {
     timestamp: string;

@@ -1,4 +1,4 @@
-import {BACKEND} from "./Constants";
+import {BACKEND} from "./Constants.ts";
 
 export function renderPdf() {
     console.log("---")

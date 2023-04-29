@@ -1,7 +1,7 @@
 import React from "react";
-import {ProductEntry} from "./ProductEntry";
-import Restaurant from "../../datamodel/restaurant/restaurant";
-import Category from "../../datamodel/restaurant/category";
+import {ProductEntry} from "./ProductEntry.tsx";
+import Restaurant from "../../datamodel/restaurant/restaurant.ts";
+import Category from "../../datamodel/restaurant/category.ts";
 
 interface CategoryEntryProps {
     restaurant: Restaurant

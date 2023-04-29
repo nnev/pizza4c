@@ -1,20 +1,19 @@
 import React from 'react';
-import './App.css';
 import {BrowserRouter, Link, Navigate, Route, Routes} from "react-router-dom";
-import {Order} from "./components/order/Order";
-import {CustomizeProduct} from "./components/customize/CustomizeProduct";
-import {getCurrentRestaurant} from "./backend/restaurant";
-import {Overview} from "./components/overview/Overview";
-import ChangeName from "./components/managment/ChangeName";
-import {fetchAllCarts} from "./backend/Cart";
-import {SubmitGroupOrder} from "./components/submit/SubmitGroupOrder";
-import {RenderPdf} from "./components/submit/RenderPdf";
-import {CustomizeVariant} from "./components/customize/CustomizeVariant";
-import {AdminObservable} from "./datamodel/admin";
-import FormattedError, {ErrorObservable} from "./datamodel/error";
-import {Error} from "./components/Error";
-import Privacy from "./components/Privacy";
-import Admin from "./components/managment/Admin";
+import {Order} from "./components/order/Order.tsx";
+import {CustomizeProduct} from "./components/customize/CustomizeProduct.tsx";
+import {getCurrentRestaurant} from "./backend/restaurant.ts";
+import {Overview} from "./components/overview/Overview.tsx";
+import ChangeName from "./components/managment/ChangeName.tsx";
+import {fetchAllCarts} from "./backend/Cart.ts";
+import {SubmitGroupOrder} from "./components/submit/SubmitGroupOrder.tsx";
+import {RenderPdf} from "./components/submit/RenderPdf.tsx";
+import {CustomizeVariant} from "./components/customize/CustomizeVariant.tsx";
+import {AdminObservable} from "./datamodel/admin.ts";
+import FormattedError, {ErrorObservable} from "./datamodel/error.ts";
+import {Error} from "./components/Error.tsx";
+import Privacy from "./components/Privacy.tsx";
+import Admin from "./components/managment/Admin.tsx";
 
 interface AppProps {
 }
@@ -59,7 +58,7 @@ class App extends React.Component<AppProps, AppState> {
             <>
                 <BrowserRouter>
                     <nav className="menu">
-                        <Link to="/" className="borderRight">Pizza4C</Link>
+                        <Link to="/" className="borderRight">🍕4Chaos</Link>
                         <Link to="/renderPdf" className="borderRight">PDF anschauen</Link>
                         <Link to="/becomeAdmin" className="borderRight">{this.state.admin ? "Admin stuff" : "Admin werden"}</Link>
                         <span className="variableSpacer"/>

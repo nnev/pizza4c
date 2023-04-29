@@ -1,5 +1,5 @@
-import Variant from "./variant";
-import ProductInfo from "./productInfo";
+import Variant from "./variant.ts";
+import ProductInfo from "./productInfo.ts";
 
 export default interface Product {
     name: string;

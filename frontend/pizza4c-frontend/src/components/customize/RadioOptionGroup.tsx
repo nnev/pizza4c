@@ -1,4 +1,4 @@
-import Restaurant from "../../datamodel/restaurant/restaurant";
+import Restaurant from "../../datamodel/restaurant/restaurant.ts";
 import React, {ChangeEvent} from "react";
 
 export interface SelectedOptionCallback {

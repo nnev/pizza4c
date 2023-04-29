@@ -1,5 +1,5 @@
-import Restaurant from "../../datamodel/restaurant/restaurant";
-import {SelectedOptionCallback} from "./RadioOptionGroup";
+import Restaurant from "../../datamodel/restaurant/restaurant.ts";
+import {SelectedOptionCallback} from "./RadioOptionGroup.tsx";
 import React, {ChangeEvent} from "react";
 
 interface CheckboxOptionGroupProps {
