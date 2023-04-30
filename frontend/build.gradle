@@ -39,5 +39,5 @@ sourceSets {
 
 clean {
     delete packageNpmApp.destinationDir
-    delete 'pizza4c-frontend/build'
+    delete 'pizza4c-frontend/dist'
 }
