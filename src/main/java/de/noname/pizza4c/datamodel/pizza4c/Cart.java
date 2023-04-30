@@ -5,9 +5,9 @@ import de.noname.pizza4c.datamodel.lieferando.Menu;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.OneToMany;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.OneToMany;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;

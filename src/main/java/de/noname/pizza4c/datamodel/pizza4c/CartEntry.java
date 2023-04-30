@@ -1,13 +1,14 @@
 package de.noname.pizza4c.datamodel.pizza4c;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.vladmihalcea.hibernate.type.json.JsonType;
 import de.noname.pizza4c.datamodel.lieferando.Menu;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.hibernate.annotations.Type;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -26,7 +27,7 @@ public class CartEntry extends VersionedEntity {
 
     private String variant;
 
-    @Type(type = "json")
+    @Type(JsonType.class)
     @Column(columnDefinition = "json")
     private Map<String, Set<String>> options;
 

@@ -1,11 +1,11 @@
 package de.noname.pizza4c.datamodel.pizza4c;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
 import java.time.LocalDateTime;
 
 @Data

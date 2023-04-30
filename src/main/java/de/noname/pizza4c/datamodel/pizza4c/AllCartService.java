@@ -35,7 +35,7 @@ public class AllCartService {
     }
 
     public AllCarts newAllCarts() {
-        var allCarts = allCartRepository.findById(1L).orElseGet(this::createDefaultAllCarts);
+        var allCarts = getCurrentAllCarts();
         if (allCarts.getCreatedAt() + MIN_TIME_AFTER_CREATION > System.currentTimeMillis()) {
             return allCarts;
         }
@@ -81,7 +81,6 @@ public class AllCartService {
                 .stream()
                 .filter(c -> c.getName().equals(name.getLongName()))
                 .findFirst();
-
 
         if (optionalCart.isEmpty()) {
             var cart = new Cart();

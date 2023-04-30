@@ -1,23 +1,13 @@
 package de.noname.pizza4c.datamodel.pizza4c;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.vladmihalcea.hibernate.type.json.JsonType;
-import org.hibernate.annotations.TypeDef;
-import org.hibernate.annotations.TypeDefs;
+import jakarta.persistence.Id;
+import jakarta.persistence.MappedSuperclass;
+import jakarta.persistence.Version;
 
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.MappedSuperclass;
-import javax.persistence.Version;
-
-@TypeDefs({
-        @TypeDef(name = "json", typeClass = JsonType.class),
-})
 @MappedSuperclass
 public class VersionedEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @JsonIgnore
     private long id;
 
