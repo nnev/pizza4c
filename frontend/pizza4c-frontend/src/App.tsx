@@ -63,7 +63,7 @@ class App extends React.Component<AppProps, AppState> {
                         <Link to="/becomeAdmin" className="borderRight">{this.state.admin ? "Admin stuff" : "Admin werden"}</Link>
                         <span className="variableSpacer"/>
                         <Link to="/privacy" className="borderLeft">Privacy</Link>
-                        <a href="https://github.com/k0rmarun/pizza4c/issues" target="_blank" className="borderLeft">Report Bugs</a>
+                        <a href="https://github.com/nnev/pizza4c/issues" target="_blank" className="borderLeft">Report Bugs</a>
 
                     </nav>
                     <div className="container">

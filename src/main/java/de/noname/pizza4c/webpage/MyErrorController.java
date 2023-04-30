@@ -18,7 +18,7 @@ public class MyErrorController implements ErrorController {
                 <body>
                 <h1>Da ist wohl etwas schief gegangen.</h1>
                 Da ist wohl ein Cyberunfall passiert und jemand hat das WLAN-Kabel gezogen.
-                Am besten <a href="https://github.com/k0rmarun/pizza4c/issues">meldest Du dieses Vorfall</a>.
+                Am besten <a href="https://github.com/nnev/pizza4c/issues">meldest Du dieses Vorfall</a>.
                 <br />
                 <a href="/">Hier geht es zurück zur Startseite</a>
                 </body>
