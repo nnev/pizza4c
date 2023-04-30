@@ -24,14 +24,12 @@ var buildTask = tasks.register('packageNpmApp', Copy) {
     dependsOn npm_run_build
     destinationDir = file("${projectDir}/build_packageNpmApp")
     from('pizza4c-frontend/dist') {
-        // optional path under which output will be visible in Java classpath, e.g. static resources path
         into 'static'
     }
 }
 sourceSets {
     main {
         resources {
-            // This makes the processResources task automatically depend on the buildWebapp one
             srcDir(buildTask)
         }
     }
