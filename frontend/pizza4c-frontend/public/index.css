@@ -203,8 +203,12 @@ aside .categoryDescription {
     color: var(--textNormal);
 }
 
-main .product > ol {
+main .product > ol, .privacy ol {
     list-style: initial;
+}
+
+.privacy ol {
+    margin-left: 20px;
 }
 
 .category, .product {
