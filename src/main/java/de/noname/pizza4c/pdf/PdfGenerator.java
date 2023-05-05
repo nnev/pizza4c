@@ -38,11 +38,20 @@ public class PdfGenerator {
 
     private static final DateTimeFormatter GERMAN_DATE_TIME_MINUTES = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
 
+    private static final int LOGO_TARGET_HEIGHT = 70;
+    private static final int LOGO_TARGET_WIDTH = 220;
+
     @Autowired
     private RestaurantService restaurantService;
 
     @Autowired
     private AllCartService allCartService;
+
+    @Value("${pizza4c.pdf.showLogo:true}")
+    private boolean showLogo;
+
+    @Value("${pizza4c.pdf.logoName:noname.jpeg}")
+    private String logoName;
 
     @Value("${pizza4c.pdf.companyName:NoName e.V.}")
     private String companyName;
@@ -55,6 +64,9 @@ public class PdfGenerator {
 
     @Value("${pizza4c.pdf.addressLine2:69120 Heidelberg}")
     private String addressLine2;
+
+    @Value("${pizza4c.pdf.addressLine3:}")
+    private String addressLine3;
 
     @Value("${pizza4c.pdf.phone:0157 9230 7561}")
     private String phone;
@@ -85,10 +97,46 @@ public class PdfGenerator {
             // step 2: we open the document
             document.open();
 
+            int offsetY = 0;
+
+            if (showLogo) {
+                var logo = new Jpeg(ApiController.class.getResource("/pdf/" + logoName));
+                float scale = Math.min(
+                        LOGO_TARGET_HEIGHT * 100f / logo.getPlainHeight(),
+                        LOGO_TARGET_WIDTH * 100f / logo.getPlainWidth()
+                );
+                logo.scalePercent(scale);
+                logo.setWidthPercentage(scale);
+                logo.setAlignment(Element.ALIGN_RIGHT | Element.ALIGN_TOP);
+                logo.setAbsolutePosition(document.getPageSize().getWidth() - logo.getScaledWidth() - 30,
+                        document.getPageSize().getHeight() - logo.getScaledHeight() - 30);
+                document.add(logo);
+
+                offsetY += LOGO_TARGET_HEIGHT + 30;
+            }
+
+            var osmCode = new QrCode(
+                    document.getPageSize().getWidth() - 280,
+                    document.getPageSize().getHeight() - (9 + offsetY),
+                    150,
+                    "http://www.osm.org/?mlat=" + lat + "&mlon=" + lng + "#map=17/" + lat + "/" + lng,
+                    "Open Street Map",
+                    normalFont);
+            osmCode.render(writer.getDirectContent());
+
+            var gmapsCode = new QrCode(
+                    document.getPageSize().getWidth() - 150,
+                    document.getPageSize().getHeight() - (9 + offsetY),
+                    150,
+                    "https://maps.google.de/maps?q=" + lat + "," + lng + "&num=1&t=m&z=18",
+                    "Google Maps",
+                    normalFont);
+            gmapsCode.render(writer.getDirectContent());
+
             var anschrift = new PdfPTable(new float[]{0.3f, 0.8f});
             anschrift.setHorizontalAlignment(Element.ALIGN_LEFT);
-            anschrift.setWidthPercentage(50);
-            anschrift.setTotalWidth(0.5f);
+            anschrift.setWidthPercentage(55);
+            anschrift.setTotalWidth(0.55f);
             anschrift.getDefaultCell().setBorder(Rectangle.NO_BORDER);
             anschrift.addCell(new Phrase(new Chunk("Firma", boldFont)));
             anschrift.addCell(new Phrase(new Chunk(companyName, normalFont)));
@@ -98,6 +146,10 @@ public class PdfGenerator {
             anschrift.addCell(new Phrase(new Chunk(addressLine1, normalFont)));
             anschrift.addCell(new Phrase(new Chunk("", boldFont)));
             anschrift.addCell(new Phrase(new Chunk(addressLine2, normalFont)));
+            if (addressLine3 != null && !addressLine3.isBlank()) {
+                anschrift.addCell(new Phrase(new Chunk("", boldFont)));
+                anschrift.addCell(new Phrase(new Chunk(addressLine3, normalFont)));
+            }
             anschrift.addCell(new Phrase(new Chunk("Telefon", boldFont)));
             anschrift.addCell(new Phrase(new Chunk(phone, normalFont)));
             anschrift.addCell(new Phrase(new Chunk("E-Mail", boldFont)));
@@ -109,39 +161,15 @@ public class PdfGenerator {
 
             document.add(anschrift);
 
-            var nonameLogo = new Jpeg(ApiController.class.getResource("/pdf/noname.jpeg"));
-            nonameLogo.scalePercent(10);
-            nonameLogo.setWidthPercentage(30);
-            nonameLogo.setAlignment(Element.ALIGN_RIGHT | Element.ALIGN_TOP);
-            nonameLogo.setAbsolutePosition(document.getPageSize().getWidth() - nonameLogo.getScaledWidth() - 30,
-                    document.getPageSize().getHeight() - nonameLogo.getScaledHeight() - 30);
-            document.add(nonameLogo);
-
-            var osmCode = new QrCode(
-                    document.getPageSize().getWidth() - 330,
-                    document.getPageSize().getHeight() - 80,
-                    150,
-                    "http://www.osm.org/?mlat=" + lat + "&mlon=" + lng + "#map=17/" + lat + "/" + lng,
-                    "Open Street Map",
-                    normalFont);
-            osmCode.render(writer.getDirectContent());
-
-            var gmapsCode = new QrCode(
-                    document.getPageSize().getWidth() - 200,
-                    document.getPageSize().getHeight() - 80,
-                    150,
-                    "https://maps.google.de/maps?q=" + lat + "," + lng + "&num=1&t=m&z=18",
-                    "Google Maps",
-                    normalFont);
-            gmapsCode.render(writer.getDirectContent());
-
             var allCarts = allCartService.getCurrentAllCarts();
             var menu = restaurantService.getSelectedRestaurant().getMenu();
 
-            document.add(new Paragraph(new Phrase(" "))); // spacer
-            document.add(new Paragraph(new Phrase(" "))); // spacer
-            document.add(new Paragraph(new Phrase(" "))); // spacer
-            document.add(new Paragraph(new Phrase(" "))); // spacer
+            if (showLogo) {
+                document.add(new Paragraph(new Phrase(" "))); // spacer
+                document.add(new Paragraph(new Phrase(" "))); // spacer
+                document.add(new Paragraph(new Phrase(" "))); // spacer
+                document.add(new Paragraph(new Phrase(" "))); // spacer
+            }
 
             var orderData = new PdfPTable(new float[]{0.4f, 0.3f, 0.1f, 0.2f});
             orderData.getDefaultCell().setBorder(Rectangle.NO_BORDER);
