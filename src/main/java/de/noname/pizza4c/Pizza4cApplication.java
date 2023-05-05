@@ -21,9 +21,9 @@ public class Pizza4cApplication {
 
     @EventListener(ApplicationReadyEvent.class)
     public void initializeRestaurantDataOnFirstStart() {
-        if (knownRestaurantRepository.count() == 0) {
+        /*if (knownRestaurantRepository.count() == 0) {
             restaurantService.forceRefreshRestaurantData();
-        }
+        }*/
     }
 
     public static void main(String[] args) {
