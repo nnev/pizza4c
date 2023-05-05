@@ -161,6 +161,10 @@ public class PdfGenerator {
 
             document.add(anschrift);
 
+            if (addressLine3 == null || addressLine3.isBlank()) {
+                document.add(new Paragraph(new Phrase(" "))); // spacer
+            }
+
             var allCarts = allCartService.getCurrentAllCarts();
             var menu = restaurantService.getSelectedRestaurant().getMenu();
 
