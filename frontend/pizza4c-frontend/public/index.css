@@ -550,11 +550,13 @@ tr.cartOwner td {
 
 @media (max-width: 1200px) {
     .container {
-        position: initial;
+        position: sticky;
         left: 0;
         right: 0;
         transform: none;
         max-width: none;
+        width: 100%;
+        margin-top: 60px;
     }
 
     main.notSide {
@@ -570,11 +572,13 @@ tr.cartOwner td {
     }
 
     aside {
-        position: absolute;
+        position: sticky;
         left: 0;
         top: 0;
         bottom: 0;
         overflow-y: auto;
+        flex: 1 0 auto;
+        max-width: 180px;
     }
 
     .customizeButtons button.pixmapButton {
@@ -587,5 +591,42 @@ tr.cartOwner td {
 
     .customizeButtons {
         grid-template-columns: repeat(2, 1fr);
+    }
+
+    .orderTable td {
+        min-width: inherit;
+    }
+    .orderTable td:not(:first-child) {
+        padding:0 10px;
+    }
+
+    .menu {
+        line-height: 20px;
+    }
+
+    .menu a {
+        padding: 10px;
+    }
+
+    button.pixmapButton.tiny {
+        overflow-wrap: break-word;
+        white-space: break-spaces;
+    }
+
+    main {
+        position: initial;
+        left: initial;
+        top: initial;
+        right: initial;
+        flex: 0 1 auto;
+        max-width: initial;
+    }
+    .row {
+        display: flex;
+        flex-wrap: nowrap;
+        flex-direction: row;
+        justify-content: flex-start;
+        align-items: flex-start;
+        align-content: flex-start;
     }
 }
