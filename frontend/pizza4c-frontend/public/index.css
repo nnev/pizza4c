@@ -564,7 +564,7 @@ tr.cartOwner td {
     }
 
     main:not(.withSide) {
-        position: absolute;
+        position: sticky;
         left: 0;
         right: 0;
         overflow-y: initial;
@@ -628,5 +628,13 @@ tr.cartOwner td {
         justify-content: flex-start;
         align-items: flex-start;
         align-content: flex-start;
+    }
+
+    textarea {
+        max-width: 600px;
+    }
+
+    .myOrder {
+        display: inline-block;
     }
 }

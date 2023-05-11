@@ -158,7 +158,7 @@ class CustomizeVariantClazz extends React.Component<CustomizeVariantProps, Custo
                     <textarea
                         name="comment"
                         id="comment"
-                        cols={80}
+                        cols={40}
                         rows={10}
                         value={this.state.comment}
                         onChange={this.changeComment}

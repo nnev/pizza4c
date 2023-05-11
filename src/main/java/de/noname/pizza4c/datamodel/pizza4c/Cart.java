@@ -2,12 +2,12 @@ package de.noname.pizza4c.datamodel.pizza4c;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import de.noname.pizza4c.datamodel.lieferando.Menu;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +15,7 @@ import java.util.List;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @Entity
-public class Cart extends VersionedEntity{
+public class Cart extends VersionedEntity {
     @Column(unique = true)
     @JsonProperty("id")
     private String uuid;
