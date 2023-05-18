@@ -1,7 +1,6 @@
 import {BACKEND} from "./Constants.ts";
 
 export function renderPdf() {
-    console.log("---")
     window.open(BACKEND + "/generatePdf");
     /*
     return fetch(BACKEND + "/generatePdf", {

@@ -24,7 +24,6 @@ export class WordBreakHelper extends React.Component<ProductEntryProps, ProductE
         for (let i = 0; i < text.length; i++) {
             let part = text[i];
             let anyMatch = false;
-            console.log(typeof part)
             if (typeof part === "string") {
                 for (let replacementsKey in this.replacements) {
                     let indexOf = part.indexOf(replacementsKey);
@@ -43,7 +42,6 @@ export class WordBreakHelper extends React.Component<ProductEntryProps, ProductE
             }
         }
 
-        console.log(result)
         if (anyChange) {
             return this.replaceAsArray(result)
         }
