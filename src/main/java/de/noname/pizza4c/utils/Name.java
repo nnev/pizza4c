@@ -9,7 +9,7 @@ public class Name {
     private String shortName;
 
     public void ensureValid() {
-        if (longName == null || shortName == null || longName.length() < 3 || longName.length() >= 20 || shortName.length() != 3) {
+        if (longName == null || shortName == null || longName.length() < 3 || longName.length() >= 32 || shortName.length() != 3) {
             throw new InvalidNameException(longName, shortName);
         }
     }

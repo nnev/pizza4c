@@ -5,7 +5,7 @@ export default class Privacy extends React.Component<any, any> {
         return (
             <main className="notSide privacy">
                 <h1>Deine Daten und Du</h1>
-                <ol>
+                <ul>
                     <li>Bis du auf "Zur Bestellung hinzufügen" klickst werden keine Daten zu unserem Server übertragen.</li>
                     <li>Mit dem Hinzufügen deiner Bestellung zum gemeinsamen Warenkorb, wird dein gewählter Nickname und der Inhalt deiner Bestellung mit unserem Server geteilt.</li>
                     <li>Durch das Hinzufügen deiner Bestellung zum gemeinsamen Warenkorb, wird dein gewählter Nickname und der Inhalt deiner Bestellung von öffentlich sichtbar.</li>
@@ -15,7 +15,7 @@ export default class Privacy extends React.Component<any, any> {
                     <li>Wenn du unter "Ich bin nicht ..." einen neuen Namen wählst, hast du die Option deinen neuen Nicknamen zu speichern.
                         Die Speicherung erfolgt ausschließlich im lokalen Speicher deines Browsers und wird nicht automatisch übertragen.
                         Erst bei einer zusätzlichen Bestellung (Siehe 1.) wird eine Bestellung unter deinem neuen Nicknamen angelegt.</li>
-                </ol>
+                </ul>
             </main>
         );
     }

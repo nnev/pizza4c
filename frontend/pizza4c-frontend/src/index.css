@@ -556,6 +556,11 @@ tr.cartOwner td {
     font-weight: bold;
 }
 
+.nameStoreHint {
+    font-size: 0.8em;
+    color: #555555
+}
+
 @media (max-width: 1200px) {
     h1, h2, h3 {
         padding: 0px;
