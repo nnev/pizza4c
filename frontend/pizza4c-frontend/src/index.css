@@ -540,7 +540,7 @@ button.pixmapButton span:first-child {
 }
 
 .error {
-    text-align: right;
+    text-align: left;
 }
 
 .error span {
@@ -564,6 +564,14 @@ tr.cartOwner td {
 .nameStoreHint {
     font-size: 0.8em;
     color: #555555
+}
+
+.changeName input {
+    margin-bottom: 0;
+}
+
+.changeName td:first-child {
+    white-space: nowrap;
 }
 
 @media (max-width: 1200px) {

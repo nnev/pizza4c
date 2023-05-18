@@ -51,11 +51,6 @@ public class ApiController {
         return restaurantService.getSelectedRestaurant();
     }
 
-    @PostMapping("/v3/fax/send")
-    public ClickSendResponse faxtest() {
-        return new ClickSendResponse();
-    }
-
     @PostMapping("/api/addToCart")
     public Cart addToCart(@RequestBody String rawBody) throws IOException {
         Restaurant restaurant = restaurantService.getSelectedRestaurant();

@@ -9,7 +9,14 @@ public class Name {
     private String shortName;
 
     public void ensureValid() {
-        if (longName == null || shortName == null || longName.length() < 3 || longName.length() >= 32 || shortName.length() != 3) {
+        if (longName == null ||
+                shortName == null ||
+                longName.length() < 3 ||
+                longName.length() >= 32 ||
+                shortName.length() != 3 ||
+                !longName.matches("^[\\wßäöüÄÖÜ\\- èé]{3,}.*?$") ||
+                !shortName.matches("^[\\wßäöüÄÖÜ\\- èé]{3}$")
+        ) {
             throw new InvalidNameException(longName, shortName);
         }
     }

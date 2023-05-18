@@ -58,7 +58,7 @@ export default class ChangeName extends React.Component<ChangeNameProps, ChangeN
             return "LONG";
         }
 
-        if (name.match(/^[\wßäöüÄÖÜ\- èé]{3,}$/) == null) {
+        if (name.match(/^[\wßäöüÄÖÜ\- èé]{3,}.*?$/) == null) {
             return "INVALID_CHAR";
         }
 
@@ -74,25 +74,49 @@ export default class ChangeName extends React.Component<ChangeNameProps, ChangeN
 
         return (
             <main className="notSide">
-                <form>
-                    <label htmlFor="name"><h1>Mein Name ist:</h1></label>
-                    <input type="text"
-                           name="name"
-                           id="name"
-                           className="changeNameInput"
-                           value={this.state.name.longName}
-                           placeholder="Set a name"
-                           minLength={3}
-                           maxLength={32}
-                           onChange={this.changeName}
-                    />
-                    <PixmapButton
-                        onClick={this.generateRandomName}
-                        pixmap="casino"
-                        text="Zufälligen Alias generieren"
-                        className={"tiny"}
-                    />
-                    <br/>
+                <form className="changeName">
+                    <label htmlFor="name"><h1>Neuen Namen wählen</h1></label>
+                    <table>
+                        <tr>
+                            <td>
+                                Mein Name ist:
+                            </td>
+                            <td>
+                                <input type="text"
+                                       name="name"
+                                       id="name"
+                                       className="changeNameInput"
+                                       value={this.state.name.longName}
+                                       placeholder="Set a name"
+                                       minLength={3}
+                                       maxLength={32}
+                                       onChange={this.changeName}
+                                />
+                                <PixmapButton
+                                    onClick={this.generateRandomName}
+                                    pixmap="casino"
+                                    text="Zufälligen Alias generieren"
+                                    className={"tiny"}
+                                />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Mein Kürzel ist:
+                            </td>
+                            <td><input type="text"
+                                       name="shortName"
+                                       id="shortName"
+                                       className="changeNameInput"
+                                       disabled={true}
+                                       value={this.state.name.shortName}
+                            />
+                            </td>
+                        </tr>
+                    </table>
+                    {ready == "SHORT" && <Error text="Der Name muss mindestens 3 Zeichen lang sein"/>}
+                    {ready == "LONG" && <Error text="Der Name darf höchstens 32 Zeichen lang sein"/>}
+                    {ready == "INVALID_CHAR" && <Error text="Das Kürzel darf nur aus Buchstaben und Zahlen bestehen"/>}
                     <label htmlFor="name">Für das nächste mal Speichern?:</label>
                     <input type="checkbox"
                            name="mayStore"
@@ -103,13 +127,10 @@ export default class ChangeName extends React.Component<ChangeNameProps, ChangeN
                     />
                     <br/>
                     <p className="nameStoreHint">
-                        Durch das Auswählen der Speichern-Option werden Daten im lokalen Speicher deines Gerätes hinterlegt.<br/>
-                        Es werden keine Daten übertragen und keine existierende Bestellung verändert.<br/>
+                        Durch das Auswählen der Speichern-Option werden Daten im lokalen Speicher deines Gerätes
+                        hinterlegt.<br/>
+                        Es werden keine Daten übertragen und keine existierende Bestellung verändert.
                     </p>
-                    <br/>
-                    {ready == "SHORT" && <Error text="Der Name muss mindestens 3 Zeichen lang sein"/>}
-                    {ready == "LONG" && <Error text="Der Name darf höchstens 32 Zeichen lang sein"/>}
-                    {ready == "INVALID_CHAR" && <Error text="Der Name darf nur aus Buchstaben und Zahlen bestehen"/>}
                     <PixmapGroup>
                         <PixmapButton
                             onClick={this.changeNameSubmit}
