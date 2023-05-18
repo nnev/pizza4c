@@ -68,6 +68,7 @@ h1, th {
 
 h1 {
     padding: 10px 0;
+    word-wrap: anywhere;
 }
 
 
@@ -203,11 +204,15 @@ aside .categoryDescription {
     color: var(--textNormal);
 }
 
-main .product > ol, .privacy ol {
+main .product > ol {
     list-style: initial;
 }
 
-.privacy ol {
+.privacy ul {
+    list-style: decimal;
+}
+
+.privacy ul {
     margin-left: 20px;
 }
 

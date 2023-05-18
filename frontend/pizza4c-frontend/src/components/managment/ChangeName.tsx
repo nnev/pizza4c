@@ -108,7 +108,7 @@ export default class ChangeName extends React.Component<ChangeNameProps, ChangeN
                     </p>
                     <br/>
                     {ready == "SHORT" && <Error text="Der Name muss mindestens 3 Zeichen lang sein"/>}
-                    {ready == "LONG" && <Error text="Der Name darf höchstens 20 Zeichen lang sein"/>}
+                    {ready == "LONG" && <Error text="Der Name darf höchstens 32 Zeichen lang sein"/>}
                     {ready == "INVALID_CHAR" && <Error text="Der Name darf nur aus Buchstaben und Zahlen bestehen"/>}
                     <PixmapGroup>
                         <PixmapButton
