@@ -1,14 +1,14 @@
 import React from "react";
 
-interface ProductEntryProps {
+interface WordBreakerHelperProps {
     text: string
 }
 
-interface ProductEntryState {
+interface WordBreakerHelperState {
 }
 
-export class WordBreakHelper extends React.Component<ProductEntryProps, ProductEntryState> {
-    constructor(props: ProductEntryProps, context: any) {
+export class WordBreakHelper extends React.Component<WordBreakerHelperProps, WordBreakerHelperState> {
+    constructor(props: WordBreakerHelperProps, context: any) {
         super(props, context);
     }
 

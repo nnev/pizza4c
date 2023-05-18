@@ -9,6 +9,8 @@ import formatUnixTimestamp from "../../util/Time.ts";
 import {FormatPrice} from "./FormatPrice.tsx";
 import {Progress} from "../Progress.tsx";
 import {AdminObservable} from "../../datamodel/admin.ts";
+import {Name, UserNameObservable} from "../../datamodel/name.ts";
+import {Navigate} from "react-router-dom";
 
 
 interface OverviewProps {
@@ -18,6 +20,7 @@ interface OverviewState {
     restaurant?: Restaurant
     allCarts?: AllCarts;
     isAdmin: boolean
+    name?: Name
 }
 
 export class Overview extends React.Component<OverviewProps, OverviewState> {
@@ -38,16 +41,22 @@ export class Overview extends React.Component<OverviewProps, OverviewState> {
         this.setState({allCarts: carts});
     }
 
+    nameObserver = (name: Name) => {
+        this.setState({name: name});
+    }
+
     componentDidMount() {
         CurrentRestaurantObservable.subscribe(this.restaurantObserver);
         AllCartsObservable.subscribe(this.allCartsObserver);
         AdminObservable.subscribe(this.adminObserver)
+        UserNameObservable.subscribe(this.nameObserver)
     }
 
     componentWillUnmount() {
         CurrentRestaurantObservable.unsubscribe(this.restaurantObserver);
         AllCartsObservable.unsubscribe(this.allCartsObserver);
         AdminObservable.unsubscribe(this.adminObserver);
+        UserNameObservable.unsubscribe(this.nameObserver);
     }
 
     render() {
@@ -55,7 +64,11 @@ export class Overview extends React.Component<OverviewProps, OverviewState> {
             return <></>
         }
 
-        let menu =this.state.restaurant.menu;
+        if (this.state.name == null) {
+            return <Navigate to="/changeName"/>;
+        }
+
+        let menu = this.state.restaurant.menu;
 
         return (
             <main className="notSide">
@@ -71,10 +84,10 @@ export class Overview extends React.Component<OverviewProps, OverviewState> {
                 <FormatPrice price={this.state.allCarts.getTotalValue(menu)}/>
                 <br/>
                 Bezahlt:&nbsp;
-                <FormatPrice price={this.state.allCarts.getPayedValue(menu)} />
+                <FormatPrice price={this.state.allCarts.getPayedValue(menu)}/>
                 <br/>
                 Nicht Bezahlt:&nbsp;
-                <FormatPrice price={this.state.allCarts.getUnpayedValue(menu)} />
+                <FormatPrice price={this.state.allCarts.getUnpayedValue(menu)}/>
                 <Progress
                     current={this.state.allCarts.getPayedValue(menu)}
                     max={this.state.allCarts.getTotalValue(menu)}

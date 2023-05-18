@@ -141,30 +141,34 @@ export class Name {
 
     private static COLORS: string[] = [
         "Amber",
+        "Azure",
         "Beige",
         "Black",
         "Blue",
         "Brown",
         "Crimson",
         "Cyan",
+        "Ebony",
         "Fuchsia",
         "Gray",
         "Green",
         "Indigo",
         "Jade",
+        "Kharki",
         "Lime",
         "Magenta",
         "Navy",
         "Olive",
-        "Olive",
         "Orange",
         "Pink",
         "Purple",
+        "Quartz",
         "Red",
         "Scarlet",
         "Silver",
         "Teal",
         "Turquoise",
+        "Umbra",
         "Violet",
         "White",
         "Yellow"
@@ -209,7 +213,7 @@ export class Name {
     }
 }
 
-export const UserNameObservable = new Observable<Name>({});
+export const UserNameObservable = new Observable<Name>({initializer: getMyNameWithoutSetting});
 
 export function getMyName(): Name {
     if (!UserNameObservable.hasValue()) {
@@ -221,6 +225,19 @@ export function getMyName(): Name {
         } else {
             setMyName(Name.generateNewName(), false);
         }
+    }
+
+    return UserNameObservable.getValue();
+}
+
+export function getMyNameWithoutSetting(): Name | undefined {
+    if (!UserNameObservable.hasValue()) {
+        let userNameShort = window.localStorage.getItem("userNameShort");
+        let userNameLong = window.localStorage.getItem("userNameLong");
+        if (userNameShort == undefined || userNameLong == undefined) {
+            return undefined;
+        }
+        return new Name(userNameShort, userNameLong, true)
     }
 
     return UserNameObservable.getValue();

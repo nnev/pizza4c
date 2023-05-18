@@ -5,7 +5,7 @@ export class Observable<T> {
     private value?: T;
     private readonly initializer: () => (T | undefined);
 
-    constructor({initializer, initialValue}: { initializer?: () => T, initialValue?: T }) {
+    constructor({initializer, initialValue}: { initializer?: () => (T | undefined), initialValue?: T }) {
         if (initializer != undefined) {
             this.initializer = initializer!;
         } else {
@@ -15,9 +15,7 @@ export class Observable<T> {
 
     public subscribe(listener: Listener<T>) {
         this.listeners.push(listener);
-        if (this.value !== undefined) {
-            listener(this.value);
-        }
+        listener(this.getValue());
     }
 
     public unsubscribe(listener: Listener<T>) {
@@ -35,6 +33,7 @@ export class Observable<T> {
         }
         return this.value!;
     }
+
     public getValueMaybe(): T | undefined {
         if (this.value === undefined) {
             this.setValue(this.initializer());

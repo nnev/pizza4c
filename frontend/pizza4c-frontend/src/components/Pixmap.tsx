@@ -6,6 +6,9 @@ interface PixmapProps {
     pixmap: string;
     text?: string|JSX.Element;
     className?: string;
+    autofocus?: boolean;
+    tabIndex?: number;
+    type?: 'submit' | 'reset' | 'button' | undefined;
 }
 
 interface PixmapButtonProps extends PixmapProps {
@@ -34,9 +37,15 @@ export class Pixmap extends React.Component<PixmapProps, any> {
 export class PixmapButton extends React.Component<PixmapButtonProps, any> {
     render() {
         return (
-            <button onClick={this.props.onClick}
+            <button
+                    onClick={this.props.onClick}
+                    onSubmit={this.props.onClick}
                     disabled={this.props.disabled}
-                    className={joinClasses("pixmapButton", this.props.className)}>
+                    className={joinClasses("pixmapButton", this.props.className)}
+                    autoFocus={this.props.autofocus || false}
+                    tabIndex={this.props.tabIndex}
+                    type={this.props.type}
+            >
                 <Pixmap {...this.props} />
             </button>
         )

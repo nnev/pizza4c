@@ -1,4 +1,4 @@
-import React, {ChangeEvent, MouseEvent} from "react";
+import React, {ChangeEvent, FormEvent, MouseEvent, KeyboardEvent} from "react";
 import {Navigate} from "react-router-dom";
 import {getMyName, Name, setMyName} from "../../datamodel/name.ts";
 import {PixmapButton, PixmapGroup} from "../Pixmap.tsx";
@@ -34,8 +34,16 @@ export default class ChangeName extends React.Component<ChangeNameProps, ChangeN
     changeMayStore = (ev: ChangeEvent<HTMLInputElement>) => {
         this.setState({mayStore: ev.target.checked})
     }
-    changeNameSubmit = (ev: MouseEvent<HTMLInputElement>) => {
-        ev.preventDefault();
+    changeNameSubmit = (ev: (MouseEvent<HTMLInputElement> | FormEvent<HTMLFormElement> | KeyboardEvent<HTMLInputElement>)) => {
+        if ("key" in ev) {
+            if (ev.key == "Enter") {
+                ev.preventDefault()
+            } else {
+                return;
+            }
+        } else {
+            ev.preventDefault();
+        }
         if (this.ready() == "VALID") {
             setMyName(this.state.name, this.state.mayStore);
             this.setState({nameChanged: true})
@@ -74,7 +82,7 @@ export default class ChangeName extends React.Component<ChangeNameProps, ChangeN
 
         return (
             <main className="notSide">
-                <form className="changeName">
+                <form className="changeName" onSubmit={this.changeNameSubmit}>
                     <label htmlFor="name"><h1>Neuen Namen wählen</h1></label>
                     <table>
                         <tr>
@@ -91,12 +99,15 @@ export default class ChangeName extends React.Component<ChangeNameProps, ChangeN
                                        minLength={3}
                                        maxLength={32}
                                        onChange={this.changeName}
+                                       onKeyPress={this.changeNameSubmit}
                                 />
                                 <PixmapButton
                                     onClick={this.generateRandomName}
                                     pixmap="casino"
                                     text="Zufälligen Alias generieren"
                                     className={"tiny"}
+                                    tabIndex={0}
+                                    autofocus={false}
                                 />
                             </td>
                         </tr>
@@ -124,6 +135,7 @@ export default class ChangeName extends React.Component<ChangeNameProps, ChangeN
                            className="changeNameInput"
                            checked={this.state.mayStore}
                            onChange={this.changeMayStore}
+                           tabIndex={0}
                     />
                     <br/>
                     <p className="nameStoreHint">
@@ -137,6 +149,9 @@ export default class ChangeName extends React.Component<ChangeNameProps, ChangeN
                             pixmap="person_add"
                             text="Name ändern"
                             disabled={ready != "VALID"}
+                            autofocus={true}
+                            tabIndex={1}
+                            type="submit"
                         />
                     </PixmapGroup>
                 </form>
