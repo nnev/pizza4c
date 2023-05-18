@@ -14,6 +14,7 @@ import FormattedError, {ErrorObservable} from "./datamodel/error.ts";
 import {Error} from "./components/Error.tsx";
 import Privacy from "./components/Privacy.tsx";
 import Admin from "./components/managment/Admin.tsx";
+import "./index.css"
 
 interface AppProps {
 }

@@ -6,6 +6,7 @@ import Restaurant from "../../datamodel/restaurant/restaurant.ts";
 import Product from "../../datamodel/restaurant/product.ts";
 import {Navigate} from "react-router-dom";
 import {addToCart as addToCartApi} from "../../backend/Cart.ts";
+import {WordBreakHelper} from "./WordBreakHelper.tsx";
 
 interface ProductEntryProps {
     restaurant: Restaurant
@@ -64,7 +65,7 @@ export class ProductEntry extends React.Component<ProductEntryProps, ProductEntr
         return (
             <li className="product" key={this.props.productId}>
                 <div className="productMain">
-                    <h2>{this.state.product.name}</h2>
+                    <h2><WordBreakHelper text={this.state.product.name}/></h2>
                     <ol>
                         {
                             this.state.product.description.map(value => <li key={value}>{value}</li>)
