@@ -16,14 +16,13 @@ public class Pizza4cApplication {
 
     @Autowired
     private RestaurantService restaurantService;
-    @Autowired
-    private KnownRestaurantRepository knownRestaurantRepository;
 
     @EventListener(ApplicationReadyEvent.class)
     public void initializeRestaurantDataOnFirstStart() {
-        /*if (knownRestaurantRepository.count() == 0) {
+        if (restaurantService.getSelectedRestaurant() == null) {
+            LOG.info("No restaurant data selected. Refreshing all data");
             restaurantService.forceRefreshRestaurantData();
-        }*/
+        }
     }
 
     public static void main(String[] args) {

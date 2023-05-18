@@ -17,7 +17,7 @@ export async function getCurrentRestaurant() {
             timestamp: "",
             status: 0,
             error: "",
-            message: "Could not reach backend",
+            message: "Fehler beim laden der Restaurant Informationen.",
             path: ""
         });
     })

@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -25,11 +26,13 @@ public class RestaurantService {
     @Autowired
     private KnownRestaurantRepository knownRestaurantRepository;
 
+    @Transactional
     public Restaurant getSelectedRestaurant() {
         var allCarts = allCartService.getCurrentAllCarts();
         return knownRestaurantService.getByRestaurantSlug(allCarts.getSelectedRestaurant());
     }
 
+    @Transactional
     public void forceRefreshRestaurantData() {
         var allCarts = allCartService.getCurrentAllCarts();
         knownRestaurantService.refreshRestaurantData(allCarts.getSelectedRestaurant());

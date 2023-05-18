@@ -79,7 +79,7 @@ export class Overview extends React.Component<OverviewProps, OverviewState> {
                     current={this.state.allCarts.getPayedValue(menu)}
                     max={this.state.allCarts.getTotalValue(menu)}
                 />
-                <h1>The Orders of Others</h1>
+                <h1>Gesamter Warenkorb</h1>
                 <OtherCarts
                     restaurant={this.state.restaurant}
                     allCarts={this.state.allCarts}

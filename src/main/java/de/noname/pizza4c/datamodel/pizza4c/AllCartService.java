@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -34,6 +35,7 @@ public class AllCartService {
         this.cartRepository = cartRepository;
     }
 
+    @Transactional
     public AllCarts newAllCarts() {
         var allCarts = getCurrentAllCarts();
         if (allCarts.getCreatedAt() + MIN_TIME_AFTER_CREATION > System.currentTimeMillis()) {
@@ -48,6 +50,7 @@ public class AllCartService {
         return getCurrentAllCarts();
     }
 
+    @Transactional
     public AllCarts getCurrentAllCarts() {
         var allCarts = allCartRepository.findById(1L).orElseGet(this::createDefaultAllCarts);
         if (knownRestaurantRepository.getByLieferandoName(allCarts.getSelectedRestaurant()) != null) {
@@ -73,6 +76,7 @@ public class AllCartService {
         return allCartRepository.save(allCarts);
     }
 
+    @Transactional
     public Cart getOrCreateCartByName(Name name) {
         AllCarts allCarts = getCurrentAllCarts();
 
@@ -95,6 +99,7 @@ public class AllCartService {
         return optionalCart.get();
     }
 
+    @Transactional
     public boolean selectRestaurant(String restaurantId) {
         String newRestaurantId;
         if (restaurantId == null) {

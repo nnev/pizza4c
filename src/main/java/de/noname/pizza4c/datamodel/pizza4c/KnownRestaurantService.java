@@ -67,6 +67,10 @@ public class KnownRestaurantService {
             if (option.getName().startsWith("mit ")) {
                 option.setName(option.getName().substring(4));
             }
+
+            if (option.getName().endsWith(",")) {
+                option.setName(option.getName().substring(0, option.getName().length() - 1));
+            }
         });
     }
 
@@ -85,8 +89,8 @@ public class KnownRestaurantService {
 
         restaurant.getMenu().getProducts().forEach((productId, product) -> {
             ProductInfo productInfo = client.get()
-                    .uri("https://cw-api.takeaway.com/api/v33/restaurant/product_info?restaurantId=" +
-                            restaurant.getRestaurantId() + "&productId=" + productId)
+                    .uri("https://cw-api.takeaway.com/api/v33/restaurant/addon_info?restaurantId=" +
+                            restaurant.getRestaurantId() + "&addonId=" + productId)
                     .header("X-Country-Code", "de")
                     .retrieve()
                     .bodyToMono(ProductInfo.class)
