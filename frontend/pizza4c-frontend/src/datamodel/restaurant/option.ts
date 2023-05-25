@@ -5,4 +5,6 @@ export default interface Option {
     minAmount: Number;
     maxAmount: Number;
     prices: Prices;
+    isVegetarian: boolean;
+    isVegan: boolean;
 }

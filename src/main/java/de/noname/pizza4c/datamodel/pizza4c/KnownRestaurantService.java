@@ -1,6 +1,8 @@
 package de.noname.pizza4c.datamodel.pizza4c;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import de.noname.pizza4c.datamodel.lieferando.Option;
+import de.noname.pizza4c.datamodel.lieferando.Product;
 import de.noname.pizza4c.datamodel.lieferando.ProductInfo;
 import de.noname.pizza4c.datamodel.lieferando.Restaurant;
 import de.noname.pizza4c.webpage.RestaurantService;
@@ -13,6 +15,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.List;
 
 @Service
 public class KnownRestaurantService {
@@ -56,10 +59,83 @@ public class KnownRestaurantService {
         }
 
         cleanupOptionNames(restaurant);
+        vegetarianHeuristic(restaurant);
         restaurant.setRestaurantSlug(restaurantSlug);
         knownRestaurant.setLieferandoData(serializeRestaurantFromData(restaurant));
         knownRestaurantRepository.save(knownRestaurant);
         return true;
+    }
+
+    private void vegetarianHeuristic(Restaurant restaurant) {
+        for (Product product : restaurant.getMenu().getProducts().values()) {
+            String informationText = product.getName() + product.getDescription().stream().reduce(String::concat).orElse("");
+
+            product.setVegetarian(isVegetarian(informationText));
+            product.setVegan(isVegan(informationText));
+        }
+
+        for (Option option : restaurant.getMenu().getOptions().values()) {
+            option.setVegetarian(isVegetarian(option.getName()));
+            option.setVegan(isVegan(option.getName()));
+        }
+    }
+
+    private static final List<String> NOT_VEGETARIAN_NAMES = List.of(
+            "Fleisch",
+            "Schinken",
+            "Hähnchen",
+            "Chicken",
+            "Schnitzel",
+            "Salami",
+            "Fisch",
+            "Sardellen",
+            "Sardella",
+            "Sucuk",
+            "Meeresfr",
+            "Bolognese",
+            "Nugget",
+            "Puten",
+            "Bacon",
+            "Rind",
+            "Maare",
+            "Salmon",
+            "Tonno",
+            "Hamburger"
+    );
+    private static final List<String> NOT_VEGAN_NAMES = List.of(
+            "Käse",
+            " Ei ",
+            " Ei,",
+            ", Ei ",
+            "Eier",
+            "Mozzarella",
+            "Parmesan",
+            "Gorgonzola",
+            "Cheddar",
+            "Mayonnaise",
+            "Sahne",
+            "Sour Cream",
+            "Cheese",
+            "Feta",
+            "Formaggi",
+            "Fudge",
+            "Joghurt",
+            "Rahm"
+    );
+
+    private boolean isVegetarian(String name) {
+        if (name.isBlank()) {
+            return true;
+        }
+        return NOT_VEGETARIAN_NAMES.stream().noneMatch(s -> name.toUpperCase().contains(s.toUpperCase()));
+    }
+
+    private boolean isVegan(String name) {
+        if (name.isBlank()) {
+            return true;
+        }
+
+        return isVegetarian(name) && NOT_VEGAN_NAMES.stream().noneMatch(s -> name.toUpperCase().contains(s.toUpperCase()));
     }
 
     private void cleanupOptionNames(Restaurant restaurant) {

@@ -255,6 +255,17 @@ li.product {
     font-size: 12px;
 }
 
+.productMain.vegan {
+    background-color: green;
+}
+
+.productMain.vegetarian {
+    background-color: yellow;
+}
+.productMain.fleisch {
+    background-color: red;
+}
+
 .productPrice {
     align-self: center;
     min-width: 5em;

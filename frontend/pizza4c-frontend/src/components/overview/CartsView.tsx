@@ -22,14 +22,16 @@ export class CartsView extends React.Component<CartsViewProps, CartsViewState> {
     render() {
 
         let view: JSX.Element[] = [];
-        this.props.carts.forEach(cart => {
-            view.push(<CartView
-                key={cart.id}
-                cart={cart}
-                restaurant={this.props.restaurant}
-                isAdmin={this.props.isAdmin}
-            />)
-        });
+        this.props.carts
+            .sort((a, b) => a.name.toUpperCase().localeCompare(b.name.toUpperCase()))
+            .forEach(cart => {
+                view.push(<CartView
+                    key={cart.id}
+                    cart={cart}
+                    restaurant={this.props.restaurant}
+                    isAdmin={this.props.isAdmin}
+                />)
+            });
 
         return (
             <>

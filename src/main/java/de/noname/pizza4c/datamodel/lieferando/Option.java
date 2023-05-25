@@ -18,4 +18,10 @@ public class Option {
 
     @JsonProperty
     private Prices prices;
+
+    @JsonProperty
+    private boolean isVegetarian;
+
+    @JsonProperty
+    private boolean isVegan;
 }

@@ -115,6 +115,14 @@ class CustomizeVariantClazz extends React.Component<CustomizeVariantProps, Custo
         })
     }
 
+    private getDescription() {
+        return <ol>
+            {
+                this.state.product!!.description.map(value => <li key={value}>{value}</li>)
+            }
+        </ol>
+    }
+
 
     render() {
         if (this.state.backToVariantSelection) {
@@ -135,8 +143,10 @@ class CustomizeVariantClazz extends React.Component<CustomizeVariantProps, Custo
         return (
             <main className="notSide customize">
                 <h1>{this.state.product.name} {this.state.variant ? this.state.variant!.name : ""}</h1>
+                {this.getDescription()}
                 <span
                     className="total">Preis ohne Extras: <span>{this.state.variant!.prices.deliveryEuro}</span>€</span><br/>
+
                 <div className="variantContent">
                     <ul>
                         {

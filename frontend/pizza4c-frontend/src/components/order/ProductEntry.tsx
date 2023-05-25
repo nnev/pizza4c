@@ -7,6 +7,7 @@ import Product from "../../datamodel/restaurant/product.ts";
 import {Navigate} from "react-router-dom";
 import {addToCart as addToCartApi} from "../../backend/Cart.ts";
 import {WordBreakHelper} from "./WordBreakHelper.tsx";
+import {joinClasses} from "../../util/JoinClasses.ts";
 
 interface ProductEntryProps {
     restaurant: Restaurant
@@ -64,7 +65,7 @@ export class ProductEntry extends React.Component<ProductEntryProps, ProductEntr
 
         return (
             <li className="product" key={this.props.productId}>
-                <div className="productMain">
+                <div className={joinClasses("productMain", this.state.product.isVegan ? "vegan" : this.state.product.isVegetarian ? "vegetarian" : "fleisch")}>
                     <h2><WordBreakHelper text={this.state.product.name}/></h2>
                     <ol>
                         {

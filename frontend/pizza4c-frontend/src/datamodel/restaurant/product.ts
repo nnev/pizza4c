@@ -7,4 +7,6 @@ export default interface Product {
     imageUrl: string;
     variants: Variant[];
     productInfo: ProductInfo;
+    isVegetarian: boolean;
+    isVegan: boolean;
 }

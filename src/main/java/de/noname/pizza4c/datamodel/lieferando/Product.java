@@ -28,5 +28,9 @@ public class Product {
         return description == null ? null : description.stream().map(s -> s.replace("• ", "")).toList();
     }
 
+    @JsonProperty
+    public boolean isVegetarian;
 
+    @JsonProperty
+    public boolean isVegan;
 }

@@ -7,13 +7,15 @@ interface OrderSidebarProps {
 
 interface OrderSidebarState {
     selectedId: string;
+    selectedVegan: string;
 }
 
 export class OrderSidebar extends React.Component<OrderSidebarProps, OrderSidebarState> {
     constructor(props: OrderSidebarProps, context: any) {
         super(props, context);
         this.state = {
-            selectedId: window.location.hash.substring(1)
+            selectedId: window.location.hash.substring(1),
+            selectedVegan: "all"
         }
     }
 
@@ -37,6 +39,22 @@ export class OrderSidebar extends React.Component<OrderSidebarProps, OrderSideba
                 <nav>
                     <ol>
                         {categoryEntries}
+                        <li key="vegetarisch">
+                            <h1>
+                                <a
+                                    href={"#vegetarisch"}
+                                    onClick={() => this.setState({selectedId: "vegetarisch"})}
+                                >Vegetarisch</a>
+                            </h1>
+                        </li>
+                        <li key="vegan">
+                            <h1>
+                                <a
+                                    href={"#vegan"}
+                                    onClick={() => this.setState({selectedId: "vegan"})}
+                                >Vegan</a>
+                            </h1>
+                        </li>
                     </ol>
                 </nav>
             </aside>
