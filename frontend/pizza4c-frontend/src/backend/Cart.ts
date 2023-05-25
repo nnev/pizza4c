@@ -148,9 +148,17 @@ export async function newAllOrders(): Promise<AllCarts> {
         method: "POST",
     })
         .then(value => value.json())
-        .then(value => mapAllCarts(value))
         .then(value => {
-            AllCartsObservable.setValue(value);
+            console.log("+++++++", value)
             return value;
+        })
+        .then(value => {
+            if ((<FormattedError>value).message !== undefined) {
+                console.log(value);
+                throw value as FormattedError;
+            } else {
+                AllCartsObservable.setValue(mapAllCarts(value));
+                return value;
+            }
         })
 }

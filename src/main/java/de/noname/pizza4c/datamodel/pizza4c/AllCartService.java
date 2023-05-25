@@ -1,6 +1,8 @@
 package de.noname.pizza4c.datamodel.pizza4c;
 
 import de.noname.pizza4c.utils.Name;
+import de.noname.pizza4c.webpage.error.CartFreshlyCreatedException;
+import de.noname.pizza4c.webpage.error.CartFreshlySubmittedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +18,7 @@ import java.util.UUID;
 @Service
 public class AllCartService {
     public static final int MIN_TIME_AFTER_CREATION = 6 * 60 * 60 * 1000;
+    public static final int MIN_TIME_AFTER_SUBMISSION = 6 * 60 * 60 * 1000;
     private final AllCartRepository allCartRepository;
     private final CartRepository cartRepository;
 
@@ -38,12 +41,13 @@ public class AllCartService {
     @Transactional
     public AllCarts newAllCarts() {
         var allCarts = getCurrentAllCarts();
-        if (allCarts.getCreatedAt() + MIN_TIME_AFTER_CREATION > System.currentTimeMillis()) {
-            return allCarts;
+        long now = System.currentTimeMillis();
+        if (allCarts.getCreatedAt() + MIN_TIME_AFTER_CREATION > now) {
+            throw new CartFreshlyCreatedException(allCarts.getCreatedAt());
         }
 
-        if (allCarts.getSubmittedAt() > 0 && allCarts.getSubmittedAt() + MIN_TIME_AFTER_CREATION > System.currentTimeMillis()) {
-            return allCarts;
+        if (allCarts.getSubmittedAt() > 0 && allCarts.getSubmittedAt() + MIN_TIME_AFTER_SUBMISSION > now) {
+            throw new CartFreshlySubmittedException(allCarts.getSubmittedAt());
         }
 
         allCartRepository.delete(allCarts);
@@ -52,7 +56,10 @@ public class AllCartService {
 
     @Transactional
     public AllCarts getCurrentAllCarts() {
-        var allCarts = allCartRepository.findById(1L).orElseGet(this::createDefaultAllCarts);
+        var allCarts = allCartRepository.getLatest();
+        if (allCarts == null) {
+            allCarts = createDefaultAllCarts();
+        }
         if (knownRestaurantRepository.getByLieferandoName(allCarts.getSelectedRestaurant()) != null) {
             allCarts.setSelectedRestaurant(defaultRestaurantId);
             allCarts = allCartRepository.save(allCarts);
@@ -63,7 +70,7 @@ public class AllCartService {
 
     @Scheduled(cron = "0 0 6 * * *")
     private void dailyCartReset() {
-        createDefaultAllCarts();
+        newAllCarts();
     }
 
     private AllCarts createDefaultAllCarts() {

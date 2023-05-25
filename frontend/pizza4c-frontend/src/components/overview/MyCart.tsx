@@ -106,7 +106,7 @@ export class MyCart extends React.Component<MyCartProps, MyCartState> {
                             text={myCart.payed ? "Du hast schon bezahlt" : "Du musst noch bezahlen"}
                             className={myCart.getPaymentClass()}
                         /> <br/>
-                        {myCart.getPrice(this.props.restaurant.menu).toFixed(2)} €
+                        <b>Preis</b>: {myCart.getPrice(this.props.restaurant.menu).toFixed(2)} €
                     </p>
                     <ol>
                         {

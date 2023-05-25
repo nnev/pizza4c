@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.boot.autoconfigure.web.ServerProperties;
 import org.springframework.boot.web.error.ErrorAttributeOptions;
+import org.springframework.boot.web.error.ErrorAttributeOptions.Include;
 import org.springframework.boot.web.servlet.error.ErrorAttributes;
 import org.springframework.boot.web.servlet.error.ErrorController;
 import org.springframework.stereotype.Controller;
@@ -14,6 +15,7 @@ import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.HashMap;
 import java.util.Map;
 
 @Controller
@@ -32,17 +34,15 @@ public class MyErrorController implements ErrorController {
     @ResponseBody
     public String handleError(HttpServletRequest request) {
         WebRequest webRequest = new ServletWebRequest(request);
-        var errors = this.errorAttributes.getErrorAttributes(webRequest, ErrorAttributeOptions.defaults());
+        var errors = this.errorAttributes.getErrorAttributes(webRequest, ErrorAttributeOptions.of(Include.MESSAGE));
 
         if (errorAttributes.getError(webRequest) instanceof ResponseStatusException) {
             try {
-                return new ObjectMapper().writeValueAsString(
-                        Map.of(
-                                "timestamp", System.currentTimeMillis(),
-                                "status", errors.get("status"),
-                                "message", errors.get("message")
-                        )
-                );
+                var map = new HashMap<String, Object>();
+                map.put("timestamp", System.currentTimeMillis());
+                map.put("status", errors.get("status"));
+                map.put("message", errors.get("message"));
+                return new ObjectMapper().writeValueAsString(map);
             } catch (JsonProcessingException e) {
                 // pass
             }

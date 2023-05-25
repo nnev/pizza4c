@@ -1,4 +1,4 @@
-package de.noname.pizza4c.webpage;
+package de.noname.pizza4c.webpage.dto;
 
 import de.noname.pizza4c.datamodel.lieferando.Product;
 import de.noname.pizza4c.utils.Name;

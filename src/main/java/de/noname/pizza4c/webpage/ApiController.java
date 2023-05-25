@@ -9,8 +9,8 @@ import de.noname.pizza4c.datamodel.pizza4c.CartService;
 import de.noname.pizza4c.datamodel.pizza4c.KnownRestaurant;
 import de.noname.pizza4c.fax.FaxService;
 import de.noname.pizza4c.fax.FaxServiceProvider;
-import de.noname.pizza4c.fax.clicksend.ClickSendResponse;
 import de.noname.pizza4c.pdf.PdfGenerator;
+import de.noname.pizza4c.webpage.dto.AddToCartDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,10 +35,8 @@ public class ApiController {
     @Autowired
     private PdfGenerator pdfGenerator;
 
-
     @Autowired
     private FaxService faxService;
-
 
     @Autowired
     private AllCartService allCartService;
@@ -58,7 +56,7 @@ public class ApiController {
         var validData = data.ensureValid(restaurant.getMenu());
 
         allCartService.getCurrentAllCarts().ensureNotSubmitted();
-        Cart cart = allCartService.getOrCreateCartByName(validData.name);
+        Cart cart = allCartService.getOrCreateCartByName(validData.getName());
         return cartService.addToCart(cart, validData);
     }
 

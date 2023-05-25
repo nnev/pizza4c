@@ -1,6 +1,6 @@
 package de.noname.pizza4c.datamodel.pizza4c;
 
-import de.noname.pizza4c.webpage.ValidatedAddToCartDto;
+import de.noname.pizza4c.webpage.dto.ValidatedAddToCartDto;
 import org.springframework.stereotype.Service;
 
 import java.util.Objects;
