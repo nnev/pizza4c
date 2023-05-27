@@ -20,4 +20,10 @@ public class Category {
 
     @JsonProperty
     private List<String> productIds;
+
+    @JsonProperty
+    public boolean isVegetarian;
+
+    @JsonProperty
+    public boolean isVegan;
 }

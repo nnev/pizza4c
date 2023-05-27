@@ -1,6 +1,7 @@
 package de.noname.pizza4c.datamodel.pizza4c;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import de.noname.pizza4c.datamodel.lieferando.Category;
 import de.noname.pizza4c.datamodel.lieferando.Option;
 import de.noname.pizza4c.datamodel.lieferando.Product;
 import de.noname.pizza4c.datamodel.lieferando.ProductInfo;
@@ -67,6 +68,13 @@ public class KnownRestaurantService {
     }
 
     private void vegetarianHeuristic(Restaurant restaurant) {
+        for (Category category : restaurant.getMenu().getCategories()) {
+            String informationText = category.getName() + category.getDescription().stream().reduce(String::concat).orElse("");
+
+            category.setVegetarian(isVegetarian(informationText));
+            category.setVegan(isVegan(informationText));
+        }
+
         for (Product product : restaurant.getMenu().getProducts().values()) {
             String informationText = product.getName() + product.getDescription().stream().reduce(String::concat).orElse("");
 

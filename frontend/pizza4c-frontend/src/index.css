@@ -255,14 +255,14 @@ li.product {
     font-size: 12px;
 }
 
-.productMain.vegan {
+.productMain.vegan::before {
     background-color: green;
 }
 
-.productMain.vegetarian {
+.productMain.vegetarian::before {
     background-color: yellow;
 }
-.productMain.fleisch {
+.productMain.fleisch::before {
     background-color: red;
 }
 

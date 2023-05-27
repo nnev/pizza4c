@@ -8,10 +8,12 @@ import {Navigate} from "react-router-dom";
 import {addToCart as addToCartApi} from "../../backend/Cart.ts";
 import {WordBreakHelper} from "./WordBreakHelper.tsx";
 import {joinClasses} from "../../util/JoinClasses.ts";
+import {selectableVegan} from "../../datamodel/cart/vegan.ts";
 
 interface ProductEntryProps {
     restaurant: Restaurant
     productId: string
+    vegan: selectableVegan
 }
 
 interface ProductEntryState {

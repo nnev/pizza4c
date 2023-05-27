@@ -2,10 +2,13 @@ import React from "react";
 import {ProductEntry} from "./ProductEntry.tsx";
 import Restaurant from "../../datamodel/restaurant/restaurant.ts";
 import Category from "../../datamodel/restaurant/category.ts";
+import {selectableVegan} from "../../datamodel/cart/vegan.ts";
+import {isVeganStateProduct} from "../../datamodel/restaurant/product.ts";
 
 interface CategoryEntryProps {
     restaurant: Restaurant
     category: Category
+    vegan: selectableVegan
 }
 
 interface CategoryEntryState {
@@ -36,10 +39,15 @@ export class CategoryEntry extends React.Component<CategoryEntryProps, CategoryE
                         this.props
                             .category
                             .productIds
+                            .filter(value => {
+                                return isVeganStateProduct(this.props.restaurant.menu.products[value], this.props.vegan)
+                            })
                             .map(value => <ProductEntry
                                 key={value}
                                 restaurant={this.props.restaurant}
-                                productId={value}/>)
+                                productId={value}
+                                vegan={this.props.vegan}
+                            />)
                     }
                 </ol>
             </li>
