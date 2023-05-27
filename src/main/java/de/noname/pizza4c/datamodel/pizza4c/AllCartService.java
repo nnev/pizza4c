@@ -69,7 +69,7 @@ public class AllCartService {
     }
 
     @Scheduled(cron = "0 0 6 * * *")
-    private void dailyCartReset() {
+    public void dailyCartReset() {
         newAllCarts();
     }
 
