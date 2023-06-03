@@ -1,9 +1,11 @@
 package de.noname.pizza4c.fax.clicksend;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 @Data
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class ClickSendResponseMessage {
     @JsonProperty("user_id")
     private long userId;
@@ -25,6 +27,9 @@ public class ClickSendResponseMessage {
 
     @JsonProperty
     private String carrier;
+
+    @JsonProperty
+    private String country;
 
     @JsonProperty("custom_string")
     private String customString;

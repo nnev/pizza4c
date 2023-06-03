@@ -7,6 +7,7 @@ import de.noname.pizza4c.datamodel.pizza4c.AllCarts;
 import de.noname.pizza4c.datamodel.pizza4c.Cart;
 import de.noname.pizza4c.datamodel.pizza4c.CartService;
 import de.noname.pizza4c.datamodel.pizza4c.KnownRestaurant;
+import de.noname.pizza4c.fax.FaxSendStatus;
 import de.noname.pizza4c.fax.FaxService;
 import de.noname.pizza4c.fax.FaxServiceProvider;
 import de.noname.pizza4c.pdf.PdfGenerator;
@@ -132,13 +133,16 @@ public class ApiController {
         var allCarts = allCartService.getCurrentAllCarts();
         allCarts.ensureNotSubmitted();
 
-        boolean success = faxServiceProvider.sendFax(allCarts.getUuid(),
+        FaxSendStatus sendStatus = faxServiceProvider.sendFax(allCarts.getUuid(),
                 restaurantService.getSelectedRestaurant().getColophon().getData().getFax());
 
-        if (success) {
+        if (sendStatus == FaxSendStatus.SUCCESS) {
             allCartService.setSubmitted(allCarts);
+            return true;
+        } else {
+            LOG.error("Failed to send fax. StatusCode: " + sendStatus);
+            return false;
         }
-        return success;
     }
 
     @PostMapping("/api/cancelAllOrders")

@@ -1,0 +1,33 @@
+{
+  "http_code": 200,
+  "response_code": "SUCCESS",
+  "response_msg": "Fax queued for delivery.",
+  "data": {
+    "total_price": 0.142,
+    "total_count": 1,
+    "queued_count": 0,
+    "messages": [
+      {
+        "message_id": "hiddenForTest",
+        "to": "hiddenForTest",
+        "from": "hiddenForTest",
+        "carrier": "",
+        "country": "DE",
+        "custom_string": "hiddenForTest",
+        "schedule": "",
+        "message_price": "0.1420",
+        "from_email": "hiddenForTest",
+        "_file_url": "hiddenForTest",
+        "status": "INSUFFICIENT_CREDIT"
+      }
+    ],
+    "_currency": {
+      "currency_name_short": "EUR",
+      "currency_prefix_d": "\u20ac",
+      "currency_prefix_c": "c",
+      "currency_name_long": "Euros",
+      "min_recharge_amount": "20.00",
+      "max_recharge_amount": "10000.00"
+    }
+  }
+}

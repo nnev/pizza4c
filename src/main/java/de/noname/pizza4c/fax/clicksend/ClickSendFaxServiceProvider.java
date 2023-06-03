@@ -2,6 +2,7 @@ package de.noname.pizza4c.fax.clicksend;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import de.noname.pizza4c.fax.FaxSendStatus;
 import de.noname.pizza4c.fax.FaxServiceProvider;
 import de.noname.pizza4c.webpage.RestaurantService;
 import io.netty.handler.logging.LogLevel;
@@ -10,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.reactive.ClientHttpConnector;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.stereotype.Service;
@@ -23,6 +25,13 @@ import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.List;
 import java.util.Objects;
+
+import static de.noname.pizza4c.fax.FaxSendStatus.CLICKSEND_BAD_RESPONSE;
+import static de.noname.pizza4c.fax.FaxSendStatus.CLICKSEND_INSUFFICIENT_FUNDS;
+import static de.noname.pizza4c.fax.FaxSendStatus.CLICKSEND_NOT_SUCCESS_RESPONSE_CODE;
+import static de.noname.pizza4c.fax.FaxSendStatus.CLICKSEND_QUEUED_COUNT_ZERO;
+import static de.noname.pizza4c.fax.FaxSendStatus.NO_TO_ADDRESS;
+import static de.noname.pizza4c.fax.FaxSendStatus.SUCCESS;
 
 @Service
 public class ClickSendFaxServiceProvider implements FaxServiceProvider {
@@ -43,8 +52,11 @@ public class ClickSendFaxServiceProvider implements FaxServiceProvider {
     @Value("${pizza4c.fax.service.sendfax.password:password}")
     private String password;
 
+    @Value("${pizza4c.fax.service.sendfax.apiEndpoint:https://rest.clicksend.com/v3/fax/send")
+    public String apiEndpoint;
+
     @Override
-    public boolean sendFax(String uuid, String toAddress) {
+    public FaxSendStatus sendFax(String uuid, String toAddress) {
         String to = toAddress;
         if (to == null || (toAddressOverride != null && !toAddressOverride.isBlank())) {
             to = toAddressOverride;
@@ -52,22 +64,53 @@ public class ClickSendFaxServiceProvider implements FaxServiceProvider {
 
         if (to == null || to.isBlank()) {
             LOG.error("Missing fax address from lieferando and no override set");
-            return false;
+            return NO_TO_ADDRESS;
         }
-
-        String authorization =
-                Base64.getEncoder().encodeToString((username + ":" + password).getBytes(StandardCharsets.UTF_8));
 
         ClickSendRequest clickSendRequest = new ClickSendRequest();
         clickSendRequest.setFileUrl("https://" + fileUrlBase + "/api/generatePdf/" + uuid + ".pdf");
         clickSendRequest.setMessages(List.of(new ClickSendMessage(to, uuid, replyEmail)));
+        var response = sendFax(clickSendRequest);
+
+        if (response == null || response.getStatusCode() != HttpStatus.OK || response.getBody() == null) {
+            return CLICKSEND_BAD_RESPONSE;
+        }
+        ClickSendResponse responseBody = response.getBody();
+
+        if (!Objects.equals(responseBody.getResponseCode(), "SUCCESS")) {
+            return CLICKSEND_NOT_SUCCESS_RESPONSE_CODE;
+        }
+
+        ClickSendResponseData responseData = responseBody.getData();
+        if (responseData != null) {
+            if (responseData.getQueuedCount() == 0) {
+                return CLICKSEND_QUEUED_COUNT_ZERO;
+            }
+
+            if (responseData.getMessages() != null) {
+                for (ClickSendResponseMessage message : responseData.getMessages()) {
+                    if (message.getStatus().equalsIgnoreCase("INSUFFICIENT_CREDIT")) {
+                        LOG.error("Failed to send fax, due to insufficient money");
+                        return CLICKSEND_INSUFFICIENT_FUNDS;
+                    }
+                }
+            }
+        }
+
+        return SUCCESS;
+    }
+
+    ResponseEntity<ClickSendResponse> sendFax(ClickSendRequest clickSendRequest) {
         String body;
         try {
             body = new ObjectMapper().writer().writeValueAsString(clickSendRequest);
         } catch (JsonProcessingException e) {
             LOG.error("Failed to json serialize click send request", e);
-            return false;
+            return null;
         }
+
+        String authorization =
+                Base64.getEncoder().encodeToString((username + ":" + password).getBytes(StandardCharsets.UTF_8));
 
         try {
             HttpClient httpClient = HttpClient.create()
@@ -77,8 +120,9 @@ public class ClickSendFaxServiceProvider implements FaxServiceProvider {
             WebClient client = WebClient.builder()
                     .clientConnector(conn)
                     .build();
-            var response = client.post()
-                    .uri("https://rest.clicksend.com/v3/fax/send")
+
+            return client.post()
+                    .uri(apiEndpoint)
                     .header("Authorization", "Basic " + authorization)
                     .contentType(MediaType.APPLICATION_JSON)
                     .body(BodyInserters.fromValue(body))
@@ -86,14 +130,9 @@ public class ClickSendFaxServiceProvider implements FaxServiceProvider {
                     .toEntity(ClickSendResponse.class)
                     .doOnError(throwable -> LOG.error("Failure to send fax", throwable))
                     .block();
-
-            if (response == null || response.getStatusCode() != HttpStatus.OK || response.getBody() == null) {
-                return false;
-            }
-            return Objects.equals(response.getBody().getResponseCode(), "SUCCESS");
         } catch (WebClientException e) {
             LOG.error("Failed to send ClickSend request", e);
-            return false;
+            return null;
         }
     }
 }
