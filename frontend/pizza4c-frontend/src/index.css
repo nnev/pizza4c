@@ -287,6 +287,7 @@ li.product {
 .orderTable {
     width: 100%;
     border-collapse: collapse;
+    margin-bottom: 200px;
 }
 
 .orderTable thead {
@@ -632,6 +633,10 @@ tr.cartOwner td {
 
     .customizeButtons {
         grid-template-columns: repeat(2, 1fr);
+    }
+
+    .orderTable {
+        margin-bottom: 50px;
     }
 
     .orderTable td {
