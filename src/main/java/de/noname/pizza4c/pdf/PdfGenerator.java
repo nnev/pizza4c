@@ -41,6 +41,15 @@ public class PdfGenerator {
     private static final int LOGO_TARGET_HEIGHT = 70;
     private static final int LOGO_TARGET_WIDTH = 220;
 
+    // Our QR Codes are designed to fit in 29 modules
+    // Together with the required quiet zone of 8 modules (4 on each side), this comes out to 29 + 8 = 37 modules
+    // Thus our 150px image size we have ~118px of data and ~32px (16 each side) quiet zone
+    // Both neighboring qr codes have quiet zones baked into their images.
+    // If we naively position the images besides each other, the whitespace looks unnatural.
+    // Therefore, we need to overlap the images just enough that the pixel data does not touch each other
+    private static final int QR_PADDING_CUTOUT = 20;
+    private static final int QR_SIZE = 150; // 150px representing a 29 module +8 (4 on each side) module
+
     @Autowired
     private RestaurantService restaurantService;
 
@@ -97,8 +106,14 @@ public class PdfGenerator {
             // step 2: we open the document
             document.open();
 
+            // As the logo is a floating image element we need to maintain a count of "added whitespace" such that we
+            // do not overlap with the following other elements on the first page:
+            // - the qr code offsets,
+            // - the order table
             int offsetY = 0;
 
+            // If we show our logo on the right, we need to load it and scale it appropriately
+            // As this is a floating element we need to adjust offsetY manually such that out
             if (showLogo) {
                 var logo = new Jpeg(ApiController.class.getResource("/pdf/" + logoName));
                 float scale = Math.min(
@@ -115,22 +130,30 @@ public class PdfGenerator {
                 offsetY += LOGO_TARGET_HEIGHT + 30;
             }
 
+            // Trim lat/lng such that the resulting string fits in the 77 bytes a 29 module qr code with low ECC offers.
+            // If we need any more bytes the resulting qr code will contain more modules which in turn will result in
+            // less than 4 dots/module on an 80 dpi printer. As such we would see an increase in scanning errors.
+            String _lat = trimGeoCoordinate(lat);
+            String _lng = trimGeoCoordinate(lng);
+
             var osmCode = new QrCode(
-                    document.getPageSize().getWidth() - 280,
+                    document.getPageSize().getWidth() - (2 * QR_SIZE - QR_PADDING_CUTOUT),
                     document.getPageSize().getHeight() - (9 + offsetY),
-                    150,
-                    "http://www.osm.org/?mlat=" + lat + "&mlon=" + lng + "#map=17/" + lat + "/" + lng,
+                    QR_SIZE,
+                    "http://www.osm.org/?mlat=" + _lat + "&mlon=" + _lng + "#map=17/" + _lat + "/" + _lng,
                     "Open Street Map",
-                    normalFont);
+                    normalFont
+            );
             osmCode.render(writer.getDirectContent());
 
             var gmapsCode = new QrCode(
-                    document.getPageSize().getWidth() - 150,
+                    document.getPageSize().getWidth() - QR_SIZE,
                     document.getPageSize().getHeight() - (9 + offsetY),
-                    150,
-                    "https://maps.google.de/maps?q=" + lat + "," + lng + "&num=1&t=m&z=18",
+                    QR_SIZE,
+                    "https://maps.google.de/maps?q=" + _lat + "," + _lng + "&num=1&t=m&z=18",
                     "Google Maps",
-                    normalFont);
+                    normalFont
+            );
             gmapsCode.render(writer.getDirectContent());
 
             var anschrift = new PdfPTable(new float[]{0.3f, 0.8f});
@@ -206,23 +229,40 @@ public class PdfGenerator {
 
                     CartEntry entry = entries.get(j);
                     List<String> optionList = entry.getOptionList(menu);
-                    orderData.addCell(new AlignedCell(optionList, normalFont)
-                            .setBorderBottom(isLast ? 3 : 1)
-                            .setVerticalPadding(3)
+                    orderData.addCell(
+                            new AlignedCell(
+                                    optionList,
+                                    normalFont
+                            )
+                                    .setBorderBottom(isLast ? 3 : 1)
+                                    .setVerticalPadding(3)
                     );
                     Variant variant = menu.getVariant(entry.getProduct(), entry.getVariant());
-                    orderData.addCell(new AlignedCell(variant.getName(), normalFont)
-                            .setBorderBottom(isLast ? 3 : 1)
-                            .setVerticalPadding(3)
+                    orderData.addCell(
+                            new AlignedCell(
+                                    variant.getName(),
+                                    normalFont
+                            )
+                                    .setBorderBottom(isLast ? 3 : 1)
+                                    .setVerticalPadding(3)
                     );
-                    orderData.addCell(new AlignedCell(entry.getPrice(menu) + " €", normalFont,
-                            Element.ALIGN_RIGHT)
-                            .setBorderBottom(isLast ? 3 : 1)
-                            .setVerticalPadding(3)
+                    orderData.addCell(
+                            new AlignedCell(
+                                    entry.getPrice(menu) + " €",
+                                    normalFont,
+                                    Element.ALIGN_RIGHT
+                            )
+                                    .setBorderBottom(isLast ? 3 : 1)
+                                    .setVerticalPadding(3)
                     );
-                    orderData.addCell(new AlignedCell(cart.getShortName(), normalFont, Element.ALIGN_RIGHT)
-                            .setBorderBottom(isLast ? 3 : 1)
-                            .setVerticalPadding(3)
+                    orderData.addCell(
+                            new AlignedCell(
+                                    cart.getShortName(),
+                                    normalFont,
+                                    Element.ALIGN_RIGHT
+                            )
+                                    .setBorderBottom(isLast ? 3 : 1)
+                                    .setVerticalPadding(3)
                     );
                 }
             }
@@ -232,6 +272,11 @@ public class PdfGenerator {
             LOG.error(de.getMessage(), de);
         }
         document.close();
+    }
+
+    private String trimGeoCoordinate(String coord) {
+        String[] splitted = coord.split("\\.");
+        return splitted[0] + "." + splitted[1].substring(0, Math.max(6, splitted[1].length()));
     }
 
 }

@@ -20,7 +20,6 @@ public class QrCode {
     private final float left;
     private final float size;
 
-
     public QrCode(float left, float top, float size, String qrText, String description, Font font) {
         super();
         this.left = left;
