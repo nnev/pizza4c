@@ -5,12 +5,12 @@ import {AllCartsObservable} from "../../backend/Cart.ts";
 import {MyCart} from "./MyCart.tsx";
 import {OtherCarts} from "./OtherCarts.tsx";
 import AllCarts from "../../datamodel/cart/allCarts.ts";
-import formatUnixTimestamp from "../../util/Time.ts";
 import {FormatPrice} from "./FormatPrice.tsx";
-import {Progress} from "../Progress.tsx";
+import {ProgressMoney} from "../Progress.tsx";
 import {AdminObservable} from "../../datamodel/admin.ts";
 import {Name, UserNameObservable} from "../../datamodel/name.ts";
 import {Navigate} from "react-router-dom";
+import {OverviewDelivery} from "./OverviewDelivery.tsx";
 
 
 interface OverviewProps {
@@ -20,7 +20,7 @@ interface OverviewState {
     restaurant?: Restaurant
     allCarts?: AllCarts;
     isAdmin: boolean
-    name?: Name
+    name?: Name;
 }
 
 export class Overview extends React.Component<OverviewProps, OverviewState> {
@@ -74,11 +74,7 @@ export class Overview extends React.Component<OverviewProps, OverviewState> {
             <main className="notSide">
                 <MyCart allCarts={this.state.allCarts} restaurant={this.state.restaurant}/>
                 <br/>
-                {this.state.allCarts.submittedAt > 0 &&
-                    <div className="error">
-                        <span>Submitted {formatUnixTimestamp(this.state.allCarts.submittedAt)}</span>
-                    </div>
-                }
+                <OverviewDelivery allCarts={this.state.allCarts} />
                 <h1>Money Pile: </h1>
                 Summe:&nbsp;
                 <FormatPrice price={this.state.allCarts.getTotalValue(menu)}/>
@@ -88,7 +84,7 @@ export class Overview extends React.Component<OverviewProps, OverviewState> {
                 <br/>
                 Nicht Bezahlt:&nbsp;
                 <FormatPrice price={this.state.allCarts.getUnpayedValue(menu)}/>
-                <Progress
+                <ProgressMoney
                     current={this.state.allCarts.getPayedValue(menu)}
                     max={this.state.allCarts.getTotalValue(menu)}
                 />

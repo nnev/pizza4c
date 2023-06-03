@@ -15,6 +15,7 @@ import {Error} from "./components/Error.tsx";
 import Privacy from "./components/Privacy.tsx";
 import Admin from "./components/managment/Admin.tsx";
 import "./index.css"
+import {Delivery} from "./components/delivery/Delivery.tsx";
 
 interface AppProps {
 }
@@ -86,6 +87,7 @@ class App extends React.Component<AppProps, AppState> {
                                 <Route path="/becomeAdmin" element={<Admin/>}/>
                                 <Route path="/renderPdf" element={<RenderPdf/>}/>
                                 <Route path="/privacy" element={<Privacy/>}/>
+                                <Route path="/delivery" element={<Delivery/>}/>
                             </Routes>
                         </div>
                     </div>

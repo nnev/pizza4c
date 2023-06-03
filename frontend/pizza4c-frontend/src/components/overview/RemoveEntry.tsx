@@ -20,7 +20,7 @@ export class RemoveEntry extends React.Component<RemoveEntryProps, RemoveEntrySt
             pixmap="delete"
             text="Aus Bestellung entfernen"
             className={this.props.className}
-            disabled={AllCartsObservable.getValue().submittedAt > 0}
+            disabled={AllCartsObservable.getValue().isSubmitted()}
         />
     }
 }

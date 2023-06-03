@@ -1,12 +1,10 @@
-import React, {MouseEvent} from "react";
+import React from "react";
 import Restaurant from "../../datamodel/restaurant/restaurant.ts";
-import {AllCartsObservable} from "../../backend/Cart.ts";
-import {Pixmap, PixmapButton, PixmapGroup} from "../Pixmap.tsx";
-import {Navigate} from "react-router-dom";
-import {ToggleCartPaid} from "./ToggleCartPaid.tsx";
+import {Pixmap} from "../Pixmap.tsx";
 import {OptionListView} from "./OptionListView.tsx";
 import {getMyName, Name, UserNameObservable} from "../../datamodel/name.ts";
 import AllCarts from "../../datamodel/cart/allCarts.ts";
+import {MyCartHeader} from "./MyCartHeader.tsx";
 
 
 interface MyCartProps {
@@ -16,14 +14,12 @@ interface MyCartProps {
 
 interface MyCartState {
     userName?: Name
-    redirectLogout: boolean;
-    redirectOrder: boolean;
 }
 
 export class MyCart extends React.Component<MyCartProps, MyCartState> {
     constructor(props: MyCartProps, context: any) {
         super(props, context);
-        this.state = {userName: getMyName(), redirectLogout: false, redirectOrder: false}
+        this.state = {userName: getMyName()}
     }
 
     nameObserver = (name: Name) => {
@@ -38,24 +34,7 @@ export class MyCart extends React.Component<MyCartProps, MyCartState> {
         UserNameObservable.unsubscribe(this.nameObserver);
     }
 
-    logout = (ev: MouseEvent<any>) => {
-        ev.preventDefault();
-        this.setState({redirectLogout: true});
-    }
-
-    order = (ev: MouseEvent<any>) => {
-        ev.preventDefault();
-        this.setState({redirectOrder: true});
-    }
-
     render() {
-        if (this.state.redirectLogout) {
-            return <Navigate to="/changeName"/>
-        }
-        if (this.state.redirectOrder) {
-            return <Navigate to="/order"/>
-        }
-
         if (!this.state.userName || !this.props.restaurant) {
             return <></>
         }
@@ -65,17 +44,9 @@ export class MyCart extends React.Component<MyCartProps, MyCartState> {
         if (myCart == undefined || myCart.entries.length == 0) {
             return (<>
                     <h1>Noch keine Bestellung, {myCart == undefined ? this.state.userName.longName : myCart.name}</h1>
-                    <PixmapGroup>
-                        <PixmapButton onClick={this.order}
-                                      pixmap="add"
-                                      text="Neue Bestellung"
-                                      className="primary"
-                                      disabled={AllCartsObservable.getValue().submittedAt > 0}
-                        />
-                        <PixmapButton onClick={this.logout}
-                                      pixmap="logout"
-                                      text={'Ich bin nicht ' + this.state.userName.longName}/><br/>
-                    </PixmapGroup>
+                    <MyCartHeader
+                        name={this.state.userName.longName}
+                    />
                 </>
             );
         }
@@ -85,19 +56,10 @@ export class MyCart extends React.Component<MyCartProps, MyCartState> {
                 <h1>
                     <>Deine Bestellung, {this.state.userName.longName}</>
                 </h1>
-                <PixmapGroup>
-                    <ToggleCartPaid
-                        cart={myCart}
-                    />
-                    <PixmapButton onClick={this.order}
-                                  pixmap="add"
-                                  text="Neue Bestellung"
-                                  className="primary"
-                                  disabled={AllCartsObservable.getValue().submittedAt > 0}
-                    />
-                    <PixmapButton onClick={this.logout} pixmap="logout"
-                                  text={'Ich bin nicht ' + myCart.name}/><br/>
-                </PixmapGroup>
+                <MyCartHeader
+                    cart={myCart}
+                    name={myCart.name}
+                />
                 <br/>
                 <div className="myOrder">
                     <p>

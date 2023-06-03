@@ -1,8 +1,11 @@
 package de.noname.pizza4c.datamodel.pizza4c;
 
 import de.noname.pizza4c.utils.Name;
+import de.noname.pizza4c.webpage.error.AlreadyDeliveredException;
 import de.noname.pizza4c.webpage.error.CartFreshlyCreatedException;
 import de.noname.pizza4c.webpage.error.CartFreshlySubmittedException;
+import de.noname.pizza4c.webpage.error.InvalidDeliveryTimeException;
+import de.noname.pizza4c.webpage.error.NotSubmittedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,14 +14,20 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.temporal.TemporalAmount;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.UUID;
 
+import static de.noname.pizza4c.datamodel.pizza4c.DeliveryTimeEstimationService.MAX_VALID_DURATION;
+import static de.noname.pizza4c.datamodel.pizza4c.DeliveryTimeEstimationService.MIN_VALID_DURATION;
+
 @Service
 public class AllCartService {
-    public static final int MIN_TIME_AFTER_CREATION = 6 * 60 * 60 * 1000;
-    public static final int MIN_TIME_AFTER_SUBMISSION = 6 * 60 * 60 * 1000;
+    public static final TemporalAmount MIN_TIME_AFTER_CREATION = Duration.ofHours(6);
+    public static final TemporalAmount MIN_TIME_AFTER_SUBMISSION = Duration.ofHours(6);
     private final AllCartRepository allCartRepository;
     private final CartRepository cartRepository;
 
@@ -29,6 +38,12 @@ public class AllCartService {
 
     @Autowired
     private KnownRestaurantRepository knownRestaurantRepository;
+
+    @Autowired
+    private HistoricAllCartDeliveryStatisticRepository historicAllCartDeliveryStatisticRepository;
+
+    @Autowired
+    private DeliveryTimeEstimationService deliveryTimeEstimationService;
 
     @Value("${pizza4c.defaultRestaurant:pizza-rapido-eppelheim}") // Default to pizza rapido
     private String defaultRestaurantId;
@@ -41,13 +56,18 @@ public class AllCartService {
     @Transactional
     public AllCarts newAllCarts() {
         var allCarts = getCurrentAllCarts();
-        long now = System.currentTimeMillis();
-        if (allCarts.getCreatedAt() + MIN_TIME_AFTER_CREATION > now) {
+        LocalDateTime now = LocalDateTime.now();
+        if (allCarts.getCreatedAt().plus(MIN_TIME_AFTER_CREATION).isAfter(now)) {
             throw new CartFreshlyCreatedException(allCarts.getCreatedAt());
         }
 
-        if (allCarts.getSubmittedAt() > 0 && allCarts.getSubmittedAt() + MIN_TIME_AFTER_SUBMISSION > now) {
+        if (allCarts.getSubmittedAt() != null &&
+                allCarts.getSubmittedAt().plus(MIN_TIME_AFTER_SUBMISSION).isAfter(now)) {
             throw new CartFreshlySubmittedException(allCarts.getSubmittedAt());
+        }
+
+        if (allCarts.getDeliveredAt() != null) {
+            storeHistoricDeliveryStatistic(allCarts);
         }
 
         allCartRepository.delete(allCarts);
@@ -78,7 +98,7 @@ public class AllCartService {
         allCarts.setId(1L);
         allCarts.setUuid(UUID.randomUUID().toString());
         allCarts.setSelectedRestaurant(defaultRestaurantId);
-        allCarts.setCreatedAt(System.currentTimeMillis());
+        allCarts.setCreatedAt(LocalDateTime.now());
         allCarts.setCarts(Collections.emptyList());
         return allCartRepository.save(allCarts);
     }
@@ -133,8 +153,55 @@ public class AllCartService {
         return true;
     }
 
-    public void setSubmitted(AllCarts allCarts) {
-        allCarts.setSubmittedAt(System.currentTimeMillis());
-        allCartRepository.save(allCarts);
+    public AllCarts setSubmitted(AllCarts allCarts) {
+        allCarts.setSubmittedAt(LocalDateTime.now());
+        return allCartRepository.save(allCarts);
+    }
+
+    public AllCarts setDelivered(AllCarts allCarts, LocalDateTime deliveredAt) {
+        if (allCarts.getDeliveredAt() != null) {
+            throw new AlreadyDeliveredException();
+        }
+
+        if (allCarts.getSubmittedAt() == null) {
+            throw new NotSubmittedException();
+        }
+
+        if (allCarts.getSubmittedAt().plusSeconds(MIN_VALID_DURATION).isAfter(deliveredAt) ||
+                allCarts.getSubmittedAt().plusSeconds(MAX_VALID_DURATION).isBefore(deliveredAt)) {
+            throw new CartFreshlySubmittedException(allCarts.getSubmittedAt());
+        }
+
+
+        if (deliveredAt.isBefore(HistoricAllCartDeliveryStatistic.MIN_VALID_DATE) ||
+                deliveredAt.isAfter(HistoricAllCartDeliveryStatistic.MAX_VALID_DATE)) {
+            throw new InvalidDeliveryTimeException();
+        }
+
+        allCarts.setDeliveredAt(deliveredAt);
+        allCarts = allCartRepository.save(allCarts);
+        storeHistoricDeliveryStatistic(allCarts);
+        return allCarts;
+    }
+
+    public AllCarts setDeliveryEstimation(AllCarts allCarts) {
+        allCarts.setDeliveryTimeEstimation(
+                deliveryTimeEstimationService.estimateDeliveryTime(
+                        allCarts,
+                        knownRestaurantService.getByRestaurantSlug(allCarts.getSelectedRestaurant()).getMenu()
+                )
+        );
+
+        return allCartRepository.save(allCarts);
+    }
+
+    public void storeHistoricDeliveryStatistic(AllCarts allCarts) {
+        var statistic = new HistoricAllCartDeliveryStatistic();
+        statistic.setNumEntries(allCarts.numEntriesInCart());
+        var restaurant = knownRestaurantService.getByRestaurantSlug(allCarts.getSelectedRestaurant());
+        statistic.setPriceEuro(allCarts.getPrice(restaurant.getMenu()).doubleValue());
+        statistic.setSubmitted(allCarts.getSubmittedAt());
+        statistic.setDelivered(allCarts.getDeliveredAt());
+        historicAllCartDeliveryStatisticRepository.save(statistic);
     }
 }

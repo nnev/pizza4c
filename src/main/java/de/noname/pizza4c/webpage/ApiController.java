@@ -23,6 +23,9 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.view.AbstractView;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Objects;
 
@@ -133,11 +136,12 @@ public class ApiController {
         var allCarts = allCartService.getCurrentAllCarts();
         allCarts.ensureNotSubmitted();
 
-        FaxSendStatus sendStatus = faxServiceProvider.sendFax(allCarts.getUuid(),
-                restaurantService.getSelectedRestaurant().getColophon().getData().getFax());
+        String lieferandoFaxAddress = restaurantService.getSelectedRestaurant().getColophon().getData().getFax();
+        FaxSendStatus sendStatus = faxServiceProvider.sendFax(allCarts.getUuid(), lieferandoFaxAddress);
 
         if (sendStatus == FaxSendStatus.SUCCESS) {
-            allCartService.setSubmitted(allCarts);
+            allCarts = allCartService.setSubmitted(allCarts);
+            allCarts = allCartService.setDeliveryEstimation(allCarts);
             return true;
         } else {
             LOG.error("Failed to send fax. StatusCode: " + sendStatus);
@@ -153,7 +157,15 @@ public class ApiController {
             cartService.markAsUnpaid(cart.getUuid());
         }
 
-        allCartService.setSubmitted(allCarts);
+        allCarts = allCartService.setSubmitted(allCarts);
         return true;
+    }
+
+    @PostMapping("/api/setDelivered/{date}")
+    public AllCarts setDelivered(@PathVariable("date") String date) {
+        LocalDateTime parsedDate = ZonedDateTime.parse(date, DateTimeFormatter.ISO_DATE_TIME).toLocalDateTime();
+        var allCarts = allCartService.getCurrentAllCarts();
+        allCarts = allCartService.setDelivered(allCarts, parsedDate);
+        return allCarts;
     }
 }

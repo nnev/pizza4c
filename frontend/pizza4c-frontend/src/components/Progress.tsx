@@ -3,12 +3,15 @@ import React from "react";
 interface ProgressProps {
     current: number;
     max: number;
+    min?: number
 }
 
-export class Progress extends React.Component<ProgressProps, any> {
+export class ProgressMoney extends React.Component<ProgressProps, any> {
     render() {
-        let percentage = this.props.current > 0 ? this.props.current / this.props.max : 0.01;
-        percentage *= 100;
+        let current = this.props.current - (this.props.min || 0);
+        let range = this.props.max - (this.props.min || 0);
+
+        let percentage = current > 0 ? current / range * 100 : 1;
         return (
             <div className="progress">
                 <div className="progressBackground"
