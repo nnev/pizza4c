@@ -4,6 +4,7 @@ import {setDelivered} from "../../backend/Cart.ts";
 import {Navigate} from "react-router-dom";
 import FormattedError from "../../datamodel/error.ts";
 import {Error} from "../Error.tsx";
+import {formatDateAsDateTime} from "../../util/Time.ts";
 
 interface DeliveryProps {
 }
@@ -28,7 +29,6 @@ export class Delivery extends React.Component<DeliveryProps, DeliveryState> {
     changeDate = (ev: ChangeEvent<HTMLInputElement>) => {
         ev.preventDefault();
         let date = ev.target.valueAsDate || new Date();
-        console.log("+++++++++", ev.target.valueAsDate, date)
         this.setState({date: date});
     }
 
@@ -53,7 +53,7 @@ export class Delivery extends React.Component<DeliveryProps, DeliveryState> {
                 type="text"
                 onChange={this.changeDate}
                 placeholder="dd. mm. yyyy hh:mm:ss"
-                defaultValue={this.state.date.toLocaleString()}
+                defaultValue={formatDateAsDateTime(this.state.date)}
             />
             <br />
             <PixmapButton

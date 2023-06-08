@@ -1,15 +1,15 @@
 export default class DeliveryTimeEstimation {
-    byTime: string;
+    byEntries: string;
     byPrice: string;
 
-    constructor(byTime: string, byPrice: string) {
-        this.byTime = byTime;
+    constructor(byEntries: string, byPrice: string) {
+        this.byEntries = byEntries;
         this.byPrice = byPrice;
     }
 
 
-    public byTimeDate(): Date {
-        return new Date(this.byTime);
+    public byEntriesDate(): Date {
+        return new Date(this.byEntries);
     }
 
     public byPriceDate(): Date {
@@ -17,19 +17,19 @@ export default class DeliveryTimeEstimation {
     }
 
     public getMinDate(): Date {
-        let byTimeDate = this.byTimeDate();
+        let byEntriesDate = this.byEntriesDate();
         let byPriceDate = this.byPriceDate();
-        if (byTimeDate.getTime() < byPriceDate.getTime()) {
-            return byTimeDate;
+        if (byEntriesDate.getTime() < byPriceDate.getTime()) {
+            return byEntriesDate;
         }
         return byPriceDate;
     }
 
     public getMaxDate(): Date {
-        let byTimeDate = this.byTimeDate();
+        let byEntriesDate = this.byEntriesDate();
         let byPriceDate = this.byPriceDate();
-        if (byTimeDate.getTime() > byPriceDate.getTime()) {
-            return byTimeDate;
+        if (byEntriesDate.getTime() > byPriceDate.getTime()) {
+            return byEntriesDate;
         }
         return byPriceDate;
     }

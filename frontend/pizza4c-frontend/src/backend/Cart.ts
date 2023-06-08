@@ -6,6 +6,7 @@ import AllCarts from "../datamodel/cart/allCarts.ts";
 import FormattedError from "../datamodel/error.ts";
 import {getMyName} from "../datamodel/name.ts";
 import DeliveryTimeEstimation from "../datamodel/cart/deliveryTimeEstimation.ts";
+import {leftPad} from "../util/Time.ts";
 
 export async function addToCart(product: string, variant: string, options: Map<string, Set<string>>, comment?: string): Promise<any> {
 
@@ -101,10 +102,10 @@ function mapDeliveryTimeEstimation(data?: DeliveryTimeEstimation): DeliveryTimeE
     if (data == undefined) {
         return undefined
     }
-    let byTime = data.byTime;
+    let byEntries = data.byEntries;
     let byPrice = data.byPrice;
 
-    return new DeliveryTimeEstimation(byTime, byPrice);
+    return new DeliveryTimeEstimation(byEntries, byPrice);
 }
 
 // End mappers
@@ -188,15 +189,6 @@ export async function newAllOrders(): Promise<AllCarts> {
                 return value;
             }
         })
-}
-
-
-function leftPad(value: number, length: number, padding: string) {
-    let strValue = value + "";
-    if (strValue.length < length) {
-        return padding.repeat(length - strValue.length) + strValue;
-    }
-    return strValue;
 }
 
 export async function setDelivered(deliveryDate: Date): Promise<AllCarts> {

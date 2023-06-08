@@ -39,7 +39,7 @@ public class DeliveryTimeEstimationService {
             double numEntriesStatistic = statistic.getNumEntries();
             double priceEuroStatistic = statistic.getPriceEuro();
 
-            double durationSeconds = ChronoUnit.SECONDS.between(statistic.getDelivered(), statistic.getSubmitted());
+            double durationSeconds = ChronoUnit.SECONDS.between(statistic.getSubmitted(), statistic.getDelivered());
 
             if (durationSeconds < MIN_VALID_DURATION || durationSeconds > MAX_VALID_DURATION) {
                 continue;

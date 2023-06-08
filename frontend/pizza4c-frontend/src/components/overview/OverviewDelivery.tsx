@@ -32,7 +32,7 @@ export class OverviewDelivery extends React.Component<OverviewDeliveryProps, Ove
             return <Navigate to="/delivery"/>
         }
 
-        return <>
+        return <div className="deliveryOverview">
             {this.props.allCarts.isSubmitted() &&
                 <div className="error">
                     <span>Bestellung versendet um {formatDate(this.props.allCarts.getSubmittedAtDate())}</span>
@@ -58,6 +58,6 @@ export class OverviewDelivery extends React.Component<OverviewDeliveryProps, Ove
                     <span>Pizza wurde um {formatDate(this.props.allCarts.getDeliveredAtDate())} geliefert</span>
                 </div>
             }
-        </>
+        </div>
     }
 }
