@@ -57,18 +57,14 @@ public class AllCartService {
     public AllCarts newAllCarts() {
         var allCarts = getCurrentAllCarts();
         LocalDateTime now = LocalDateTime.now();
-        if (allCarts.getCreatedAt().plus(MIN_TIME_AFTER_CREATION).isAfter(now)) {
-            throw new CartFreshlyCreatedException(allCarts.getCreatedAt());
-        }
-
-        if (allCarts.getSubmittedAt() != null &&
-                allCarts.getSubmittedAt().plus(MIN_TIME_AFTER_SUBMISSION).isAfter(now)) {
-            throw new CartFreshlySubmittedException(allCarts.getSubmittedAt());
-        }
-
-        if (allCarts.getDeliveredAt() != null) {
-            storeHistoricDeliveryStatistic(allCarts);
-        }
+//        if (allCarts.getCreatedAt().plus(MIN_TIME_AFTER_CREATION).isAfter(now)) {
+//            throw new CartFreshlyCreatedException(allCarts.getCreatedAt());
+//        }
+//
+//        if (allCarts.getSubmittedAt() != null &&
+//                allCarts.getSubmittedAt().plus(MIN_TIME_AFTER_SUBMISSION).isAfter(now)) {
+//            throw new CartFreshlySubmittedException(allCarts.getSubmittedAt());
+//        }
 
         allCartRepository.delete(allCarts);
         return getCurrentAllCarts();
@@ -167,10 +163,10 @@ public class AllCartService {
             throw new NotSubmittedException();
         }
 
-        if (allCarts.getSubmittedAt().plusSeconds(MIN_VALID_DURATION).isAfter(deliveredAt) ||
-                allCarts.getSubmittedAt().plusSeconds(MAX_VALID_DURATION).isBefore(deliveredAt)) {
-            throw new CartFreshlySubmittedException(allCarts.getSubmittedAt());
-        }
+//        if (allCarts.getSubmittedAt().plusSeconds(MIN_VALID_DURATION).isAfter(deliveredAt) ||
+//                allCarts.getSubmittedAt().plusSeconds(MAX_VALID_DURATION).isBefore(deliveredAt)) {
+//            throw new CartFreshlySubmittedException(allCarts.getSubmittedAt());
+//        }
 
 
         if (deliveredAt.isBefore(HistoricAllCartDeliveryStatistic.MIN_VALID_DATE) ||
