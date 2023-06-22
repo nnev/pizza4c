@@ -5,7 +5,7 @@ plugins {
 }
 
 group = 'de.noname'
-version = '0.1.1-SNAPSHOT'
+version = '0.1.2-SNAPSHOT'
 sourceCompatibility = '17'
 
 configurations {
