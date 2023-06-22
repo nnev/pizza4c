@@ -52,7 +52,7 @@ public class ClickSendFaxServiceProvider implements FaxServiceProvider {
     @Value("${pizza4c.fax.service.sendfax.password:password}")
     private String password;
 
-    @Value("${pizza4c.fax.service.sendfax.apiEndpoint:https://rest.clicksend.com/v3/fax/send")
+    @Value("${pizza4c.fax.service.sendfax.apiEndpoint:https://rest.clicksend.com/v3/fax/send}")
     public String apiEndpoint;
 
     @Override
