@@ -9,6 +9,6 @@ public class DailyCartResetScheduler {
 
     @Scheduled(cron = "0 0 6 * * *")
     public void dailyCartReset() {
-        allCartService.newAllCarts();
+        allCartService.clearAllCarts();
     }
 }

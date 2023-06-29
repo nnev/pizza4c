@@ -74,6 +74,14 @@ public class AllCartService {
     }
 
     @Transactional
+    public void clearAllCarts() {
+        allCartRepository.deleteAll();
+        getCurrentAllCarts();
+    }
+
+
+
+    @Transactional
     public AllCarts getCurrentAllCarts() {
         var allCarts = allCartRepository.getLatest();
         if (allCarts == null) {
