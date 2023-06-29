@@ -1,5 +1,7 @@
 package de.noname.pizza4c;
 
+import de.noname.pizza4c.datamodel.pizza4c.DailyCartResetScheduler;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
@@ -20,6 +22,11 @@ public class Pizza4cConfig implements WebMvcConfigurer {
         registerResourceHandler(registry, "/**.js", 7);
         registerResourceHandler(registry, "/**.css", 7);
         registerResourceHandler(registry, "/**", 0);
+    }
+
+    @Bean
+    public DailyCartResetScheduler dailyCartResetScheduler() {
+        return new DailyCartResetScheduler();
     }
 
     private static void registerResourceHandler(ResourceHandlerRegistry registry, String extension, int cacheDurationDays) {
