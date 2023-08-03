@@ -100,14 +100,16 @@ export default class ChangeName extends React.Component<ChangeNameProps, ChangeN
                                        maxLength={32}
                                        onChange={this.changeName}
                                        onKeyPress={this.changeNameSubmit}
+                                       tabIndex={1}
+                                       autoFocus={true}
                                 />
                                 <PixmapButton
                                     onClick={this.generateRandomName}
                                     pixmap="casino"
                                     text="Zufälligen Alias generieren"
                                     className={"tiny"}
-                                    tabIndex={0}
                                     autofocus={false}
+                                    tabIndex={2}
                                 />
                             </td>
                         </tr>
@@ -135,7 +137,7 @@ export default class ChangeName extends React.Component<ChangeNameProps, ChangeN
                            className="changeNameInput"
                            checked={this.state.mayStore}
                            onChange={this.changeMayStore}
-                           tabIndex={0}
+                           tabIndex={3}
                     />
                     <br/>
                     <p className="nameStoreHint">
@@ -149,8 +151,7 @@ export default class ChangeName extends React.Component<ChangeNameProps, ChangeN
                             pixmap="person_add"
                             text="Name ändern"
                             disabled={ready != "VALID"}
-                            autofocus={true}
-                            tabIndex={1}
+                            tabIndex={4}
                             type="submit"
                         />
                     </PixmapGroup>
