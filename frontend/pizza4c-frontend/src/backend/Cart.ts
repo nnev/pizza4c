@@ -88,7 +88,7 @@ function mapCart(data: Cart): Cart {
     return new Cart(id, name, entries, payed, shortName);
 }
 
-function mapEntries(data: CartEntry): CartEntry {
+export function mapEntries(data: CartEntry): CartEntry {
     let id = data.id;
     let product = data.product;
     let variant = data.variant;

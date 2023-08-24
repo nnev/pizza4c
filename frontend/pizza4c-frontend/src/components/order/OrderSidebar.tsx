@@ -2,6 +2,8 @@ import React from "react";
 import Restaurant from "../../datamodel/restaurant/restaurant.ts";
 import {selectableVegan, VeganObservable} from "../../datamodel/cart/vegan.ts";
 import {Pixmap} from "../Pixmap.tsx";
+import {Navigate} from "react-router-dom";
+import {getFavorites} from "../../datamodel/favorites.ts";
 
 interface OrderSidebarProps {
     restaurant: Restaurant
@@ -10,6 +12,7 @@ interface OrderSidebarProps {
 interface OrderSidebarState {
     selectedId: string;
     vegan: selectableVegan
+    redirectToFavorites: boolean
 }
 
 export class OrderSidebar extends React.Component<OrderSidebarProps, OrderSidebarState> {
@@ -17,7 +20,8 @@ export class OrderSidebar extends React.Component<OrderSidebarProps, OrderSideba
         super(props, context);
         this.state = {
             selectedId: window.location.hash.substring(1),
-            vegan: VeganObservable.getValue()
+            vegan: VeganObservable.getValue(),
+            redirectToFavorites: false
         }
     }
 
@@ -47,6 +51,10 @@ export class OrderSidebar extends React.Component<OrderSidebarProps, OrderSideba
         ev.preventDefault();
         VeganObservable.setValue("all")
     }
+    redirectFavorites = (ev: React.MouseEvent<HTMLAnchorElement>) => {
+        ev.preventDefault();
+        this.setState({redirectToFavorites: true})
+    }
 
     setSelectedId(id: string) {
         this.setState({selectedId: id})
@@ -61,6 +69,9 @@ export class OrderSidebar extends React.Component<OrderSidebarProps, OrderSideba
     }
 
     render() {
+        if (this.state.redirectToFavorites) {
+            return <Navigate to="/favorites"/>
+        }
         let categoryEntries = this.props.restaurant.menu.categories.map(category => {
             return <li key={category.id}>
                 <a
@@ -81,7 +92,7 @@ export class OrderSidebar extends React.Component<OrderSidebarProps, OrderSideba
                 <nav>
                     <ol>
                         {categoryEntries}
-                        <hr />
+                        <hr/>
                         <li key="alle">
                             <a
                                 onClick={this.setAllFilter}
@@ -89,7 +100,7 @@ export class OrderSidebar extends React.Component<OrderSidebarProps, OrderSideba
                                 <h1
                                     className={this.state.vegan == "all" ? "target" : ""}
                                 >
-                                    <Pixmap pixmap="egg_alt" text="Alles" />
+                                    <Pixmap pixmap="egg_alt" text="Alles"/>
                                 </h1>
                             </a>
                         </li>
@@ -100,7 +111,7 @@ export class OrderSidebar extends React.Component<OrderSidebarProps, OrderSideba
                                 <h1
                                     className={this.state.vegan == "vegetarian" ? "target" : ""}
                                 >
-                                    <Pixmap pixmap="egg" text="Vegetarisch" />
+                                    <Pixmap pixmap="egg" text="Vegetarisch"/>
                                 </h1>
                             </a>
                         </li>
@@ -114,10 +125,23 @@ Es gibt leider keine Garantie für nichts :/"
                                 <h1
                                     className={this.state.vegan == "vegan" ? "target" : ""}
                                 >
-                                    <Pixmap pixmap="spa" text={"~Vegan-ish?"} />
+                                    <Pixmap pixmap="spa" text={"~Vegan-ish?"}/>
                                 </h1>
                             </a>
                         </li>
+                        {getFavorites().favorite.length > 0 &&
+                            <li key="favorites">
+                                <a
+                                    onClick={this.redirectFavorites}
+                                >
+                                    <h1
+                                        className="favorites"
+                                    >
+                                        <Pixmap pixmap="favorite" text={"Favoriten"}/>
+                                    </h1>
+                                </a>
+                            </li>
+                        }
                     </ol>
                 </nav>
             </aside>

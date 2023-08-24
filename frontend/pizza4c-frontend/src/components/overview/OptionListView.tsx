@@ -29,6 +29,8 @@ export class OptionListView extends React.Component<OptionListViewProps, OptionL
             }
         }
 
+        console.log("++++", mappedOptions, options)
+
         if(this.props.entry.comment != undefined && this.props.entry.comment != "") {
             mappedOptions.push(
                 <span key="comment">

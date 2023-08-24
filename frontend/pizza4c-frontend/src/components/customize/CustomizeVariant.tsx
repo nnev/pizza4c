@@ -1,6 +1,6 @@
 import Variant from "../../datamodel/restaurant/variant.ts";
 import Restaurant from "../../datamodel/restaurant/restaurant.ts";
-import React, {ChangeEvent} from "react";
+import React, {ChangeEvent, MouseEvent} from "react";
 import {CustomizeOptionGroup} from "./CustomizeOptionGroup.tsx";
 import {CurrentRestaurantObservable} from "../../backend/restaurant.ts";
 import Product from "../../datamodel/restaurant/product.ts";
@@ -9,6 +9,9 @@ import {Navigate, useParams} from "react-router-dom";
 import {addToCart} from "../../backend/Cart.ts";
 import FormattedError from "../../datamodel/error.ts";
 import {Error} from "../Error.tsx";
+import {getFavorites, setFavorites} from "../../datamodel/favorites.ts";
+import CartEntry from "../../datamodel/cart/cartEntry.ts";
+import {mapToDictionary} from "../../util/Dictionary.ts";
 
 interface CustomizeVariantProps {
     productId: string;
@@ -56,7 +59,8 @@ class CustomizeVariantClazz extends React.Component<CustomizeVariantProps, Custo
         CurrentRestaurantObservable.unsubscribe(this.listener);
     }
 
-    addToCart = () => {
+    addToCart = (ev: MouseEvent<HTMLInputElement>) => {
+        ev.preventDefault();
         if (this.props.productId && this.state.variant && this.getCustomizationCompleted()) {
             addToCart(this.props.productId, this.state.variant.id, this.state.selectedOptions, this.state.comment)
                 .then(_ => {
@@ -65,6 +69,20 @@ class CustomizeVariantClazz extends React.Component<CustomizeVariantProps, Custo
                 .catch(value => {
                     this.setState({error: value as FormattedError})
                 })
+        }
+    }
+    addToFavorites = (ev: MouseEvent<HTMLInputElement>) => {
+        ev.preventDefault();
+        if (this.props.productId && this.state.variant && this.getCustomizationCompleted()) {
+            let favorites = getFavorites();
+            favorites.favorite.push(new CartEntry(
+                "",
+                this.props.productId,
+                this.state.variant.id,
+                mapToDictionary(this.state.selectedOptions),
+                this.state.comment
+            ))
+            setFavorites(favorites, true);
         }
     }
 
@@ -184,6 +202,13 @@ class CustomizeVariantClazz extends React.Component<CustomizeVariantProps, Custo
                                       text="Zurück zur Größenauswahl"/>
                     }
 
+                    <PixmapButton
+                        onClick={this.addToFavorites}
+                        pixmap="favorite_border"
+                        text={completed ? "Zu Favoriten hinzufügen" : "Noch nicht alle benötigten Optionen ausgewählt!"}
+                        disabled={!completed}
+                        className="primary right"
+                    />
                     <PixmapButton
                         onClick={this.addToCart}
                         pixmap="add"

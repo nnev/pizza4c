@@ -16,6 +16,7 @@ import Privacy from "./components/Privacy.tsx";
 import Admin from "./components/managment/Admin.tsx";
 import "./index.css"
 import {Delivery} from "./components/delivery/Delivery.tsx";
+import {FavoritesComponent} from "./components/order/Favorites.tsx";
 
 interface AppProps {
 }
@@ -88,6 +89,7 @@ class App extends React.Component<AppProps, AppState> {
                                 <Route path="/renderPdf" element={<RenderPdf/>}/>
                                 <Route path="/privacy" element={<Privacy/>}/>
                                 <Route path="/delivery" element={<Delivery/>}/>
+                                <Route path="/favorites" element={<FavoritesComponent/>}/>
                             </Routes>
                         </div>
                     </div>

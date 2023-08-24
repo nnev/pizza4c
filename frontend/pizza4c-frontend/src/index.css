@@ -165,7 +165,7 @@ main ol:first-child {
     margin-top: -10px;
 }
 
-.row .customize {
+.row .customize, .row .favorites {
     width: 100%;
 }
 
