@@ -68,6 +68,7 @@ export class FavoritesEntry extends React.Component<FavoritesEntryProps, Favorit
                 <OptionListView
                     entry={this.props.entry}
                     restaurant={this.props.restaurant}
+                    withSize={true}
                 />
                 <span
                     className="total"> <b>Total</b>: {this.props.entry.getPrice(this.props.restaurant.menu).toFixed(2)}€</span>
