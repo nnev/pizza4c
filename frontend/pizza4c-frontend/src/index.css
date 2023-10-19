@@ -710,4 +710,21 @@ tr.cartOwner td {
     "productMain productSelect"
     "productMain productPrice";
     }
+
+
+    .pixmapGroup button.pixmapButton {
+        margin: 0;
+    }
+
+    .pixmapGroup button.pixmapButton:first-child {
+        margin: 0;
+    }
+
+    .pixmapGroup button.pixmapButton:last-child {
+        margin: 0;
+    }
+
+    .pixmapButton.right {
+        margin-left: 0 !important;
+    }
 }

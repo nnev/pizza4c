@@ -28,6 +28,7 @@ interface CustomizeVariantState {
     addToCartCompleted: boolean
     error?: FormattedError
     comment?: string
+    alreadyFavorited: boolean
 }
 
 class CustomizeVariantClazz extends React.Component<CustomizeVariantProps, CustomizeVariantState> {
@@ -38,6 +39,7 @@ class CustomizeVariantClazz extends React.Component<CustomizeVariantProps, Custo
             backToVariantSelection: false,
             backToOrder: false,
             addToCartCompleted: false,
+            alreadyFavorited: false
         };
     }
 
@@ -83,6 +85,7 @@ class CustomizeVariantClazz extends React.Component<CustomizeVariantProps, Custo
                 this.state.comment
             ))
             setFavorites(favorites, true);
+            this.setState({alreadyFavorited: true});
         }
     }
 
@@ -129,7 +132,8 @@ class CustomizeVariantClazz extends React.Component<CustomizeVariantProps, Custo
     changeComment = (ev: ChangeEvent<HTMLTextAreaElement>) => {
         let value = ev.target.value;
         this.setState({
-            comment: value
+            comment: value,
+            alreadyFavorited: false
         })
     }
 
@@ -157,6 +161,7 @@ class CustomizeVariantClazz extends React.Component<CustomizeVariantProps, Custo
         }
 
         let completed = this.getCustomizationCompleted();
+        let alreadyFavorited = this.state.alreadyFavorited;
 
         return (
             <main className="notSide customize">
@@ -206,7 +211,7 @@ class CustomizeVariantClazz extends React.Component<CustomizeVariantProps, Custo
                         onClick={this.addToFavorites}
                         pixmap="favorite_border"
                         text={completed ? "Zu Favoriten hinzufügen" : "Noch nicht alle benötigten Optionen ausgewählt!"}
-                        disabled={!completed}
+                        disabled={!completed || alreadyFavorited}
                         className="primary right"
                     />
                     <PixmapButton
@@ -224,7 +229,7 @@ class CustomizeVariantClazz extends React.Component<CustomizeVariantProps, Custo
     selectOption = (optionGroupId: string, selectedOptions: Set<string>) => {
         let selectedOptionsSet = this.state.selectedOptions;
         selectedOptionsSet.set(optionGroupId, selectedOptions)
-        this.setState({selectedOptions: selectedOptionsSet})
+        this.setState({selectedOptions: selectedOptionsSet, alreadyFavorited: false})
     };
 }
 

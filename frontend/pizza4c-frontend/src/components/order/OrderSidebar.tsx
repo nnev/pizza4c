@@ -137,7 +137,7 @@ Es gibt leider keine Garantie für nichts :/"
                                     <h1
                                         className="favorites"
                                     >
-                                        <Pixmap pixmap="favorite" text={"Favoriten"}/>
+                                        <Pixmap pixmap="favorite" text="Favoriten"/>
                                     </h1>
                                 </a>
                             </li>

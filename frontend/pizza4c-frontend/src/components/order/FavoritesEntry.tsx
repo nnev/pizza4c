@@ -49,9 +49,11 @@ export class FavoritesEntry extends React.Component<FavoritesEntryProps, Favorit
     removeFromFavorites = (ev: MouseEvent<HTMLInputElement>) => {
         ev.preventDefault();
         if (this.props.entry.product && this.props.entry.variant) {
-            let favorites = getFavorites();
-            favorites.favorite = favorites.favorite.filter(f => f != this.props.entry)
-            setFavorites(favorites, true);
+            if (window.confirm("Wirklich löschen?")) {
+                let favorites = getFavorites();
+                favorites.favorite = favorites.favorite.filter(f => f != this.props.entry)
+                setFavorites(favorites, true);
+            }
         }
     }
 
