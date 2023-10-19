@@ -7,7 +7,7 @@ import CartEntry from "../../datamodel/cart/cartEntry.ts";
 import FormattedError from "../../datamodel/error.ts";
 import {Navigate} from "react-router-dom";
 import {Error} from "../Error.tsx";
-import {addToCart} from "../../backend/Cart.ts";
+import {addToCart, AllCartsObservable} from "../../backend/Cart.ts";
 import {dictionaryToMap} from "../../util/Dictionary.ts";
 
 interface FavoritesEntryProps {
@@ -79,6 +79,7 @@ export class FavoritesEntry extends React.Component<FavoritesEntryProps, Favorit
                         pixmap="add"
                         text={"Zur Bestellung hinzufügen"}
                         className="primary"
+                        disabled={AllCartsObservable.getValue().isSubmitted()}
                     />
                     <PixmapButton
                         onClick={this.removeFromFavorites}

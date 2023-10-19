@@ -80,7 +80,12 @@ export class MyCartHeader extends React.Component<MyCartHeaderProps, MyCartHeade
             {
                 this.state.favorites != null &&
                 this.state.favorites.favorite.length > 0 &&
-                <PixmapButton onClick={this.favorites} pixmap="favorite" text="Aus Favoriten auswählen"/>
+                <PixmapButton
+                    onClick={this.favorites}
+                    pixmap="favorite"
+                    text="Aus Favoriten auswählen"
+                    disabled={AllCartsObservable.getValue().isSubmitted()}
+                />
             }
             <PixmapButton onClick={this.logout} pixmap="logout"
                           text={'Ich bin nicht ' + this.props.name}/><br/>
