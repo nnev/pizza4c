@@ -26,7 +26,6 @@ public class RestaurantService {
     @Transactional
     public Restaurant getSelectedRestaurant() {
         var allCarts = allCartService.getCurrentAllCarts();
-        LOG.info("********** {}", allCarts);
         return knownRestaurantService.getByRestaurantSlug(allCarts.getSelectedRestaurant());
     }
 

@@ -150,11 +150,8 @@ public class AllCartService {
         allCarts.ensureNotSubmitted();
         allCarts.setSelectedRestaurant(newRestaurantId);
         allCarts.setCarts(new ArrayList<>());
-        LOG.info("++++++++++ {}", allCarts);
-
         allCarts = allCartRepository.saveAndFlush(allCarts);
 
-        LOG.info("########## {} {}", allCarts, getCurrentAllCarts());
         return true;
     }
 
