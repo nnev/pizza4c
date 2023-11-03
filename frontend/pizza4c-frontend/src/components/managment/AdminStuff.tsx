@@ -6,6 +6,7 @@ import CancelAllOrders from "./CancelAllOrders..tsx";
 import SubmitOrder from "./SubmitOrder..tsx";
 import ForceRestaurantUpdate from "./ForceRestaurantUpdate.tsx";
 import NewAllOrders from "./NewAllOrders..tsx";
+import AddRestaurant from "./AddRestaurant.tsx";
 
 interface AdminStuffProps {
 }
@@ -31,6 +32,7 @@ export default class AdminStuff extends React.Component<AdminStuffProps, AdminSt
             <>
                 <SubmitOrder/>
                 <ChangeRestaurant/>
+                <AddRestaurant/>
                 <ForceRestaurantUpdate/>
                 <CancelAllOrders/>
                 <NewAllOrders/>

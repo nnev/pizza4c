@@ -80,16 +80,15 @@ public class AllCartService {
     }
 
 
-
     @Transactional
     public AllCarts getCurrentAllCarts() {
         var allCarts = allCartRepository.getLatest();
         if (allCarts == null) {
             allCarts = createDefaultAllCarts();
         }
-        if (knownRestaurantRepository.getByLieferandoName(allCarts.getSelectedRestaurant()) != null) {
+        if (knownRestaurantRepository.getByLieferandoName(allCarts.getSelectedRestaurant()) == null) {
             allCarts.setSelectedRestaurant(defaultRestaurantId);
-            allCarts = allCartRepository.save(allCarts);
+            allCarts = allCartRepository.saveAndFlush(allCarts);
         }
 
         return allCarts;
@@ -102,7 +101,7 @@ public class AllCartService {
         allCarts.setSelectedRestaurant(defaultRestaurantId);
         allCarts.setCreatedAt(LocalDateTime.now());
         allCarts.setCarts(Collections.emptyList());
-        return allCartRepository.save(allCarts);
+        return allCartRepository.saveAndFlush(allCarts);
     }
 
     @Transactional
@@ -120,9 +119,9 @@ public class AllCartService {
             cart.setUuid(UUID.randomUUID().toString());
             cart.setName(name.getLongName());
             cart.setShortName(name.getShortName());
-            cart = cartRepository.save(cart);
+            cart = cartRepository.saveAndFlush(cart);
             allCarts.getCarts().add(cart);
-            allCartRepository.save(allCarts);
+            allCartRepository.saveAndFlush(allCarts);
             return cart;
         }
         return optionalCart.get();
@@ -151,13 +150,17 @@ public class AllCartService {
         allCarts.ensureNotSubmitted();
         allCarts.setSelectedRestaurant(newRestaurantId);
         allCarts.setCarts(new ArrayList<>());
-        allCartRepository.save(allCarts);
+        LOG.info("++++++++++ {}", allCarts);
+
+        allCarts = allCartRepository.saveAndFlush(allCarts);
+
+        LOG.info("########## {} {}", allCarts, getCurrentAllCarts());
         return true;
     }
 
     public AllCarts setSubmitted(AllCarts allCarts) {
         allCarts.setSubmittedAt(LocalDateTime.now());
-        return allCartRepository.save(allCarts);
+        return allCartRepository.saveAndFlush(allCarts);
     }
 
     public AllCarts setDelivered(AllCarts allCarts, LocalDateTime deliveredAt) {
@@ -181,7 +184,7 @@ public class AllCartService {
         }
 
         allCarts.setDeliveredAt(deliveredAt);
-        allCarts = allCartRepository.save(allCarts);
+        allCarts = allCartRepository.saveAndFlush(allCarts);
         storeHistoricDeliveryStatistic(allCarts);
         return allCarts;
     }
@@ -194,7 +197,7 @@ public class AllCartService {
                 )
         );
 
-        return allCartRepository.save(allCarts);
+        return allCartRepository.saveAndFlush(allCarts);
     }
 
     public void storeHistoricDeliveryStatistic(AllCarts allCarts) {
@@ -204,6 +207,6 @@ public class AllCartService {
         statistic.setPriceEuro(allCarts.getPrice(restaurant.getMenu()).doubleValue());
         statistic.setSubmitted(allCarts.getSubmittedAt());
         statistic.setDelivered(allCarts.getDeliveredAt());
-        historicAllCartDeliveryStatisticRepository.save(statistic);
+        historicAllCartDeliveryStatisticRepository.saveAndFlush(statistic);
     }
 }

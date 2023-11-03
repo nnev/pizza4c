@@ -2,7 +2,7 @@ import React, {ChangeEvent, MouseEvent} from "react";
 import {PixmapButton} from "../Pixmap.tsx";
 import KnownRestaurant from "../../datamodel/restaurant/knownRestaurant.ts";
 import Restaurant, {CurrentRestaurantObservable} from "../../datamodel/restaurant/restaurant.ts";
-import {getKnownRestaurants} from "../../backend/restaurant.ts";
+import {getKnownRestaurants, KnownRestaurantObservable} from "../../backend/restaurant.ts";
 import {setCurrentRestaurant} from "../../backend/Admin.ts";
 
 interface ChangeRestaurantProps {
@@ -24,6 +24,7 @@ export default class ChangeRestaurant extends React.Component<ChangeRestaurantPr
             restaurantName: value?.restaurantSlug || "unknown",
             nameChanged: undefined
         }
+        getKnownRestaurants()
     }
 
     listener = (value: Restaurant) => {
@@ -32,16 +33,20 @@ export default class ChangeRestaurant extends React.Component<ChangeRestaurantPr
         });
     }
 
+    knownRestaurantListener = (value: KnownRestaurant[]) => {
+        this.setState({
+            knownRestaurants: value,
+        });
+    }
+
     componentDidMount() {
         CurrentRestaurantObservable.subscribe(this.listener);
-        getKnownRestaurants().then(value => this.setState({
-            knownRestaurants: value
-        }));
+        KnownRestaurantObservable.subscribe(this.knownRestaurantListener);
     }
 
     componentWillUnmount() {
         CurrentRestaurantObservable.unsubscribe(this.listener);
-        this.setState({knownRestaurants: undefined})
+        KnownRestaurantObservable.unsubscribe(this.knownRestaurantListener);
     }
 
     changeRestaurantName = (ev: ChangeEvent<HTMLSelectElement>) => {
@@ -92,7 +97,8 @@ export default class ChangeRestaurant extends React.Component<ChangeRestaurantPr
                     text="Restaurant ändern"
                 />
                 {this.state.nameChanged != undefined && <br/>}
-                {this.state.nameChanged === true && <span className="payed">Geändert auf {this.state.currentRestaurant?.restaurantSlug}</span>}
+                {this.state.nameChanged === true &&
+                    <span className="payed">Geändert auf {this.state.currentRestaurant?.restaurantSlug}</span>}
                 {this.state.nameChanged === false && <span className="unpayed">Änderung fehlgeschlagen</span>}
             </>
         );

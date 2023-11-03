@@ -2,6 +2,7 @@ import {BACKEND} from "./Constants.ts";
 import {CurrentRestaurantObservable} from "../datamodel/restaurant/restaurant.ts";
 import {ErrorObservable} from "../datamodel/error.ts";
 import KnownRestaurant from "../datamodel/restaurant/knownRestaurant.ts";
+import {Observable} from "../util/Observable.ts";
 
 export async function getCurrentRestaurant() {
     fetch(BACKEND + "/restaurant/current", {
@@ -27,4 +28,15 @@ export async function getKnownRestaurants(): Promise<KnownRestaurant[]> {
         method: "GET",
     })
         .then(value => value.json())
+        .then(value => {
+            KnownRestaurantObservable.setValue(value);
+            return value
+        })
 }
+
+export const KnownRestaurantObservable = new Observable<KnownRestaurant[]>({
+    initializer: () => {
+        getKnownRestaurants().then(KnownRestaurantObservable.setValue);
+        return [];
+    }
+})

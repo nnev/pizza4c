@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.io.IOException;
@@ -42,6 +43,7 @@ public class KnownRestaurantService {
         return restaurant;
     }
 
+    @Transactional
     public boolean refreshRestaurantData(String restaurantSlug) {
         var knownRestaurant = knownRestaurantRepository.getByLieferandoName(restaurantSlug);
         if (knownRestaurant == null) {
@@ -63,7 +65,7 @@ public class KnownRestaurantService {
         vegetarianHeuristic(restaurant);
         restaurant.setRestaurantSlug(restaurantSlug);
         knownRestaurant.setLieferandoData(serializeRestaurantFromData(restaurant));
-        knownRestaurantRepository.save(knownRestaurant);
+        knownRestaurantRepository.saveAndFlush(knownRestaurant);
         return true;
     }
 
@@ -108,7 +110,12 @@ public class KnownRestaurantService {
             "Maare",
             "Salmon",
             "Tonno",
-            "Hamburger"
+            "Hamburger",
+            "krabbe",
+            "ente",
+            "Ente",
+            "Hühner",
+            "Hummer"
     );
     private static final List<String> NOT_VEGAN_NAMES = List.of(
             "Käse",
@@ -128,7 +135,8 @@ public class KnownRestaurantService {
             "Formaggi",
             "Fudge",
             "Joghurt",
-            "Rahm"
+            "Rahm",
+            "mit Ei"
     );
 
     private boolean isVegetarian(String name) {
@@ -192,6 +200,7 @@ public class KnownRestaurantService {
             String fileName = "/static/" + restaurantName + ".json";
             URL resource = RestaurantService.class.getResource(fileName);
             if (resource == null) {
+                LOG.error("Failed to retrieve static restaurant data for {}. No such file", restaurantName);
                 return null;
             }
 

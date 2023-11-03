@@ -32,4 +32,12 @@ public class VersionedEntity {
     public long getVersion() {
         return version;
     }
+
+    @Override
+    public String toString() {
+        return "VersionedEntity{" +
+               "id=" + id +
+               ", version=" + version +
+               '}';
+    }
 }

@@ -20,7 +20,7 @@ public class CartService {
         Cart cart = getCartById(cartId);
         if (cart != null) {
             cart.setPayed(true);
-            cartRepository.save(cart);
+            cartRepository.saveAndFlush(cart);
         }
     }
 
@@ -28,7 +28,7 @@ public class CartService {
         Cart cart = getCartById(cartId);
         if (cart != null) {
             cart.setPayed(false);
-            cartRepository.save(cart);
+            cartRepository.saveAndFlush(cart);
         }
     }
 
@@ -38,7 +38,7 @@ public class CartService {
 
     public Cart addToCart(Cart cart, ValidatedAddToCartDto validData) {
         cart.getEntries().add(createEntry(validData));
-        return cartRepository.save(cart);
+        return cartRepository.saveAndFlush(cart);
     }
 
     private CartEntry createEntry(ValidatedAddToCartDto validData) {
@@ -48,7 +48,7 @@ public class CartService {
         cartEntry.setVariant(validData.getVariantId());
         cartEntry.setOptions(validData.getOptions());
         cartEntry.setComment(validData.getComment());
-        return cartEntryRepository.save(cartEntry);
+        return cartEntryRepository.saveAndFlush(cartEntry);
     }
 
     public void removeCartEntry(String entryId) {
@@ -58,6 +58,6 @@ public class CartService {
         }
 
         cart.getEntries().removeIf(cartEntry -> Objects.equals(cartEntry.getUuid(), entryId));
-        cartRepository.save(cart);
+        cartRepository.saveAndFlush(cart);
     }
 }

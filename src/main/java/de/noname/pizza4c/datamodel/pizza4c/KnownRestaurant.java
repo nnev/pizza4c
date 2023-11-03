@@ -12,7 +12,9 @@ import java.time.LocalDateTime;
 @EqualsAndHashCode(callSuper = true)
 @Entity
 public class KnownRestaurant extends VersionedEntity {
+    @Column(unique = true)
     private String humanReadableName;
+    @Column(unique = true)
     private String lieferandoName;
 
     @JsonIgnore

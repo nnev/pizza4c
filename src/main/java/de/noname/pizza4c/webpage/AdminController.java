@@ -42,6 +42,16 @@ public class AdminController {
         return allCartService.selectRestaurant(restaurantId);
     }
 
+    @PostMapping("/api/restaurant/add/{humanName}/{restaurantId}")
+    public boolean addKnownRestaurant(@RequestHeader("X-Admin-Ticket") String adminTicket,
+                                      @PathVariable("humanName") String humanName,
+                                      @PathVariable("restaurantId") String restaurantId) {
+        adminService.checkTicket(adminTicket);
+        restaurantService.addRestaurant(humanName, restaurantId);
+        restaurantService.forceRefreshRestaurantData(restaurantId);
+        return true;
+    }
+
     @PostMapping("/api/restaurant/refresh")
     public boolean forceRefreshRestaurant(@RequestHeader("X-Admin-Ticket") String adminTicket) {
         adminService.checkTicket(adminTicket);

@@ -85,6 +85,26 @@ export async function setCurrentRestaurant(restaurant: string): Promise<boolean>
         })
 }
 
+export async function addNewRestaurant(humanReadableName: string, restaurantId: string): Promise<boolean> {
+    return fetch(BACKEND + "/restaurant/add/" + humanReadableName + "/" + restaurantId, {
+        method: "POST",
+        headers: {
+            "X-Admin-Ticket": AdminObservable.getValue().ticket
+        }
+    })
+        .then(value => value.json())
+        .then(value => {
+            if (value) {
+                if (value.message == "Not authorized to do admin tasks") {
+                    AdminObservable.setValue(InvalidAdmin);
+                    return false;
+                }
+                return getCurrentRestaurant().then(_ => true)
+            }
+            return false;
+        })
+}
+
 export async function cancelAllOrders(): Promise<boolean> {
     return fetch(BACKEND + "/cancelAllOrders", {
         method: "POST",

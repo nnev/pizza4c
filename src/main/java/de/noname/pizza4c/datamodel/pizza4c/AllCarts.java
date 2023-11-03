@@ -49,4 +49,17 @@ public class AllCarts extends VersionedEntity {
     public int numEntriesInCart() {
         return getCarts().stream().mapToInt(cart -> cart.getEntries().size()).sum();
     }
+
+    @Override
+    public String toString() {
+        return "AllCarts{" +
+               "uuid='" + uuid + '\'' +
+               ", selectedRestaurant='" + selectedRestaurant + '\'' +
+               ", carts=" + carts +
+               ", submittedAt=" + submittedAt +
+               ", deliveredAt=" + deliveredAt +
+               ", createdAt=" + createdAt +
+               ", deliveryTimeEstimation=" + deliveryTimeEstimation +
+               "} " + super.toString();
+    }
 }
