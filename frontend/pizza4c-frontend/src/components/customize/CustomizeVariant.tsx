@@ -1,8 +1,7 @@
 import Variant from "../../datamodel/restaurant/variant.ts";
-import Restaurant from "../../datamodel/restaurant/restaurant.ts";
+import Restaurant, {CurrentRestaurantObservable} from "../../datamodel/restaurant/restaurant.ts";
 import React, {ChangeEvent, MouseEvent} from "react";
 import {CustomizeOptionGroup} from "./CustomizeOptionGroup.tsx";
-import {CurrentRestaurantObservable} from "../../backend/restaurant.ts";
 import Product from "../../datamodel/restaurant/product.ts";
 import {PixmapButton, PixmapGroup} from "../Pixmap.tsx";
 import {Navigate, useParams} from "react-router-dom";

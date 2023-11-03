@@ -1,6 +1,6 @@
 import React, {MouseEvent} from "react";
 import {PixmapButton} from "../Pixmap.tsx";
-import {AdminObservable} from "../../datamodel/admin.ts";
+import {AdminObservable, InvalidAdmin} from "../../datamodel/admin.ts";
 import ChangeRestaurant from "./ChangeRestaurant.tsx";
 import CancelAllOrders from "./CancelAllOrders..tsx";
 import SubmitOrder from "./SubmitOrder..tsx";
@@ -23,7 +23,7 @@ export default class AdminStuff extends React.Component<AdminStuffProps, AdminSt
 
     dropAdmin = (ev: MouseEvent<HTMLInputElement>) => {
         ev.preventDefault();
-        AdminObservable.setValue(false);
+        AdminObservable.setValue(InvalidAdmin);
     }
 
     render() {

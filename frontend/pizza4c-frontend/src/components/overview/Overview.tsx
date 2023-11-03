@@ -1,13 +1,12 @@
 import React from "react";
-import Restaurant from "../../datamodel/restaurant/restaurant.ts";
-import {CurrentRestaurantObservable} from "../../backend/restaurant.ts";
+import Restaurant, {CurrentRestaurantObservable} from "../../datamodel/restaurant/restaurant.ts";
 import {AllCartsObservable} from "../../backend/Cart.ts";
 import {MyCart} from "./MyCart.tsx";
 import {OtherCarts} from "./OtherCarts.tsx";
 import AllCarts from "../../datamodel/cart/allCarts.ts";
 import {FormatPrice} from "./FormatPrice.tsx";
 import {ProgressMoney} from "../Progress.tsx";
-import {AdminObservable} from "../../datamodel/admin.ts";
+import {Admin, AdminObservable} from "../../datamodel/admin.ts";
 import {Name, UserNameObservable} from "../../datamodel/name.ts";
 import {Navigate} from "react-router-dom";
 import {OverviewDelivery} from "./OverviewDelivery.tsx";
@@ -29,8 +28,8 @@ export class Overview extends React.Component<OverviewProps, OverviewState> {
         this.state = {isAdmin: false}
     }
 
-    adminObserver = (value: boolean) => {
-        this.setState({isAdmin: value});
+    adminObserver = (value: Admin) => {
+        this.setState({isAdmin: value.isAdmin});
     }
 
     restaurantObserver = (value: Restaurant) => {

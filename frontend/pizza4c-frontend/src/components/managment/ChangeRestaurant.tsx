@@ -1,8 +1,9 @@
 import React, {ChangeEvent, MouseEvent} from "react";
 import {PixmapButton} from "../Pixmap.tsx";
-import {CurrentRestaurantObservable, getKnownRestaurants, setCurrentRestaurant} from "../../backend/restaurant.ts";
 import KnownRestaurant from "../../datamodel/restaurant/knownRestaurant.ts";
-import Restaurant from "../../datamodel/restaurant/restaurant.ts";
+import Restaurant, {CurrentRestaurantObservable} from "../../datamodel/restaurant/restaurant.ts";
+import {getKnownRestaurants} from "../../backend/restaurant.ts";
+import {setCurrentRestaurant} from "../../backend/Admin.ts";
 
 interface ChangeRestaurantProps {
 }

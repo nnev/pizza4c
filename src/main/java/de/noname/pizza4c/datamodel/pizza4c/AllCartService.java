@@ -57,12 +57,12 @@ public class AllCartService {
         var allCarts = getCurrentAllCarts();
         LocalDateTime now = LocalDateTime.now();
         if (allCarts.getCreatedAt().plus(MIN_TIME_AFTER_CREATION).isAfter(now)) {
-            throw new CartFreshlyCreatedException(allCarts.getCreatedAt());
+//            throw new CartFreshlyCreatedException(allCarts.getCreatedAt());
         }
 
         if (allCarts.getSubmittedAt() != null &&
                 allCarts.getSubmittedAt().plus(MIN_TIME_AFTER_SUBMISSION).isAfter(now)) {
-            throw new CartFreshlySubmittedException(allCarts.getSubmittedAt());
+//            throw new CartFreshlySubmittedException(allCarts.getSubmittedAt());
         }
 
         if (allCarts.getDeliveredAt() != null) {

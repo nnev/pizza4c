@@ -2,24 +2,14 @@ package de.noname.pizza4c.webpage;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.noname.pizza4c.datamodel.lieferando.Restaurant;
-import de.noname.pizza4c.datamodel.pizza4c.AllCartService;
-import de.noname.pizza4c.datamodel.pizza4c.AllCarts;
-import de.noname.pizza4c.datamodel.pizza4c.Cart;
-import de.noname.pizza4c.datamodel.pizza4c.CartService;
-import de.noname.pizza4c.datamodel.pizza4c.KnownRestaurant;
-import de.noname.pizza4c.fax.FaxSendStatus;
+import de.noname.pizza4c.datamodel.pizza4c.*;
 import de.noname.pizza4c.fax.FaxService;
-import de.noname.pizza4c.fax.FaxServiceProvider;
 import de.noname.pizza4c.pdf.PdfGenerator;
 import de.noname.pizza4c.webpage.dto.AddToCartDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.AbstractView;
 
 import java.io.IOException;
@@ -38,9 +28,6 @@ public class ApiController {
 
     @Autowired
     private PdfGenerator pdfGenerator;
-
-    @Autowired
-    private FaxService faxService;
 
     @Autowired
     private AllCartService allCartService;
@@ -101,17 +88,6 @@ public class ApiController {
         return new PdfView(pdfGenerator);
     }
 
-    @PostMapping("/api/restaurant/change/{restaurantId}")
-    public boolean selectRestaurant(@PathVariable("restaurantId") String restaurantId) {
-        return allCartService.selectRestaurant(restaurantId);
-    }
-
-    @PostMapping("/api/restaurant/refresh")
-    public boolean forceRefreshRestaurant() {
-        restaurantService.forceRefreshRestaurantData();
-        return true;
-    }
-
     @GetMapping("/api/restaurant/list")
     public List<KnownRestaurant> listKnownRestaurants() {
         return restaurantService.listAllKnownRestaurants();
@@ -121,43 +97,6 @@ public class ApiController {
     public boolean removeCartEntry(@PathVariable("entryId") String entryId) {
         allCartService.getCurrentAllCarts().ensureNotSubmitted();
         cartService.removeCartEntry(entryId);
-        return true;
-    }
-
-    @PostMapping("/api/submitOrder")
-    public boolean submitOrder() {
-        FaxServiceProvider faxServiceProvider = faxService.getSelectedProvider();
-
-        if (faxServiceProvider == null) {
-            LOG.error("No fax service registered");
-            return false;
-        }
-
-        var allCarts = allCartService.getCurrentAllCarts();
-        allCarts.ensureNotSubmitted();
-
-        String lieferandoFaxAddress = restaurantService.getSelectedRestaurant().getColophon().getData().getFax();
-        FaxSendStatus sendStatus = faxServiceProvider.sendFax(allCarts.getUuid(), lieferandoFaxAddress);
-
-        if (sendStatus == FaxSendStatus.SUCCESS) {
-            allCarts = allCartService.setSubmitted(allCarts);
-            allCarts = allCartService.setDeliveryEstimation(allCarts);
-            return true;
-        } else {
-            LOG.error("Failed to send fax. StatusCode: " + sendStatus);
-            return false;
-        }
-    }
-
-    @PostMapping("/api/cancelAllOrders")
-    public boolean cancelAllOrders() {
-        var allCarts = allCartService.getCurrentAllCarts();
-
-        for (Cart cart : allCarts.getCarts()) {
-            cartService.markAsUnpaid(cart.getUuid());
-        }
-
-        allCarts = allCartService.setSubmitted(allCarts);
         return true;
     }
 

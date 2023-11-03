@@ -1,5 +1,5 @@
 import React from "react";
-import {AdminObservable} from "../../datamodel/admin.ts";
+import {AdminObservable, Admin as AdminDto} from "../../datamodel/admin.ts";
 import BecomeAdmin from "./BecomeAdmin.tsx";
 import AdminStuff from "./AdminStuff.tsx";
 
@@ -14,7 +14,7 @@ export default class Admin extends React.Component<AdminProps, AdminState> {
     constructor(props: AdminProps, context: any) {
         super(props, context);
         this.state = {
-            isAdmin: AdminObservable.getValue(),
+            isAdmin: AdminObservable.getValue().isAdmin
         }
     }
 
@@ -26,8 +26,8 @@ export default class Admin extends React.Component<AdminProps, AdminState> {
         AdminObservable.unsubscribe(this.adminListener)
     }
 
-    adminListener = (value: boolean) => {
-        this.setState({isAdmin: value});
+    adminListener = (value: AdminDto) => {
+        this.setState({isAdmin: value.isAdmin});
     }
 
     render() {

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import de.noname.pizza4c.datamodel.lieferando.Menu;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.OneToMany;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -26,7 +27,7 @@ public class Cart extends VersionedEntity {
     @Column(nullable = false)
     private String shortName;
 
-    @OneToMany
+    @OneToMany(fetch = FetchType.LAZY)
     private List<CartEntry> entries = new ArrayList<>();
 
     private boolean isPayed = false;

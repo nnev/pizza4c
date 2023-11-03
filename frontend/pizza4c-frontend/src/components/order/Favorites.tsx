@@ -1,6 +1,5 @@
 import React from "react";
-import Restaurant from "../../datamodel/restaurant/restaurant.ts";
-import {CurrentRestaurantObservable} from "../../backend/restaurant.ts";
+import Restaurant, {CurrentRestaurantObservable} from "../../datamodel/restaurant/restaurant.ts";
 import {Favorites, FavoritesObservable} from "../../datamodel/favorites.ts";
 import {FavoritesEntry} from "./FavoritesEntry.tsx";
 import {PixmapButton} from "../Pixmap.tsx";

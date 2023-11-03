@@ -71,6 +71,8 @@ pizza4c.fax.toAddress.override=+61261111111
 # pizza4c.pdf.email=
 # pizza4c.pdf.lat=
 # pizza4c.pdf.lng=
+
+pizza4c.admin.secret=MY_PASSWORD_FOR_ADMIN_AREA
 ```
 5. Configure nginx config file:
 ```nginx

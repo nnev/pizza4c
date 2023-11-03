@@ -1,5 +1,6 @@
 import Brand from "./brand.ts";
 import {Menu} from "./menu.ts";
+import {Observable} from "../../util/Observable.ts";
 
 export default interface Restaurant {
     brand: Brand;
@@ -9,3 +10,5 @@ export default interface Restaurant {
     restaurantSlug: string;
     menu: Menu;
 }
+
+export const CurrentRestaurantObservable = new Observable<Restaurant>({initialValue: undefined});

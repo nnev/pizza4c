@@ -18,7 +18,6 @@ export class RenderPdf extends React.Component<RenderProps, RenderState> {
     }
 
     componentDidMount() {
-        console.log("mount")
     }
 
     render() {

@@ -1,6 +1,5 @@
 import React from "react";
-import {CurrentRestaurantObservable} from "../../backend/restaurant.ts";
-import Restaurant from "../../datamodel/restaurant/restaurant.ts";
+import Restaurant, {CurrentRestaurantObservable} from "../../datamodel/restaurant/restaurant.ts";
 import Product from "../../datamodel/restaurant/product.ts";
 import {ProductInfoView} from "../order/ProductInfo.tsx";
 import {Navigate, useParams} from "react-router-dom";

@@ -1,6 +1,7 @@
 import React, {ChangeEvent, MouseEvent} from "react";
 import {Navigate} from "react-router-dom";
 import {PixmapButton} from "../Pixmap.tsx";
+import {getAdminTicket} from "../../backend/Admin.ts";
 import {AdminObservable} from "../../datamodel/admin.ts";
 
 interface BecomeAdminProps {
@@ -8,19 +9,16 @@ interface BecomeAdminProps {
 
 interface BecomeAdminState {
     magicWords: string;
-    nameChanged: boolean;
+    redirectOverview: boolean;
 }
 
-type NameValidation = "VALID" | "INVALID";
-
-const magicWords = "sudo make me a pizza";
 export default class BecomeAdmin extends React.Component<BecomeAdminProps, BecomeAdminState> {
 
     constructor(props: BecomeAdminProps, context: any) {
         super(props, context);
         this.state = {
             magicWords: "",
-            nameChanged: false
+            redirectOverview: false
         }
     }
 
@@ -29,28 +27,22 @@ export default class BecomeAdmin extends React.Component<BecomeAdminProps, Becom
     }
     changeNameSubmit = (ev: MouseEvent<HTMLInputElement>) => {
         ev.preventDefault();
-        if (this.ready() == "VALID") {
-            AdminObservable.setValue(true);
-            this.setState({nameChanged: true})
-        }
+        getAdminTicket(this.state.magicWords).then(_ => {
+            let isAdmin = AdminObservable.getValue().isAdmin;
+            return this.setState({redirectOverview: isAdmin});
+        })
         return;
     }
 
-    private ready(): NameValidation {
-        let name = this.state.magicWords;
-        return name === magicWords ? "VALID" : "INVALID";
-    }
-
     render() {
-        if (this.state.nameChanged) {
+        if (this.state.redirectOverview) {
             return <Navigate to="/"/>;
         }
-        let ready = this.ready();
 
         return (
             <>
                 <h1>Ich will Admin-Rechte haben</h1>
-                Bestätige durch schreiben von <b>{magicWords}</b>.
+                Bestätige, dass du Admin rechte hast, durch die Eingabe des Admin-Passworts, das im Wiki steht.<br/>
                 <br/>
                 <br/>
 
@@ -70,7 +62,6 @@ export default class BecomeAdmin extends React.Component<BecomeAdminProps, Becom
                     onClick={this.changeNameSubmit}
                     pixmap="person_add"
                     text="Mach mich Admin"
-                    disabled={ready != "VALID"}
                 />
             </>
         );

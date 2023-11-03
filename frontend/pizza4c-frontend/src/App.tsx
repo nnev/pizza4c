@@ -17,6 +17,7 @@ import Admin from "./components/managment/Admin.tsx";
 import "./index.css"
 import {Delivery} from "./components/delivery/Delivery.tsx";
 import {FavoritesComponent} from "./components/order/Favorites.tsx";
+import {Admin as AdminDto} from "./datamodel/admin.ts"
 
 interface AppProps {
 }
@@ -37,8 +38,8 @@ class App extends React.Component<AppProps, AppState> {
         window.setInterval(() => getCurrentRestaurant(), 30 * 60 * 1000)
     }
 
-    adminListener = (value: boolean) => {
-        this.setState({admin: value});
+    adminListener = (value: AdminDto) => {
+        this.setState({admin: value.isAdmin});
     }
     errorListener = (value: FormattedError) => {
         this.setState({error: value});

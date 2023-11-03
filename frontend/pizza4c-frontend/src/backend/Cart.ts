@@ -158,19 +158,7 @@ export async function removeEntry(entry: CartEntry): Promise<boolean> {
         })
 }
 
-export async function cancelAllOrders(): Promise<boolean> {
-    return fetch(BACKEND + "/cancelAllOrders", {
-        method: "POST",
-    })
-        .then(value => value.json())
-        .then(value => {
-            if ((<FormattedError>value).error !== undefined) {
-                throw value as FormattedError;
-            } else {
-                return value as boolean;
-            }
-        })
-}
+
 
 export async function newAllOrders(): Promise<AllCarts> {
     return fetch(BACKEND + "/allCarts/new", {
@@ -182,7 +170,6 @@ export async function newAllOrders(): Promise<AllCarts> {
         })
         .then(value => {
             if ((<FormattedError>value).message !== undefined) {
-                console.log(value);
                 throw value as FormattedError;
             } else {
                 AllCartsObservable.setValue(mapAllCarts(value));
@@ -212,7 +199,6 @@ export async function setDelivered(deliveryDate: Date): Promise<AllCarts> {
         })
         .then(value => {
             if ((<FormattedError>value).message !== undefined) {
-                console.log(value);
                 throw value as FormattedError;
             } else {
                 AllCartsObservable.setValue(mapAllCarts(value));

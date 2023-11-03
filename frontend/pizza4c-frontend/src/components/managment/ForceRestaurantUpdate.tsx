@@ -3,7 +3,7 @@ import {PixmapButton} from "../Pixmap.tsx";
 import {Navigate} from "react-router-dom";
 import FormattedError from "../../datamodel/error.ts";
 import {Error} from "../Error.tsx";
-import {forceRestaurantRefresh} from "../../backend/restaurant.ts";
+import {forceRestaurantRefresh} from "../../backend/Admin.ts";
 
 interface ForceRestaurantUpdateProps {
 }

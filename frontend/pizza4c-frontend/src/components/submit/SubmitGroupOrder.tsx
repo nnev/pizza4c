@@ -1,9 +1,9 @@
 import React from "react";
-import {submitOrder} from "../../backend/submitOrder.ts";
 import {Navigate} from "react-router-dom";
 import {fetchAllCarts} from "../../backend/Cart.ts";
 import {PixmapButton, PixmapGroup} from "../Pixmap.tsx";
 import {AdminObservable} from "../../datamodel/admin.ts";
+import {submitOrder} from "../../backend/Admin.ts";
 
 
 interface SubmitProps {
@@ -29,9 +29,10 @@ export class SubmitGroupOrder extends React.Component<SubmitProps, SubmitState> 
         if (this.state.success == undefined) {
             submitOrder().then(value => {
                 if (value) {
-                    fetchAllCarts();
+                    fetchAllCarts().then(_ => this.setState({success: true}))
+                } else {
+                    this.setState({success: false})
                 }
-                this.setState({success: value})
             })
                 .catch(_ => {
                     this.setState({success: false})
@@ -49,7 +50,7 @@ export class SubmitGroupOrder extends React.Component<SubmitProps, SubmitState> 
                             pixmap="arrow_left"
                             text="Zurück zur Übersicht"
                             className="primary"
-                        />
+                        />d
                     </PixmapGroup>
                 </main>
             );
