@@ -18,6 +18,7 @@ import "./index.css"
 import {Delivery} from "./components/delivery/Delivery.tsx";
 import {FavoritesComponent} from "./components/order/Favorites.tsx";
 import {Admin as AdminDto} from "./datamodel/admin.ts"
+import {RandomOrder} from "./components/order/RandomOrder.tsx";
 
 interface AppProps {
 }
@@ -86,6 +87,7 @@ class App extends React.Component<AppProps, AppState> {
                                 <Route index element={<Overview/>}/>
                                 <Route path="*" element={<Navigate to="/" replace/>}/>
                                 <Route path="/submitGroupOrder" element={<SubmitGroupOrder/>}/>
+                                <Route path="/random" element={<RandomOrder/>}/>
                                 <Route path="/becomeAdmin" element={<Admin/>}/>
                                 <Route path="/renderPdf" element={<RenderPdf/>}/>
                                 <Route path="/privacy" element={<Privacy/>}/>

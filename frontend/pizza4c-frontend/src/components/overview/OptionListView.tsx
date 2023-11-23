@@ -44,7 +44,7 @@ export class OptionListView extends React.Component<OptionListViewProps, OptionL
         return (
             <>
                 {menu.products[this.props.entry.product] != undefined && menu.products[this.props.entry.product].name}
-                {this.props.withSize == true && " (" + sizeValue + ")"}
+                {this.props.withSize == true && sizeValue && " (" + sizeValue + ")"}
                 <br/>
                 {mappedOptions}
             </>

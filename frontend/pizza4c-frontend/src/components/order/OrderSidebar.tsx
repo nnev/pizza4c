@@ -13,6 +13,7 @@ interface OrderSidebarState {
     selectedId: string;
     vegan: selectableVegan
     redirectToFavorites: boolean
+    redirectToRandom: boolean
 }
 
 export class OrderSidebar extends React.Component<OrderSidebarProps, OrderSidebarState> {
@@ -21,7 +22,8 @@ export class OrderSidebar extends React.Component<OrderSidebarProps, OrderSideba
         this.state = {
             selectedId: window.location.hash.substring(1),
             vegan: VeganObservable.getValue(),
-            redirectToFavorites: false
+            redirectToFavorites: false,
+            redirectToRandom: false,
         }
     }
 
@@ -56,6 +58,11 @@ export class OrderSidebar extends React.Component<OrderSidebarProps, OrderSideba
         this.setState({redirectToFavorites: true})
     }
 
+    redirectRandom = (ev: React.MouseEvent<HTMLAnchorElement>) => {
+        ev.preventDefault();
+        this.setState({redirectToRandom: true})
+    }
+
     setSelectedId(id: string) {
         this.setState({selectedId: id})
         window.location.hash = id
@@ -71,6 +78,9 @@ export class OrderSidebar extends React.Component<OrderSidebarProps, OrderSideba
     render() {
         if (this.state.redirectToFavorites) {
             return <Navigate to="/favorites"/>
+        }
+        if (this.state.redirectToRandom) {
+            return <Navigate to="/random"/>
         }
         let categoryEntries = this.props.restaurant.menu.categories.map(category => {
             return <li key={category.id}>
@@ -138,6 +148,20 @@ Es gibt leider keine Garantie für nichts :/"
                                         className="favorites"
                                     >
                                         <Pixmap pixmap="favorite" text="Favoriten"/>
+                                    </h1>
+                                </a>
+                            </li>
+                        }
+                        {
+                            <li key="random">
+                                <a
+                                    onClick={this.redirectRandom}
+                                    title="Empire empfiehlt"
+                                >
+                                    <h1
+                                        className="random"
+                                    >
+                                        <Pixmap pixmap="casino" text="Zufall"/>
                                     </h1>
                                 </a>
                             </li>

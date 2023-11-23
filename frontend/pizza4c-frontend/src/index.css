@@ -459,6 +459,10 @@ button.pixmapButton span:first-child {
     vertical-align: middle;
 }
 
+.pixmapGroup span {
+    margin: auto 0;
+}
+
 .textCenter {
     text-align: center;
 }
@@ -726,5 +730,9 @@ tr.cartOwner td {
 
     .pixmapButton.right {
         margin-left: 0 !important;
+    }
+
+    .pixmapGroup span {
+        margin: auto;
     }
 }
