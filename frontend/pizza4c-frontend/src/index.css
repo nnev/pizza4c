@@ -262,6 +262,7 @@ li.product {
 .productMain.vegetarian::before {
     background-color: yellow;
 }
+
 .productMain.fleisch::before {
     background-color: red;
 }
@@ -380,7 +381,7 @@ li.product {
     border-left: 2px solid var(--menuHover);
 }
 
-button.pixmapButton {
+button.pixmapButton, .pixmapLink {
     line-height: 40px;
     padding: 5px 10px;
     font-weight: bold;
@@ -390,7 +391,7 @@ button.pixmapButton {
     color: var(--textNormal);
 }
 
-button.pixmapButton:hover {
+button.pixmapButton:hover, .pixmapLink:hover {
     border: 2px solid var(--buttonNormal);
     background-color: var(--buttonHighlight);
     color: var(--textNormal);
@@ -400,37 +401,37 @@ button.pixmapButton:disabled {
     opacity: 60%;
 }
 
-button.pixmapButton.grow {
+button.pixmapButton.grow, .pixmapLink.grow {
     width: 100%;
 }
 
-button.pixmapButton.tiny {
+button.pixmapButton.tiny, .pixmapLink.tiny {
     line-height: 20px;
     padding: 3px;
     margin: 0;
 }
 
-button.pixmapButton.tiny span {
+button.pixmapButton.tiny span, .pixmalLink.tiny span {
     line-height: 20px;
 }
 
-button.pixmapButton.primary {
+button.pixmapButton.primary, .pixmapLink.primary {
     background-color: var(--buttonPrimaryNormal);
     color: var(--textNormal);
 }
 
-button.pixmapButton.primary:hover {
+button.pixmapButton.primary:hover, .pixmapLink.primary:hover {
     background-color: var(--buttonPrimaryHighlight);
     border-color: var(--buttonBorder);
     color: var(--textNormal);
 }
 
-button.pixmapButton span {
+button.pixmapButton span, .pixmapLink span {
     line-height: 40px;
     vertical-align: middle;
 }
 
-button.pixmapButton span:first-child {
+button.pixmapButton span:first-child, .pixmapLink span:first-child {
     padding-right: 2px;
 }
 
@@ -439,19 +440,19 @@ button.pixmapButton span:first-child {
     flex-wrap: wrap;
 }
 
-.pixmapGroup button.pixmapButton {
+.pixmapGroup button.pixmapButton, .pixmapGroup .pixmapLink {
     margin: 0 3px;
 }
 
-.pixmapGroup button.pixmapButton:first-child {
+.pixmapGroup button.pixmapButton:first-child, .pixmapGroup .pixmapLink:first-child {
     margin: 0 3px 0 0;
 }
 
-.pixmapGroup button.pixmapButton:last-child {
+.pixmapGroup button.pixmapButton:last-child, .pixmapGroup .pixmapLink:last-child {
     margin: 0 0 0 3px;
 }
 
-.pixmapButton.right {
+.pixmapButton.right, .pixmapLink.right {
     margin-left: auto !important;
 }
 
@@ -594,6 +595,7 @@ tr.cartOwner td {
     h1, h2, h3 {
         padding: 0px;
     }
+
     .container {
         position: sticky;
         left: 0;
@@ -649,8 +651,9 @@ tr.cartOwner td {
         word-break: normal;
         white-space: break-spaces;
     }
+
     .orderTable td:not(:first-child) {
-        padding:0 10px;
+        padding: 0 10px;
     }
 
     .menu {
@@ -674,6 +677,7 @@ tr.cartOwner td {
         flex: 0 1 auto;
         max-width: initial;
     }
+
     .row {
         display: flex;
         flex-wrap: nowrap;

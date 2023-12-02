@@ -4,7 +4,7 @@ import {joinClasses} from "../util/JoinClasses.ts";
 
 interface PixmapProps {
     pixmap: string;
-    text?: string|JSX.Element;
+    text?: string | JSX.Element;
     className?: string;
     autofocus?: boolean;
     tabIndex?: number;
@@ -19,6 +19,8 @@ interface PixmapButtonProps extends PixmapProps {
 
 interface PixmapLinkProps extends PixmapProps {
     to: string;
+    replace?: boolean;
+    disabled?: boolean;
 }
 
 export class Pixmap extends React.Component<PixmapProps, any> {
@@ -38,13 +40,13 @@ export class PixmapButton extends React.Component<PixmapButtonProps, any> {
     render() {
         return (
             <button
-                    onClick={this.props.onClick}
-                    onSubmit={this.props.onClick}
-                    disabled={this.props.disabled}
-                    className={joinClasses("pixmapButton", this.props.className)}
-                    autoFocus={this.props.autofocus || false}
-                    tabIndex={this.props.tabIndex}
-                    type={this.props.type}
+                onClick={this.props.onClick}
+                onSubmit={this.props.onClick}
+                disabled={this.props.disabled}
+                className={joinClasses("pixmapButton", this.props.className)}
+                autoFocus={this.props.autofocus || false}
+                tabIndex={this.props.tabIndex}
+                type={this.props.type}
             >
                 <Pixmap {...this.props} />
             </button>
@@ -55,7 +57,16 @@ export class PixmapButton extends React.Component<PixmapButtonProps, any> {
 export class PixmapLink extends React.Component<PixmapLinkProps, any> {
     render() {
         return (
-            <Link className={joinClasses("pixmapLink", this.props.className)} to={this.props.to}>
+            <Link className={
+                joinClasses("pixmapLink",
+                    joinClasses(this.props.className,
+                        this.props.disabled ? "disabled" : undefined
+                    )
+                )
+            }
+                  to={this.props.to}
+                  replace={this.props.replace}
+            >
                 <Pixmap {...this.props} />
             </Link>
         )

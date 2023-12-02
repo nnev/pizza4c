@@ -3,7 +3,7 @@ import Restaurant, {CurrentRestaurantObservable} from "../../datamodel/restauran
 import Product from "../../datamodel/restaurant/product.ts";
 import {ProductInfoView} from "../order/ProductInfo.tsx";
 import {Navigate, useParams} from "react-router-dom";
-import {PixmapButton} from "../Pixmap.tsx";
+import {PixmapButton, PixmapGroup, PixmapLink} from "../Pixmap.tsx";
 import {joinClasses} from "../../util/JoinClasses.ts";
 
 
@@ -15,15 +15,12 @@ interface CustomizeState {
     restaurant?: Restaurant;
     product?: Product;
     selectedVariantId?: string;
-    backToOrder: boolean;
 }
 
 class CustomizeClazz extends React.Component<CustomizeProps, CustomizeState> {
     constructor(props: CustomizeProps, context: any) {
         super(props, context);
-        this.state = {
-            backToOrder: false
-        }
+        this.state = {}
     }
 
     listener = (value: Restaurant) => {
@@ -46,17 +43,9 @@ class CustomizeClazz extends React.Component<CustomizeProps, CustomizeState> {
         CurrentRestaurantObservable.unsubscribe(this.listener);
     }
 
-    backToOrder = () => {
-        this.setState({backToOrder: true});
-    }
-
     render() {
         if (this.state.product == undefined || this.state.restaurant == undefined) {
             return (<></>)
-        }
-
-        if (this.state.backToOrder) {
-            return <Navigate to={"/order"}/>;
         }
 
         if (this.state.selectedVariantId != undefined) {
@@ -94,7 +83,9 @@ class CustomizeClazz extends React.Component<CustomizeProps, CustomizeState> {
                         })
                     }
                 </div>
-                <PixmapButton onClick={this.backToOrder} pixmap="arrow_back" text="Back to product selection"/>
+                <PixmapGroup>
+                    <PixmapLink to="/order" pixmap="arrow_back" text="Zurück zur Produktauswahl"/>
+                </PixmapGroup>
             </main>
         );
     }

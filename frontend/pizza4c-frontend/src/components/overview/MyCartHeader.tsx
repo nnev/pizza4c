@@ -1,9 +1,8 @@
 import Cart from "../../datamodel/cart/cart.ts";
-import React, {MouseEvent} from "react";
+import React from "react";
 import {ToggleCartPaid} from "./ToggleCartPaid.tsx";
-import {PixmapButton, PixmapGroup} from "../Pixmap.tsx";
+import {PixmapGroup, PixmapLink} from "../Pixmap.tsx";
 import {AllCartsObservable} from "../../backend/Cart.ts";
-import {Navigate} from "react-router-dom";
 import {Favorites, FavoritesObservable} from "../../datamodel/favorites.ts";
 
 interface MyCartHeaderProps {
@@ -12,9 +11,6 @@ interface MyCartHeaderProps {
 }
 
 interface MyCartHeaderState {
-    redirectOrder: boolean;
-    redirectLogout: boolean;
-    redirectFavorites: boolean;
     favorites?: Favorites;
 }
 
@@ -23,7 +19,7 @@ export class MyCartHeader extends React.Component<MyCartHeaderProps, MyCartHeade
 
     constructor(props: MyCartHeaderProps, context: any) {
         super(props, context);
-        this.state = {redirectLogout: false, redirectOrder: false, redirectFavorites: false}
+        this.state = {}
     }
 
     favoritesObserver = (favorites: Favorites) => {
@@ -39,31 +35,7 @@ export class MyCartHeader extends React.Component<MyCartHeaderProps, MyCartHeade
     }
 
 
-    order = (ev: MouseEvent<any>) => {
-        ev.preventDefault();
-        this.setState({redirectOrder: true});
-    }
-    favorites = (ev: MouseEvent<any>) => {
-        ev.preventDefault();
-        this.setState({redirectFavorites: true});
-    }
-
-    logout = (ev: MouseEvent<any>) => {
-        ev.preventDefault();
-        this.setState({redirectLogout: true});
-    }
-
     render() {
-        if (this.state.redirectLogout) {
-            return <Navigate to="/changeName"/>
-        }
-        if (this.state.redirectOrder) {
-            return <Navigate to="/order"/>
-        }
-        if (this.state.redirectFavorites) {
-            return <Navigate to="/favorites"/>
-        }
-
         return <PixmapGroup>
             {
                 this.props.cart &&
@@ -71,24 +43,26 @@ export class MyCartHeader extends React.Component<MyCartHeaderProps, MyCartHeade
                     cart={this.props.cart}
                 />
             }
-            <PixmapButton onClick={this.order}
-                          pixmap="add"
-                          text="Neue Bestellung"
-                          className="primary"
-                          disabled={AllCartsObservable.getValue().isSubmitted()}
+            <PixmapLink to="/order"
+                        pixmap="add"
+                        text="Neue Bestellung"
+                        className="primary"
+                        disabled={AllCartsObservable.getValue().isSubmitted()}
             />
             {
                 this.state.favorites != null &&
                 this.state.favorites.favorite.length > 0 &&
-                <PixmapButton
-                    onClick={this.favorites}
+                //AllCartsObservable.getValue().isSubmitted() &&
+                <PixmapLink
+                    to="/favorites"
                     pixmap="favorite"
                     text="Aus Favoriten auswählen"
                     disabled={AllCartsObservable.getValue().isSubmitted()}
                 />
             }
-            <PixmapButton onClick={this.logout} pixmap="logout"
-                          text={'Ich bin nicht ' + this.props.name}/><br/>
+            <PixmapLink to="/changeName"
+                        pixmap="logout"
+                        text={'Ich bin nicht ' + this.props.name}/><br/>
         </PixmapGroup>
     }
 }

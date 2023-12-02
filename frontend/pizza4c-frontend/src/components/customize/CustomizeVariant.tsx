@@ -3,7 +3,7 @@ import Restaurant, {CurrentRestaurantObservable} from "../../datamodel/restauran
 import React, {ChangeEvent, MouseEvent} from "react";
 import {CustomizeOptionGroup} from "./CustomizeOptionGroup.tsx";
 import Product from "../../datamodel/restaurant/product.ts";
-import {PixmapButton, PixmapGroup} from "../Pixmap.tsx";
+import {PixmapButton, PixmapGroup, PixmapLink} from "../Pixmap.tsx";
 import {Navigate, useParams} from "react-router-dom";
 import {addToCart} from "../../backend/Cart.ts";
 import FormattedError from "../../datamodel/error.ts";
@@ -22,8 +22,6 @@ interface CustomizeVariantState {
     restaurant?: Restaurant;
     product?: Product;
     variant?: Variant;
-    backToVariantSelection: boolean
-    backToOrder: boolean
     addToCartCompleted: boolean
     error?: FormattedError
     comment?: string
@@ -35,8 +33,6 @@ class CustomizeVariantClazz extends React.Component<CustomizeVariantProps, Custo
         super(props, context);
         this.state = {
             selectedOptions: new Map<string, Set<string>>(),
-            backToVariantSelection: false,
-            backToOrder: false,
             addToCartCompleted: false,
             alreadyFavorited: false
         };
@@ -107,13 +103,6 @@ class CustomizeVariantClazz extends React.Component<CustomizeVariantProps, Custo
         return true;
     }
 
-    backToVariantSelection = () => {
-        this.setState({backToVariantSelection: true});
-    }
-    backToOrder = () => {
-        this.setState({backToOrder: true});
-    }
-
     private getTotalPrice(): number {
         let total = 0;
         if (this.state.product && this.state.variant) {
@@ -146,12 +135,6 @@ class CustomizeVariantClazz extends React.Component<CustomizeVariantProps, Custo
 
 
     render() {
-        if (this.state.backToVariantSelection) {
-            return <Navigate to={"/customize/" + this.props.productId}/>;
-        }
-        if (this.state.backToOrder) {
-            return <Navigate to={"/order"}/>;
-        }
         if (this.state.addToCartCompleted) {
             return <Navigate to="/"/>;
         }
@@ -200,10 +183,10 @@ class CustomizeVariantClazz extends React.Component<CustomizeVariantProps, Custo
                 <span className="total"> <b>Total</b>: {this.getTotalPrice().toFixed(2)}€</span> <br/>
                 {this.state.error && <Error text={this.state.error.message}/>}
                 <PixmapGroup>
-                    <PixmapButton onClick={this.backToOrder} pixmap="arrow_back" text="Zurück zur Produktauswahl"/>
+                    <PixmapLink to="/order" pixmap="arrow_back" text="Zurück zur Produktauswahl"/>
                     {this.state.product.variants.length != 1 &&
-                        <PixmapButton onClick={this.backToVariantSelection} pixmap="arrow_back"
-                                      text="Zurück zur Größenauswahl"/>
+                        <PixmapLink to={"/customize/" + this.props.productId} pixmap="arrow_back"
+                                    text="Zurück zur Größenauswahl"/>
                     }
 
                     <PixmapButton

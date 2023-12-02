@@ -25,7 +25,7 @@ export class OtherCarts extends React.Component<OtherCartsProps, OtherCartsState
         }
 
         if (!this.props.allCarts.hasOrders()) {
-            return <>No orders yet</>
+            return <>Es gibt noch keine Bestellungen</>
         }
 
         return (

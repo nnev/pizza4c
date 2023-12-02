@@ -2,8 +2,7 @@ import React from "react";
 import Restaurant, {CurrentRestaurantObservable} from "../../datamodel/restaurant/restaurant.ts";
 import {Favorites, FavoritesObservable} from "../../datamodel/favorites.ts";
 import {FavoritesEntry} from "./FavoritesEntry.tsx";
-import {PixmapButton} from "../Pixmap.tsx";
-import {Navigate} from "react-router-dom";
+import {PixmapLink} from "../Pixmap.tsx";
 
 interface FavoritesProps {
 
@@ -12,13 +11,12 @@ interface FavoritesProps {
 interface FavoritesState {
     restaurant?: Restaurant
     favorites?: Favorites
-    backToOrder: boolean
 }
 
 export class FavoritesComponent extends React.Component<FavoritesProps, FavoritesState> {
     constructor(props: FavoritesProps, context: any) {
         super(props, context);
-        this.state = {backToOrder: false}
+        this.state = {}
     }
 
     restaurantObserver = (restaurant: Restaurant) => {
@@ -39,15 +37,8 @@ export class FavoritesComponent extends React.Component<FavoritesProps, Favorite
         FavoritesObservable.unsubscribe(this.favoritesObserver)
     }
 
-    backToOrder = () => {
-        this.setState({backToOrder: true});
-    }
 
     render() {
-        if (this.state.backToOrder) {
-            return <Navigate to={"/order"}/>;
-        }
-
         if (this.state.favorites == undefined || this.state.restaurant == undefined) {
             return <></>;
         }
@@ -59,8 +50,8 @@ export class FavoritesComponent extends React.Component<FavoritesProps, Favorite
                         <h1>Noch keine Favoriten hinterlegt</h1>
                         Du hast noch keine Favoriten gespeichert. <br/>
 
-                        <PixmapButton
-                            onClick={this.backToOrder}
+                        <PixmapLink
+                            to="/order"
                             pixmap="arrow_back"
                             text="Zurück zur Produktauswahl"
                             className="primary"

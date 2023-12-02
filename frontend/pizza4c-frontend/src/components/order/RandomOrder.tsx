@@ -3,11 +3,12 @@ import Restaurant, {CurrentRestaurantObservable} from "../../datamodel/restauran
 import {chooseRandomArray, chooseRandomDict, mapToDictionary} from "../../util/Dictionary.ts";
 import CartEntry from "../../datamodel/cart/cartEntry.ts";
 import {OptionListView} from "../overview/OptionListView.tsx";
-import {PixmapButton, PixmapGroup} from "../Pixmap.tsx";
+import {PixmapButton, PixmapGroup, PixmapLink} from "../Pixmap.tsx";
 import FormattedError from "../../datamodel/error.ts";
 import {addToCart} from "../../backend/Cart.ts";
 import {Navigate} from "react-router-dom";
 import {FormatPrice} from "../overview/FormatPrice.tsx";
+import {OptionGroup} from "../../datamodel/restaurant/optionGroup.ts";
 
 interface RandomOrderProps {
 }
@@ -20,7 +21,6 @@ interface RandomOrderState {
     selectedOptions?: Map<string, Set<string>>
     numOptions: number
     addToCartCompleted: boolean
-    backToOrder: boolean
     error?: FormattedError
 }
 
@@ -30,7 +30,6 @@ export class RandomOrder extends React.Component<RandomOrderProps, RandomOrderSt
         this.state = {
             numOptions: 1,
             addToCartCompleted: false,
-            backToOrder: false
         }
     }
 
@@ -80,32 +79,55 @@ export class RandomOrder extends React.Component<RandomOrderProps, RandomOrderSt
             throw "";
         }
         let result = new Map<string, Set<string>>();
-        for (let i = 0; i < numOptions; i++) {
-            let optionGroupId = chooseRandomArray(optionGroupIds);
-            console.log("Option Group", optionGroupId);
-            if (optionGroupId == undefined) {
-                continue;
-            }
 
-            let optionGroup = this.state.restaurant.menu.optionGroups[optionGroupId];
-            console.log(optionGroup);
-            let optionId = chooseRandomArray(optionGroup.optionIds)
-            console.log(optionId);
-            if (optionId == undefined) {
-                continue;
-            }
+        let numInitialOptions = 0
+        for (let optionGroupId of optionGroupIds) {
+            let optionGroup = this.state.restaurant.menu.optionGroups[optionGroupId]
+            if (optionGroup.minChoices > 0) {
+                for (let i = 0; i < optionGroup.minChoices; i++) {
+                    let optionId = chooseRandomArray(optionGroup.optionIds)
+                    console.log(optionId);
+                    if (optionId == undefined) {
+                        continue;
+                    }
 
-            let optionSet = result.get(optionGroupId);
-            if (optionSet == undefined) {
-                optionSet = new Set<string>();
-                result.set(optionGroupId, optionSet);
+                    this.addToOptionSet(result, optionGroupId, optionGroup, optionId);
+                    numInitialOptions++;
+                }
             }
+        }
 
-            if (optionSet.size < optionGroup.maxChoices) {
-                optionSet.add(optionId);
+        if (numInitialOptions < numOptions) {
+            for (let i = numInitialOptions; i < numOptions; i++) {
+                let optionGroupId = chooseRandomArray(optionGroupIds);
+                console.log("Option Group", optionGroupId);
+                if (optionGroupId == undefined) {
+                    continue;
+                }
+
+                let optionGroup = this.state.restaurant.menu.optionGroups[optionGroupId];
+                console.log(optionGroup);
+                let optionId = chooseRandomArray(optionGroup.optionIds)
+                console.log(optionId);
+                if (optionId == undefined) {
+                    continue;
+                }
+
+                this.addToOptionSet(result, optionGroupId, optionGroup, optionId);
             }
         }
         return result;
+    }
+
+    private addToOptionSet(result: Map<string, Set<string>>, optionGroupId: string, optionGroup: OptionGroup, optionId: string) {
+        let optionSet = result.get(optionGroupId);
+        if (optionSet == undefined) {
+            optionSet = new Set<string>();
+            result.set(optionGroupId, optionSet);
+        }
+        if (optionSet.size < optionGroup.maxChoices) {
+            optionSet.add(optionId);
+        }
     }
 
     reroll = (ev: MouseEvent<HTMLInputElement>) => {
@@ -125,9 +147,6 @@ export class RandomOrder extends React.Component<RandomOrderProps, RandomOrderSt
                 this.setState({error: value as FormattedError})
             })
     }
-    backToOrder = () => {
-        this.setState({backToOrder: true});
-    }
 
     lessAddons = () => {
         this.setState({numOptions: Math.max(0, this.state.numOptions - 1)}, () => {
@@ -143,9 +162,6 @@ export class RandomOrder extends React.Component<RandomOrderProps, RandomOrderSt
     render() {
         if (this.state.addToCartCompleted) {
             return <Navigate to="/"/>;
-        }
-        if (this.state.backToOrder) {
-            return <Navigate to={"/order"}/>;
         }
         if (this.state.selectedProductId == undefined ||
             this.state.selectedVariantId == undefined ||
@@ -191,8 +207,11 @@ export class RandomOrder extends React.Component<RandomOrderProps, RandomOrderSt
             </PixmapGroup>
             <br/>
             <PixmapGroup>
-                <PixmapButton onClick={this.backToOrder} pixmap="arrow_back"
-                              text="Zurück zur Größenauswahl"/>
+                <PixmapLink
+                    to="/order"
+                    pixmap="arrow_back"
+                    text="Zurück zur Größenauswahl"
+                />
                 <PixmapButton onClick={this.submit} pixmap="save" text="In den Warenkorb legen"
                               className="primary right"/>
             </PixmapGroup>
