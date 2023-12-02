@@ -1,11 +1,13 @@
 import React, {MouseEvent} from "react";
-import {PixmapButton} from "../Pixmap.tsx";
+import {Pixmap, PixmapButton} from "../Pixmap.tsx";
 import {Navigate} from "react-router-dom";
 import AllCarts from "../../datamodel/cart/allCarts.ts";
 import {formatDate} from "../../util/Time.ts";
+import Restaurant from "../../datamodel/restaurant/restaurant.ts";
 
 interface OverviewDeliveryProps {
     allCarts: AllCarts;
+    restaurant: Restaurant
 }
 
 interface OverviewDeliveryState {
@@ -34,9 +36,12 @@ export class OverviewDelivery extends React.Component<OverviewDeliveryProps, Ove
 
         return <div className="deliveryOverview">
             {this.props.allCarts.isSubmitted() &&
-                <div className="error">
-                    <span>Bestellung versendet um {formatDate(this.props.allCarts.getSubmittedAtDate())}</span>
-                </div>
+                <>
+                    <div className="error">
+                        <span>Bestellung versendet um {formatDate(this.props.allCarts.getSubmittedAtDate())}</span>
+                    </div>
+                    <div>Noch etwas vergessen? Pizza kommt nicht? Dann anrufen unter <Pixmap pixmap="call"/> {this.props.restaurant.restaurantPhoneNumber}</div>
+                </>
             }
             {this.props.allCarts.isSubmitted() && !this.props.allCarts.isDelivered() &&
                 <PixmapButton

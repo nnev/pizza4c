@@ -73,7 +73,7 @@ export class Overview extends React.Component<OverviewProps, OverviewState> {
             <main className="notSide">
                 <MyCart allCarts={this.state.allCarts} restaurant={this.state.restaurant}/>
                 <br/>
-                <OverviewDelivery allCarts={this.state.allCarts} />
+                <OverviewDelivery allCarts={this.state.allCarts}  restaurant={this.state.restaurant}/>
                 <h1>Money Pile: </h1>
                 Summe:&nbsp;
                 <FormatPrice price={this.state.allCarts.getTotalValue(menu)}/>

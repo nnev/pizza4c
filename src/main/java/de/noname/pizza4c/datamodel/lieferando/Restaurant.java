@@ -25,4 +25,6 @@ public class Restaurant {
     private String restaurantSlug;
 
     private Menu menu;
+
+    private String restaurantPhoneNumber;
 }

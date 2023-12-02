@@ -9,6 +9,7 @@ export default interface Restaurant {
     restaurantId: string;
     restaurantSlug: string;
     menu: Menu;
+    restaurantPhoneNumber: string;
 }
 
 export const CurrentRestaurantObservable = new Observable<Restaurant>({initialValue: undefined});
