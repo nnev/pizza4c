@@ -107,7 +107,7 @@ export default class ChangeName extends React.Component<ChangeNameProps, ChangeN
                                     onClick={this.generateRandomName}
                                     pixmap="casino"
                                     text="Zufälligen Alias generieren"
-                                    className={"tiny"}
+                                    className="tiny"
                                     autofocus={false}
                                     tabIndex={2}
                                 />

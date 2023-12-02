@@ -78,14 +78,14 @@ export class FavoritesEntry extends React.Component<FavoritesEntryProps, Favorit
                     <PixmapButton
                         onClick={this.addToCart}
                         pixmap="add"
-                        text={"Zur Bestellung hinzufügen"}
+                        text="Zur Bestellung hinzufügen"
                         className="primary"
                         disabled={AllCartsObservable.getValue().isSubmitted()}
                     />
                     <PixmapButton
                         onClick={this.removeFromFavorites}
                         pixmap="remove"
-                        text={"Favorit entfernen"}
+                        text="Favorit entfernen"
                     />
                 </PixmapGroup>
             </div>

@@ -59,7 +59,7 @@ export class Delivery extends React.Component<DeliveryProps, DeliveryState> {
             <PixmapButton
                 onClick={this.saveDate}
                 pixmap="schedule"
-                text={"Lieferung eintragen"}
+                text="Lieferung eintragen"
             />
         </main>
     }
