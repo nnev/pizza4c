@@ -7,6 +7,7 @@ interface OptionListViewProps {
     entry: CartEntry;
     restaurant: Restaurant;
     withSize?: boolean;
+    withDescription?: boolean;
 }
 
 interface OptionListViewState {
@@ -40,12 +41,18 @@ export class OptionListView extends React.Component<OptionListViewProps, OptionL
         }
 
         let sizeValue = getVariant(this.props.restaurant.menu, this.props.entry.product, this.props.entry.variant)?.name || "";
-
+        let product = this.props.restaurant.menu.products[this.props.entry.product];
         return (
             <>
-                {menu.products[this.props.entry.product] != undefined && menu.products[this.props.entry.product].name}
-                {this.props.withSize == true && sizeValue && " (" + sizeValue + ")"}
+                <b>
+                    {product != undefined && product.name}
+                    {this.props.withSize == true && sizeValue && " (" + sizeValue + ")"}
+                </b>
                 <br/>
+                {this.props.withDescription == true && product.description.length > 0 && <i>
+                    {product.description}
+                    <br/>
+                </i>}
                 {mappedOptions}
             </>
         )
