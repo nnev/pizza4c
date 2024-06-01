@@ -76,7 +76,6 @@ export default class ChangeRestaurant extends React.Component<ChangeRestaurantPr
                     id="restaurantName"
                     className="restaurantName"
                     value={this.state.restaurantName}
-                    placeholder="Restaurant"
                     onChange={this.changeRestaurantName}
                 >
                     <option value="selectValidOption">Ein Restaurant auswählen</option>
