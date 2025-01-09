@@ -70,6 +70,10 @@ export default class ChangeName extends React.Component<ChangeNameProps, ChangeN
             return "INVALID_CHAR";
         }
 
+        if (name.startsWith(" ") || name.endsWith(" ")) {
+            return "INVALID_CHAR";
+        }
+
         return "VALID";
     }
 
