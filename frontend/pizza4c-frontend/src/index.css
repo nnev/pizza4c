@@ -608,6 +608,7 @@ tr.cartOwner td {
 
     main.notSide {
         margin-top: 60px;
+        margin-bottom: 60px;
     }
 
     main:not(.withSide) {
