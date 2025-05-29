@@ -37,29 +37,35 @@ export class CheckboxOptionGroup extends React.Component<CheckboxOptionGroupProp
 
     render() {
         let name = this.props.productId + '-' + this.props.variantId + '-' + this.props.optionGroupId;
-        let options = this.props.optionIds.map(optionId => {
-            let option = this.props.restaurant.menu.options[optionId];
-            let id = name + '-' + optionId;
+        let options = this.props.optionIds
+            .sort((a, b) => {
+                let optionA = this.props.restaurant.menu.options[a];
+                let optionB = this.props.restaurant.menu.options[b];
+                return optionA.name.toUpperCase().localeCompare(optionB.name.toUpperCase())
+            })
+            .map(optionId => {
+                let option = this.props.restaurant.menu.options[optionId];
+                let id = name + '-' + optionId;
 
-            return (
-                <div key={optionId} className="option">
-                    <div className="optionCheckbox">
-                        <input
-                            type="checkbox"
-                            name={id}
-                            id={id}
-                            value={optionId}
-                        />
+                return (
+                    <div key={optionId} className="option">
+                        <div className="optionCheckbox">
+                            <input
+                                type="checkbox"
+                                name={id}
+                                id={id}
+                                value={optionId}
+                            />
+                        </div>
+                        <div className="optionPrice">
+                            <label htmlFor={id}>{"+" + option.prices.deliveryEuro + '€'}</label>
+                        </div>
+                        <div className="optionName">
+                            <label htmlFor={id}>{option.name}</label>
+                        </div>
                     </div>
-                    <div className="optionPrice">
-                        <label htmlFor={id}>{"+" + option.prices.deliveryEuro + '€'}</label>
-                    </div>
-                    <div className="optionName">
-                        <label htmlFor={id}>{option.name}</label>
-                    </div>
-                </div>
-            );
-        });
+                );
+            });
 
         return (
             <div className="optionsContainer" onChange={this.onChangeHandler}>{options}</div>

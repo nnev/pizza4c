@@ -1,13 +1,13 @@
 plugins {
-    id 'org.springframework.boot' version '3.4.1'
+    id 'org.springframework.boot' version '3.5.0'
     id 'io.spring.dependency-management' version '1.1.7'
     id 'java'
 }
 
 group = 'de.noname'
-version = '0.1.14-SNAPSHOT'
-sourceCompatibility = '21'
-targetCompatibility = '21'
+version = '0.1.15-SNAPSHOT'
+sourceCompatibility = '17'
+targetCompatibility = '17'
 
 configurations {
     compileOnly {
