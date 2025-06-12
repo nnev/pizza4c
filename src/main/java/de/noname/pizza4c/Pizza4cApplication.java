@@ -8,7 +8,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
-import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.transaction.annotation.Transactional;
 
 @SpringBootApplication
 public class Pizza4cApplication {
@@ -18,6 +18,7 @@ public class Pizza4cApplication {
     private RestaurantService restaurantService;
 
     @EventListener(ApplicationReadyEvent.class)
+    @Transactional
     public void initializeRestaurantDataOnFirstStart() {
         if (restaurantService.getSelectedRestaurant() == null) {
             LOG.info("No restaurant data selected. Refreshing all data");

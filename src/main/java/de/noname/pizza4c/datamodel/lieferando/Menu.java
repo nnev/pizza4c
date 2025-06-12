@@ -10,6 +10,9 @@ import java.util.Map;
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Menu {
+
+    private List<MenuItem> items;
+
     @JsonProperty
     private List<Category> categories;
 

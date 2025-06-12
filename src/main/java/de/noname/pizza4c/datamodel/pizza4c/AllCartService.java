@@ -86,7 +86,7 @@ public class AllCartService {
         if (allCarts == null) {
             allCarts = createDefaultAllCarts();
         }
-        if (knownRestaurantRepository.getByLieferandoName(allCarts.getSelectedRestaurant()) == null) {
+        if (knownRestaurantRepository.getByLieferandoName("pizza-rapido-eppelheim") == null) {
             allCarts.setSelectedRestaurant(defaultRestaurantId);
             allCarts = allCartRepository.saveAndFlush(allCarts);
         }
@@ -94,9 +94,13 @@ public class AllCartService {
         return allCarts;
     }
 
-    private AllCarts createDefaultAllCarts() {
+    @Transactional
+    public AllCarts createDefaultAllCarts() {
+        allCartRepository.findAll().forEach(allCart -> {
+            System.out.println("++++++++++++++++" + allCart);
+        });
         AllCarts allCarts = new AllCarts();
-        allCarts.setId(1L);
+//        allCarts.setId(1L);
         allCarts.setUuid(UUID.randomUUID().toString());
         allCarts.setSelectedRestaurant(defaultRestaurantId);
         allCarts.setCreatedAt(LocalDateTime.now());
