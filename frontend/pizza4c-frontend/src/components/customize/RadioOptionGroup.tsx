@@ -1,17 +1,15 @@
-import Restaurant from "../../datamodel/restaurant/restaurant.ts";
 import React, {ChangeEvent} from "react";
+import {ModifierGroup} from "../../datamodel/restaurant/menu.ts";
+import {formatAsEuro} from "../../util/Formatter.ts";
 
-export interface SelectedOptionCallback {
-    (optionGroupId: string, selectedOptions: Set<string>): void;
+export interface SelectedModifierCallback {
+    (modifierGroupId: string, selectedOptions: Set<string>): void;
 }
 
 interface RadioOptionGroupProps {
-    productId: string;
-    variantId: string;
-    optionGroupId: string;
-    optionIds: string[]
-    restaurant: Restaurant;
-    onOptionSelected: SelectedOptionCallback;
+    modifierGroup: ModifierGroup;
+    modifierGroupId: string;
+    onModifierSelected: SelectedModifierCallback;
 }
 
 interface RadioOptionGroupState {
@@ -25,43 +23,42 @@ export class RadioOptionGroup extends React.Component<RadioOptionGroupProps, Rad
 
     onChangeHandler = (ev: ChangeEvent<HTMLInputElement>) => {
         let value = ev.target.value;
-        this.props.onOptionSelected(this.props.optionGroupId, new Set<string>([value]));
+        this.props.onModifierSelected(this.props.modifierGroupId, new Set<string>([value]));
     }
 
     render() {
-        let name = this.props.productId + '-' + this.props.variantId + '-' + this.props.optionGroupId;
-        let options = this.props.optionIds
+        let modifiers = Object.keys(this.props.modifierGroup.modifiers)
             .sort((a, b) => {
-                let optionA = this.props.restaurant.menu.options[a];
-                let optionB = this.props.restaurant.menu.options[b];
+                let optionA = this.props.modifierGroup.modifiers[a];
+                let optionB = this.props.modifierGroup.modifiers[b];
                 return optionA.name.toUpperCase().localeCompare(optionB.name.toUpperCase())
             })
             .map(optionId => {
-                let option = this.props.restaurant.menu.options[optionId];
-                let id = name + '-' + optionId;
+                let modifier = this.props.modifierGroup.modifiers[optionId];
+                let id = this.props.modifierGroupId + '-' + optionId;
 
                 return (
                     <div key={optionId} className="option">
                         <div className="optionRadio">
                             <input
                                 type="radio"
-                                name={name}
+                                name={modifier.name}
                                 id={id}
                                 value={optionId}
                             />
                         </div>
                         <div className="optionPrice">
-                            <label htmlFor={id}>{"+" + option.prices.deliveryEuro + '€'}</label>
+                            <label htmlFor={id}>{"+" + formatAsEuro(modifier.priceCents)}</label>
                         </div>
                         <div className="optionName">
-                            <label htmlFor={id}>{option.name}</label>
+                            <label htmlFor={id}>{modifier.name}</label>
                         </div>
                     </div>
                 );
             });
 
         return (
-            <div className="optionsContainer" onChange={this.onChangeHandler}>{options}</div>
+            <div className="optionsContainer" onChange={this.onChangeHandler}>{modifiers}</div>
         );
     }
 }

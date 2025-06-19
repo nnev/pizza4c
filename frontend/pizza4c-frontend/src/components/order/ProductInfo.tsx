@@ -1,5 +1,13 @@
 import React from "react";
-import ProductInfo from "../../datamodel/restaurant/productInfo.ts";
+
+interface ProductInfo {
+    additives: string | null;
+    allergens: string | null;
+    alcoholVolume: string | null;
+    caffeineAmount: string | null;
+    isFoodInformationVerifiedByRestaurant: string | null;
+    nutritionalTextManual: string | null;
+}
 
 interface ProductInfoProps {
     productInfo: ProductInfo;

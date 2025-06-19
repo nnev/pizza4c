@@ -16,12 +16,19 @@ interface OptionListViewState {
 export class OptionListView extends React.Component<OptionListViewProps, OptionListViewState> {
     render() {
         let menu = this.props.restaurant.menu;
-        let options = this.props.entry.options;
+        let modifiers = this.props.entry.modifiers;
+
+        console.log("++++", this.props.entry.menuItem, this.props.entry.variation);
+        console.log("****", menu.menuItems[this.props.entry.menuItem], menu.menuItems[this.props.entry.menuItem].variations);
+
+        let variation = menu.menuItems[this.props.entry.menuItem].variations[this.props.entry.variation];
+
         let mappedOptions: JSX.Element[] = []
-        for (let optionGroupKey in options) {
-            let optionIds = options[optionGroupKey];
-            for (let optionId of optionIds) {
-                let option = menu.options[optionId];
+        for (let optionGroupKey in modifiers) {
+            let modifierGroup = variation.modifierGroups[optionGroupKey];
+            let modifierIds = modifiers[optionGroupKey];
+            for (let modifierId of modifierIds) {
+                let option = modifierGroup.modifiers[modifierId];
                 if (option) {
                     mappedOptions.push(
                         <span key={option.name}>
@@ -40,8 +47,8 @@ export class OptionListView extends React.Component<OptionListViewProps, OptionL
             )
         }
 
-        let sizeValue = getVariant(this.props.restaurant.menu, this.props.entry.product, this.props.entry.variant)?.name || "";
-        let product = this.props.restaurant.menu.products[this.props.entry.product];
+        let sizeValue = getVariant(this.props.restaurant.menu, this.props.entry.menuItem, this.props.entry.variation)?.name || "";
+        let product = this.props.restaurant.menu.menuItems[this.props.entry.menuItem];
         return (
             <>
                 <b>

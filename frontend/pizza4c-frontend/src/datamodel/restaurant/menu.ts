@@ -1,27 +1,51 @@
-import Category from "./category.ts";
-import {isConfigurableOptionGroup, OptionGroup} from "./optionGroup.ts";
-import Option from "./option.ts";
-import Product from "./product.ts";
 import Dictionary from "../../util/Dictionary.ts";
-import Variant from "./variant.ts";
+import {selectableVegan} from "../cart/vegan.ts";
 
 
 export interface Menu {
-    categories: Category[];
-    optionGroups: Dictionary<OptionGroup>;
-    options: Dictionary<Option>;
-    products: Dictionary<Product>;
+    categories: Dictionary<Category>;
+    menuItems: Dictionary<MenuItem>;
 }
 
-export function isConfigurableProduct(menu: Menu, product: Product): boolean {
-    if (product.variants.length > 1) {
+export type Category = string[];
+
+export interface MenuItem {
+    name: string;
+    description: string;
+    variations: Dictionary<Variation>;
+    isVegetarian: boolean;
+    isVegan: boolean;
+}
+
+export interface Variation {
+    name: string;
+    priceCents: number;
+    modifierGroups: Dictionary<ModifierGroup>;
+}
+
+export interface ModifierGroup {
+    name: string;
+    minAmount: number;
+    maxAmount: number;
+    modifiers: Dictionary<Modifier>;
+}
+
+export interface Modifier {
+    name: string;
+    priceCents: number;
+    minAmount: number;
+    maxAmount: number;
+    defaultChoices: number;
+}
+
+export function isConfigurableProduct(menuItem: MenuItem): boolean {
+    if (Object.keys(menuItem.variations).length > 1) {
         return true;
     }
 
-    for (let variant of product.variants) {
-        for (let optionGroupId of variant.optionGroupIds) {
-            let optionGroup = menu.optionGroups[optionGroupId];
-            if (optionGroup != null && isConfigurableOptionGroup(optionGroup)) {
+    for (let variant of Object.values(menuItem.variations)) {
+        for (let optionGroup of Object.values(variant.modifierGroups)) {
+            if (optionGroup != null && isConfigurableModifierGroup(optionGroup)) {
                 return true;
             }
         }
@@ -29,14 +53,33 @@ export function isConfigurableProduct(menu: Menu, product: Product): boolean {
     return false;
 }
 
-export function getVariant(menu: Menu, productId: string, variantId: string): Variant | undefined {
-    if(menu == undefined || productId == undefined || variantId == undefined){
+export function isConfigurableModifierGroup(modifierGroup: ModifierGroup): boolean {
+    return Object.keys(modifierGroup.modifiers).length > 0;
+}
+
+export function getVariant(menu: Menu, productId: string, variantId: string): Variation | undefined {
+    if (menu == undefined || productId == undefined || variantId == undefined) {
         return undefined;
     }
 
-    let product = menu.products[productId];
-    if(product == undefined){
-        return undefined;
+    return menu.menuItems[productId].variations[variantId];
+}
+
+export function isOptionGroupMandatory(modifierGroup: ModifierGroup): boolean {
+    return modifierGroup.minAmount === 1 && modifierGroup.maxAmount === 1;
+}
+
+export function isVeganStateProduct(menuItem: MenuItem, veganState: selectableVegan): boolean {
+    switch (veganState) {
+        case "all":
+            return true;
+        case "vegetarian":
+            return menuItem.isVegetarian;
+        case "vegan":
+            return menuItem.isVegan;
     }
-    return product.variants.find(value => value.id == variantId);
+}
+
+export function isVeganStateCategory(menu: Menu, category: Category, veganState: selectableVegan): boolean {
+    return category.find((item) => isVeganStateProduct(menu.menuItems[item], veganState)) !== undefined;
 }

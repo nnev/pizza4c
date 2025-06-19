@@ -14,7 +14,7 @@ import com.itextpdf.text.Phrase;
 import com.itextpdf.text.Rectangle;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
-import de.noname.pizza4c.datamodel.lieferando.Variant;
+import de.noname.pizza4c.datamodel.lieferando2025.Variation;
 import de.noname.pizza4c.datamodel.pizza4c.AllCartService;
 import de.noname.pizza4c.datamodel.pizza4c.Cart;
 import de.noname.pizza4c.datamodel.pizza4c.CartEntry;
@@ -204,7 +204,7 @@ public class PdfGenerator {
             orderData.setWidthPercentage(100);
             orderData.setTotalWidth(1f);
 
-            orderData.addCell(new AlignedCell("Summe: " + allCarts.getPrice(menu) + " €", bigFont).setBorderBottom(3)
+            orderData.addCell(new AlignedCell("Summe: " + allCarts.getPriceEuro(menu) + " €", bigFont).setBorderBottom(3)
                     .setVerticalPadding(3));
             // iText rowspan does not work with custom cells, so we need to pad them ourselves
             orderData.addCell(new AlignedCell(
@@ -237,7 +237,7 @@ public class PdfGenerator {
                                     .setBorderBottom(isLast ? 3 : 1)
                                     .setVerticalPadding(3)
                     );
-                    Variant variant = menu.getVariant(entry.getProduct(), entry.getVariant());
+                    Variation variant = menu.getMenuItems().get(entry.getMenuItem()).getVariations().get(entry.getVariation());
                     orderData.addCell(
                             new AlignedCell(
                                     variant.getName(),
@@ -248,7 +248,7 @@ public class PdfGenerator {
                     );
                     orderData.addCell(
                             new AlignedCell(
-                                    entry.getPrice(menu) + " €",
+                                    entry.getPriceEuro(menu) + " €",
                                     normalFont,
                                     Element.ALIGN_RIGHT
                             )

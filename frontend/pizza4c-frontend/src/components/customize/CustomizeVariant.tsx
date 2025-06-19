@@ -1,8 +1,6 @@
-import Variant from "../../datamodel/restaurant/variant.ts";
 import Restaurant, {CurrentRestaurantObservable} from "../../datamodel/restaurant/restaurant.ts";
 import React, {ChangeEvent, MouseEvent} from "react";
 import {CustomizeOptionGroup} from "./CustomizeOptionGroup.tsx";
-import Product from "../../datamodel/restaurant/product.ts";
 import {PixmapButton, PixmapGroup, PixmapLink} from "../Pixmap.tsx";
 import {Navigate, useParams} from "react-router-dom";
 import {addToCart} from "../../backend/Cart.ts";
@@ -11,6 +9,8 @@ import {Error} from "../Error.tsx";
 import {getFavorites, setFavorites} from "../../datamodel/favorites.ts";
 import CartEntry from "../../datamodel/cart/cartEntry.ts";
 import {mapToDictionary} from "../../util/Dictionary.ts";
+import {MenuItem, Variation} from "../../datamodel/restaurant/menu.ts";
+import {formatAsEuro} from "../../util/Formatter.ts";
 
 interface CustomizeVariantProps {
     productId: string;
@@ -20,8 +20,8 @@ interface CustomizeVariantProps {
 interface CustomizeVariantState {
     selectedOptions: Map<string, Set<string>>;
     restaurant?: Restaurant;
-    product?: Product;
-    variant?: Variant;
+    menuItem?: MenuItem;
+    variation?: Variation;
     addToCartCompleted: boolean
     error?: FormattedError
     comment?: string
@@ -39,12 +39,12 @@ class CustomizeVariantClazz extends React.Component<CustomizeVariantProps, Custo
     }
 
     listener = (value: Restaurant) => {
-        let product = value.menu.products[this.props.productId];
-        let variant = product.variants.find(value => value.id == this.props.variantId);
+        let menuItem = value.menu.menuItems[this.props.productId];
+        let variation = menuItem.variations[this.props.variantId];
         this.setState({
             restaurant: value,
-            product: product,
-            variant: variant,
+            menuItem: menuItem,
+            variation: variation,
         });
     }
 
@@ -58,8 +58,8 @@ class CustomizeVariantClazz extends React.Component<CustomizeVariantProps, Custo
 
     addToCart = (ev: MouseEvent<HTMLInputElement>) => {
         ev.preventDefault();
-        if (this.props.productId && this.state.variant && this.getCustomizationCompleted()) {
-            addToCart(this.props.productId, this.state.variant.id, this.state.selectedOptions, this.state.comment)
+        if (this.props.productId && this.props.variantId && this.getCustomizationCompleted()) {
+            addToCart(this.props.productId, this.props.variantId, this.state.selectedOptions, this.state.comment)
                 .then(_ => {
                     this.setState({addToCartCompleted: true});
                 })
@@ -70,12 +70,12 @@ class CustomizeVariantClazz extends React.Component<CustomizeVariantProps, Custo
     }
     addToFavorites = (ev: MouseEvent<HTMLInputElement>) => {
         ev.preventDefault();
-        if (this.props.productId && this.state.variant && this.getCustomizationCompleted()) {
+        if (this.props.productId && this.props.variantId && this.getCustomizationCompleted()) {
             let favorites = getFavorites();
             favorites.favorite.push(new CartEntry(
                 "",
                 this.props.productId,
-                this.state.variant.id,
+                this.props.variantId,
                 mapToDictionary(this.state.selectedOptions),
                 this.state.comment
             ))
@@ -85,16 +85,16 @@ class CustomizeVariantClazz extends React.Component<CustomizeVariantProps, Custo
     }
 
     private getCustomizationCompleted(): boolean {
-        let variant = this.state.variant;
+        let variation = this.state.variation;
         let selectedOptionsGroups = this.state.selectedOptions;
-        if (variant == undefined) {
+        if (variation == undefined) {
             return false;
         } else {
-            for (const optionGroupId of variant.optionGroupIds) {
-                let optionGroup = this.state.restaurant!.menu.optionGroups[optionGroupId];
+            for (const optionGroupId of Object.keys(variation.modifierGroups)) {
+                let optionGroup = variation.modifierGroups[optionGroupId];
                 let selectedOptions = selectedOptionsGroups == undefined ? new Set<string> : selectedOptionsGroups!.get(optionGroupId);
                 let numSelected = selectedOptions ? selectedOptions.size : 0;
-                if (numSelected < optionGroup.minChoices || numSelected > optionGroup.maxChoices) {
+                if (numSelected < optionGroup.minAmount || numSelected > optionGroup.maxAmount) {
                     return false;
                 }
             }
@@ -103,18 +103,22 @@ class CustomizeVariantClazz extends React.Component<CustomizeVariantProps, Custo
         return true;
     }
 
-    private getTotalPrice(): number {
+    private getTotalPriceCents(): number {
         let total = 0;
-        if (this.state.product && this.state.variant) {
-            total += this.state.product.variants.find(value => value.id === this.state.variant!.id)!.prices.delivery;
-            for (let options of this.state.selectedOptions.values()) {
-                options.forEach(optionId => {
-                    let option = this.state.restaurant!.menu.options[optionId];
-                    total += option.prices.delivery;
-                })
+        if (this.state.menuItem && this.state.variation) {
+            total += this.state.variation.priceCents;
+            for (let modifierGroupId of this.state.selectedOptions.keys()) {
+                let modifierGroup = this.state.variation.modifierGroups[modifierGroupId];
+                let modifiers = this.state.selectedOptions.get(modifierGroupId);
+                if (modifiers != undefined) {
+                    modifiers.forEach((modifierId) => {
+                        let modifier = modifierGroup.modifiers[modifierId];
+                        total += modifier.priceCents;
+                    })
+                }
             }
         }
-        return total / 100;
+        return total;
     }
 
     changeComment = (ev: ChangeEvent<HTMLTextAreaElement>) => {
@@ -127,9 +131,7 @@ class CustomizeVariantClazz extends React.Component<CustomizeVariantProps, Custo
 
     private getDescription() {
         return <ol>
-            {
-                this.state.product!!.description.map(value => <li key={value}>{value}</li>)
-            }
+            <li>{this.state.menuItem!!.description}</li>
         </ol>
     }
 
@@ -138,7 +140,7 @@ class CustomizeVariantClazz extends React.Component<CustomizeVariantProps, Custo
         if (this.state.addToCartCompleted) {
             return <Navigate to="/"/>;
         }
-        if (this.state.restaurant == undefined || this.state.product == undefined || this.state.variant == undefined) {
+        if (this.state.restaurant == undefined || this.state.menuItem == undefined || this.state.variation == undefined) {
             return <></>;
         }
 
@@ -147,21 +149,20 @@ class CustomizeVariantClazz extends React.Component<CustomizeVariantProps, Custo
 
         return (
             <main className="notSide customize">
-                <h1>{this.state.product.name} {this.state.variant ? this.state.variant!.name : ""}</h1>
+                <h1>{this.state.menuItem.name} {this.state.variation ? this.state.variation!.name : ""}</h1>
                 {this.getDescription()}
                 <span
-                    className="total">Preis ohne Extras: <span>{this.state.variant!.prices.deliveryEuro}</span>€</span><br/>
+                    className="total">Preis ohne Extras: <span>{formatAsEuro(this.state.variation!.priceCents)}</span></span><br/>
 
                 <div className="variantContent">
                     <ul>
                         {
-                            this.state.variant!.optionGroupIds.map(value => <CustomizeOptionGroup
-                                    key={value}
-                                    restaurant={this.state.restaurant!}
-                                    productId={this.props.productId}
-                                    variant={this.state.variant!}
-                                    optionGroupId={value}
-                                    onOptionSelected={this.selectOption}
+                            Object.entries(this.state.variation!.modifierGroups).map(([modifierGroupId, modifierGroup]) =>
+                                <CustomizeOptionGroup
+                                    key={modifierGroupId}
+                                    modifierGroupId={modifierGroupId}
+                                    modifierGroup={modifierGroup}
+                                    onModifierSelected={this.selectOption}
                                 />
                             )
                         }
@@ -180,11 +181,11 @@ class CustomizeVariantClazz extends React.Component<CustomizeVariantProps, Custo
                     />
                 </div>
 
-                <span className="total"> <b>Total</b>: {this.getTotalPrice().toFixed(2)}€</span> <br/>
+                <span className="total"> <b>Total</b>: {formatAsEuro(this.getTotalPriceCents())}</span> <br/>
                 {this.state.error && <Error text={this.state.error.message}/>}
                 <PixmapGroup>
                     <PixmapLink to="/order" pixmap="arrow_back" text="Zurück zur Produktauswahl"/>
-                    {this.state.product.variants.length != 1 &&
+                    {Object.keys(this.state.menuItem.variations).length != 1 &&
                         <PixmapLink to={"/customize/" + this.props.productId} pixmap="arrow_back"
                                     text="Zurück zur Größenauswahl"/>
                     }

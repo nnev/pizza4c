@@ -1,4 +1,5 @@
 import React from "react";
+import {formatAsEuro} from "../util/Formatter.ts";
 
 interface ProgressProps {
     current: number;
@@ -18,7 +19,7 @@ export class ProgressMoney extends React.Component<ProgressProps, any> {
                      style={{width: percentage + "%"}}>
                     <span
                         className="progressText">
-                        {this.props.current.toFixed(2)} €/ {this.props.max.toFixed(2)} €</span>
+                        {formatAsEuro(this.props.current)} / {formatAsEuro(this.props.max)}</span>
                 </div>
             </div>
         );

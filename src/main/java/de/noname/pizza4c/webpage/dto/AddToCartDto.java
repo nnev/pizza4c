@@ -1,10 +1,6 @@
 package de.noname.pizza4c.webpage.dto;
 
-import de.noname.pizza4c.datamodel.lieferando.Menu;
-import de.noname.pizza4c.datamodel.lieferando.Option;
-import de.noname.pizza4c.datamodel.lieferando.OptionGroup;
-import de.noname.pizza4c.datamodel.lieferando.Product;
-import de.noname.pizza4c.datamodel.lieferando.Variant;
+import de.noname.pizza4c.datamodel.lieferando2025.*;
 import de.noname.pizza4c.utils.Name;
 import de.noname.pizza4c.webpage.error.NoSuchOptionException;
 import de.noname.pizza4c.webpage.error.NoSuchOptionGroupException;
@@ -13,14 +9,13 @@ import de.noname.pizza4c.webpage.error.NoSuchVariantException;
 import lombok.Data;
 
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 
 @Data
 public class AddToCartDto {
-    String product;
-    String variant;
-    Map<String, Set<String>> options;
+    String menuItem;
+    String variation;
+    Map<String, Set<String>> modifiers;
 
     Name name;
 
@@ -28,24 +23,24 @@ public class AddToCartDto {
 
     public ValidatedAddToCartDto ensureValid(Menu menu) {
         Name.ensureValid(name);
-        if (getProduct() == null) {
+        if (getMenuItem() == null) {
             throw new NoSuchProductException(null);
         }
 
         ValidatedAddToCartDto result = new ValidatedAddToCartDto();
-        result.productId = getProduct();
-        result.product = menu.getProducts().get(getProduct());
-        if (result.product == null) {
-            throw new NoSuchProductException(getProduct());
+        result.menuItemId = getMenuItem();
+        result.menuItem = menu.getMenuItems().get(getMenuItem());
+        if (result.menuItem == null) {
+            throw new NoSuchProductException(getMenuItem());
         }
-        var variant = getSelectedVariant(getProduct() + "-" + getVariant(), getProduct(), result.product);
+        var variant = getSelectedVariant(result.menuItem, getVariation());
         if (variant == null) {
-            throw new NoSuchVariantException(getProduct(), getVariant());
+            throw new NoSuchVariantException(getMenuItem(), getVariation());
         }
-        result.variantId = getVariant();
+        result.variantId = getVariation();
 
-        ensureValidOptions(menu, result);
-        result.options = getOptions();
+        ensureValidModifiers(result.menuItem, result);
+        result.modifiers = getModifiers();
 
         Name.ensureValid(getName());
         result.name = getName();
@@ -65,39 +60,27 @@ public class AddToCartDto {
         }
     }
 
-    private Variant getSelectedVariant(String variantId, String productId, Product product) {
-        return product.getVariants()
-                .stream()
-                .filter(variant -> Objects.equals(variantId, productId + "-" + variant.getId()))
-                .findFirst()
-                .orElse(null);
+    private Variation getSelectedVariant(MenuItem menuItem, String variantId) {
+        return menuItem.getVariations().get(variantId);
     }
 
-    private void ensureValidOptions(Menu menu, ValidatedAddToCartDto validated) {
-        if (getOptions() == null) {
-            throw new NoSuchOptionGroupException(validated.getProductId(), validated.getVariantId(), null);
+    private void ensureValidModifiers(MenuItem menuItem, ValidatedAddToCartDto validated) {
+        if (getModifiers() == null) {
+            throw new NoSuchOptionGroupException(validated.getMenuItemId(), validated.getVariantId(), null);
         }
 
-        var variant = getSelectedVariant(getProduct() + "-" + getVariant(), getProduct(), validated.product);
-        for (String optionGroundId : getOptions().keySet()) {
-            if (!variant.getOptionGroupIds().contains(optionGroundId)) {
-                throw new NoSuchOptionGroupException(validated.getProductId(), validated.getVariantId(),
-                        optionGroundId);
-            }
-            OptionGroup optionGroup = menu.getOptionGroups().get(optionGroundId);
-            if (optionGroup == null) {
-                throw new NoSuchOptionGroupException(validated.getProductId(), validated.getVariantId(),
+        var variant = getSelectedVariant(menuItem, getVariation());
+        for (String optionGroundId : getModifiers().keySet()) {
+            ModifierGroup modifierGroup = variant.getModifierGroups().get(optionGroundId);
+            if (modifierGroup == null) {
+                throw new NoSuchOptionGroupException(validated.getMenuItemId(), validated.getVariantId(),
                         optionGroundId);
             }
 
-            for (String optionId : getOptions().get(optionGroundId)) {
-                if (!optionGroup.getOptionIds().contains(optionId)) {
-                    throw new NoSuchOptionException(validated.getProductId(), validated.getVariantId(), optionGroundId,
-                            optionId);
-                }
-                Option option = menu.getOptions().get(optionId);
-                if (option == null) {
-                    throw new NoSuchOptionException(validated.getProductId(), validated.getVariantId(), optionGroundId,
+            for (String optionId : getModifiers().get(optionGroundId)) {
+                Modifier modifier = modifierGroup.getModifiers().get(optionId);
+                if (modifier == null) {
+                    throw new NoSuchOptionException(validated.getMenuItemId(), validated.getVariantId(), optionGroundId,
                             optionId);
                 }
             }

@@ -1,9 +1,8 @@
 package de.noname.pizza4c.webpage;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import de.noname.pizza4c.datamodel.lieferando.Restaurant;
+import de.noname.pizza4c.datamodel.lieferando2025.Restaurant;
 import de.noname.pizza4c.datamodel.pizza4c.*;
-import de.noname.pizza4c.fax.FaxService;
 import de.noname.pizza4c.pdf.PdfGenerator;
 import de.noname.pizza4c.webpage.dto.AddToCartDto;
 import org.slf4j.Logger;

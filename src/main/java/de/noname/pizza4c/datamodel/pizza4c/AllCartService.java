@@ -2,7 +2,6 @@ package de.noname.pizza4c.datamodel.pizza4c;
 
 import de.noname.pizza4c.utils.Name;
 import de.noname.pizza4c.webpage.error.AlreadyDeliveredException;
-import de.noname.pizza4c.webpage.error.CartFreshlyCreatedException;
 import de.noname.pizza4c.webpage.error.CartFreshlySubmittedException;
 import de.noname.pizza4c.webpage.error.InvalidDeliveryTimeException;
 import de.noname.pizza4c.webpage.error.NotSubmittedException;
@@ -205,7 +204,7 @@ public class AllCartService {
         var statistic = new HistoricAllCartDeliveryStatistic();
         statistic.setNumEntries(allCarts.numEntriesInCart());
         var restaurant = knownRestaurantService.getByRestaurantSlug(allCarts.getSelectedRestaurant());
-        statistic.setPriceEuro(allCarts.getPrice(restaurant.getMenu()).doubleValue());
+        statistic.setPriceCents(allCarts.getPriceCents(restaurant.getMenu()));
         statistic.setSubmitted(allCarts.getSubmittedAt());
         statistic.setDelivered(allCarts.getDeliveredAt());
         historicAllCartDeliveryStatisticRepository.saveAndFlush(statistic);

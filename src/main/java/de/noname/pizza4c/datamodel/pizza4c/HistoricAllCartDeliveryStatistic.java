@@ -19,13 +19,13 @@ public class HistoricAllCartDeliveryStatistic extends VersionedEntity {
     public static final LocalDateTime MAX_VALID_DATE = LocalDateTime.of(2030, 1, 1, 0, 0, 0);
 
     private int numEntries;
-    private double priceEuro;
+    private double priceCents;
     private LocalDateTime submitted;
     private LocalDateTime delivered;
 
     public boolean isValid() {
         return numEntries > 0 &&
-                priceEuro > 0 && priceEuro < MAX_VALID_PRICE_EURO &&
+                priceCents > 0 && priceCents < MAX_VALID_PRICE_EURO &&
                 submitted != null && submitted.isAfter(MIN_VALID_DATE) && submitted.isBefore(MAX_VALID_DATE) &&
                 delivered != null && delivered.isAfter(MIN_VALID_DATE) && delivered.isBefore(MAX_VALID_DATE);
     }

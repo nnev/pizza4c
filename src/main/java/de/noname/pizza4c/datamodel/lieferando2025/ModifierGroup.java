@@ -5,13 +5,11 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 import java.util.List;
+import java.util.Map;
 
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ModifierGroup {
-
-    @JsonProperty
-    private String id;
     @JsonProperty
     private String name;
 
@@ -22,11 +20,5 @@ public class ModifierGroup {
     private int maxAmount;
 
     @JsonProperty
-    private List<Modifier> modifiers;
-
-    @JsonProperty
-    private boolean isVegetarian;
-
-    @JsonProperty
-    private boolean isVegan;
+    private Map<String, Modifier> modifiers;
 }

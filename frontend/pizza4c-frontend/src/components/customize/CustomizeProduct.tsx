@@ -1,19 +1,19 @@
 import React from "react";
 import Restaurant, {CurrentRestaurantObservable} from "../../datamodel/restaurant/restaurant.ts";
-import Product from "../../datamodel/restaurant/product.ts";
-import {ProductInfoView} from "../order/ProductInfo.tsx";
 import {Navigate, useParams} from "react-router-dom";
 import {PixmapButton, PixmapGroup, PixmapLink} from "../Pixmap.tsx";
 import {joinClasses} from "../../util/JoinClasses.ts";
+import {MenuItem} from "../../datamodel/restaurant/menu.ts";
+import {formatAsEuro} from "../../util/Formatter.ts";
 
 
 interface CustomizeProps {
-    productId: string;
+    menuItemId: string;
 }
 
 interface CustomizeState {
     restaurant?: Restaurant;
-    product?: Product;
+    menuItem?: MenuItem;
     selectedVariantId?: string;
 }
 
@@ -24,14 +24,14 @@ class CustomizeClazz extends React.Component<CustomizeProps, CustomizeState> {
     }
 
     listener = (value: Restaurant) => {
-        let product = value.menu.products[this.props.productId];
+        let menuItem = value.menu.menuItems[this.props.menuItemId];
 
         this.setState({
             restaurant: value,
-            product: product,
+            menuItem: menuItem,
         });
-        if (this.state.selectedVariantId == undefined && product.variants.length == 1) {
-            this.setState({selectedVariantId: product.variants[0].id})
+        if (this.state.selectedVariantId == undefined && Object.keys(menuItem.variations).length == 1) {
+            this.setState({selectedVariantId: Object.keys(menuItem.variations)[0]})
         }
     }
 
@@ -44,37 +44,37 @@ class CustomizeClazz extends React.Component<CustomizeProps, CustomizeState> {
     }
 
     render() {
-        if (this.state.product == undefined || this.state.restaurant == undefined) {
+        if (this.state.menuItem == undefined || this.state.restaurant == undefined) {
             return (<></>)
         }
 
         if (this.state.selectedVariantId != undefined) {
             return <Navigate
-                to={"/customize/" + this.props.productId + "/" + this.state.selectedVariantId}
-                replace={this.state.product.variants.length === 1}
+                to={"/customize/" + this.props.menuItemId + "/" + this.state.selectedVariantId}
+                replace={Object.keys(this.state.menuItem.variations).length === 1}
             />;
         }
 
         return (
             <main className="customize notSide">
-                <h1>{this.state.product.name}</h1>
-                <ProductInfoView productInfo={this.state.product.productInfo}/>
+                <h1>{this.state.menuItem.name}</h1>
+                {/*<ProductInfoView productInfo={this.state.menuItem.productInfo}/>*/}
                 <div className="customizeButtons">
                     {
-                        this.state.product.variants.map((variant, index) => {
+                        Object.entries(this.state.menuItem.variations).map(([variationId, variation], index) => {
                             return <>
                                 <PixmapButton
-                                    onClick={() => this.setState({selectedVariantId: variant.id})}
+                                    onClick={() => this.setState({selectedVariantId: variationId})}
                                     pixmap="add"
                                     text={
                                         <>
-                                            {variant.name &&
+                                            {variation.name &&
                                                 <>
-                                                    <span>{variant.name}</span>
+                                                    <span>{variation.name}</span>
                                                     <br/>
                                                 </>
                                             }
-                                            Preis ohne Extras: <b>{variant.prices.deliveryEuro}€</b>
+                                            Preis ohne Extras: <b>{formatAsEuro(variation.priceCents)}</b>
                                         </>
                                     }
                                     className={joinClasses("", index == 0 ? "primary" : "")}
@@ -93,5 +93,5 @@ class CustomizeClazz extends React.Component<CustomizeProps, CustomizeState> {
 
 export const CustomizeProduct = () => {
     let props = useParams();
-    return <CustomizeClazz productId={props.productId || "määh"}/>
+    return <CustomizeClazz menuItemId={props.productId || "määh"}/>
 }

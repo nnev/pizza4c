@@ -7,14 +7,11 @@ import lombok.Data;
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Modifier {
-
-    @JsonProperty
-    private String id;
     @JsonProperty
     private String name;
 
     @JsonProperty
-    private int price;
+    private int priceCents;
 
     @JsonProperty
     private int minAmount;

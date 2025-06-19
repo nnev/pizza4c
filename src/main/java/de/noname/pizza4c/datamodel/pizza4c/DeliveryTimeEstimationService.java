@@ -1,6 +1,6 @@
 package de.noname.pizza4c.datamodel.pizza4c;
 
-import de.noname.pizza4c.datamodel.lieferando.Menu;
+import de.noname.pizza4c.datamodel.lieferando2025.Menu;
 import de.noname.pizza4c.utils.LinearRegression;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -37,7 +37,7 @@ public class DeliveryTimeEstimationService {
                 continue;
             }
             double numEntriesStatistic = statistic.getNumEntries();
-            double priceEuroStatistic = statistic.getPriceEuro();
+            double priceEuroStatistic = statistic.getPriceCents();
 
             double durationSeconds = ChronoUnit.SECONDS.between(statistic.getSubmitted(), statistic.getDelivered());
 
@@ -54,7 +54,7 @@ public class DeliveryTimeEstimationService {
 
         var deliveryTimeEstimation = new DeliveryTimeEstimation();
         double numEntries = allCarts.numEntriesInCart();
-        double priceEuro = allCarts.getPrice(menu).doubleValue();
+        long priceCents = allCarts.getPriceCents(menu);
 
         LocalDateTime now = LocalDateTime.now();
         if (byEntries_x.size() > 2) {
@@ -65,7 +65,7 @@ public class DeliveryTimeEstimationService {
 
         if (byPrice_x.size() > 2) {
             LinearRegression linearRegressionByPrice = new LinearRegression(byPrice_x, byPrice_y);
-            var byPriceDurationSeconds = linearRegressionByPrice.predict(priceEuro);
+            var byPriceDurationSeconds = linearRegressionByPrice.predict(priceCents);
             deliveryTimeEstimation.setByPrice(now.plusSeconds((long) byPriceDurationSeconds));
         }
 

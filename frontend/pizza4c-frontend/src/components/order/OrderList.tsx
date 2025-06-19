@@ -2,8 +2,7 @@ import React from "react";
 import Restaurant from "../../datamodel/restaurant/restaurant.ts";
 import {CategoryEntry} from "./CategoryEntry.tsx";
 import {selectableVegan, VeganObservable} from "../../datamodel/cart/vegan.ts";
-import {isVeganStateCategory} from "../../datamodel/restaurant/category.ts";
-import {isVeganStateProduct} from "../../datamodel/restaurant/product.ts";
+import {isVeganStateCategory} from "../../datamodel/restaurant/menu.ts";
 
 
 interface OrderListProps {
@@ -38,28 +37,23 @@ export class OrderList extends React.Component<OrderListProps, OrderListState> {
         return (
             <ol>
                 {
-                    this.props
+                    Object.keys(this.props
                         .restaurant
                         .menu
                         .categories
+                    )
                         .filter(value => {
+                            const category = this.props.restaurant.menu.categories[value];
                             if (this.state.vegan == "all") {
                                 return true
                             }
-                            if (!isVeganStateCategory(value, this.state.vegan)) {
-                                return false;
-                            }
-                            let hasVeganOption = false;
-                            for (let productId of value.productIds) {
-                                let product = this.props.restaurant.menu.products[productId];
-                                hasVeganOption ||= isVeganStateProduct(product, this.state.vegan)
-                            }
-                            return hasVeganOption
+                            return isVeganStateCategory(this.props.restaurant.menu, category, this.state.vegan);
                         })
-                        .map(value => <CategoryEntry
-                            key={value.id}
+                        .map(categoryName => <CategoryEntry
+                            key={categoryName}
                             restaurant={this.props.restaurant}
-                            category={value}
+                            categoryName={categoryName}
+                            category={this.props.restaurant.menu.categories[categoryName]}
                             vegan={this.state.vegan}
                         />)
                 }

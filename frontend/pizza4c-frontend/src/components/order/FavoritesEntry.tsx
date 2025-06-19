@@ -9,6 +9,7 @@ import {Navigate} from "react-router-dom";
 import {Error} from "../Error.tsx";
 import {addToCart, AllCartsObservable} from "../../backend/Cart.ts";
 import {dictionaryToMap} from "../../util/Dictionary.ts";
+import {formatAsEuro} from "../../util/Formatter.ts";
 
 interface FavoritesEntryProps {
     entry: CartEntry
@@ -30,11 +31,11 @@ export class FavoritesEntry extends React.Component<FavoritesEntryProps, Favorit
 
     addToCart = (ev: MouseEvent<HTMLInputElement>) => {
         ev.preventDefault()
-        if (this.props.entry.product && this.props.entry.variant) {
+        if (this.props.entry.menuItem && this.props.entry.variation) {
             addToCart(
-                this.props.entry.product,
-                this.props.entry.variant,
-                dictionaryToMap(this.props.entry.options),
+                this.props.entry.menuItem,
+                this.props.entry.variation,
+                dictionaryToMap(this.props.entry.modifiers),
                 this.props.entry.comment
             )
                 .then(_ => {
@@ -48,7 +49,7 @@ export class FavoritesEntry extends React.Component<FavoritesEntryProps, Favorit
 
     removeFromFavorites = (ev: MouseEvent<HTMLInputElement>) => {
         ev.preventDefault();
-        if (this.props.entry.product && this.props.entry.variant) {
+        if (this.props.entry.menuItem && this.props.entry.variation) {
             if (window.confirm("Wirklich löschen?")) {
                 let favorites = getFavorites();
                 favorites.favorite = favorites.favorite.filter(f => f != this.props.entry)
@@ -71,7 +72,7 @@ export class FavoritesEntry extends React.Component<FavoritesEntryProps, Favorit
                     withSize={true}
                 />
                 <span
-                    className="total"> <b>Total</b>: {this.props.entry.getPrice(this.props.restaurant.menu).toFixed(2)}€</span>
+                    className="total"> <b>Total</b>: {formatAsEuro(this.props.entry.getPrice(this.props.restaurant.menu))}</span>
                 <br/>
 
                 <PixmapGroup>

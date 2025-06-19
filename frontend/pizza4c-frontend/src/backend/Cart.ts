@@ -8,7 +8,7 @@ import {getMyName} from "../datamodel/name.ts";
 import DeliveryTimeEstimation from "../datamodel/cart/deliveryTimeEstimation.ts";
 import {leftPad} from "../util/Time.ts";
 
-export async function addToCart(product: string, variant: string, options: Map<string, Set<string>>, comment?: string): Promise<any> {
+export async function addToCart(menuItem: string, variation: string, modifiers: Map<string, Set<string>>, comment?: string): Promise<any> {
 
     // Something, something: "[Object object]" is not a useful string in a request
     function replacer(_: any, value: any) {
@@ -28,9 +28,9 @@ export async function addToCart(product: string, variant: string, options: Map<s
             'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-            product: product,
-            variant: variant,
-            options: options,
+            menuItem: menuItem,
+            variation: variation,
+            modifiers: modifiers,
             name: getMyName().asBody(),
             comment: comment
         }, replacer)
@@ -90,9 +90,9 @@ function mapCart(data: Cart): Cart {
 
 export function mapEntries(data: CartEntry): CartEntry {
     let id = data.id;
-    let product = data.product;
-    let variant = data.variant;
-    let options = data.options;
+    let product = data.menuItem;
+    let variant = data.variation;
+    let options = data.modifiers;
     let comment = data.comment;
 
     return new CartEntry(id, product, variant, options, comment);

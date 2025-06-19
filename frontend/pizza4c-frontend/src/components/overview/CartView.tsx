@@ -7,6 +7,7 @@ import {ToggleCartPaid} from "./ToggleCartPaid.tsx";
 import {RemoveEntry} from "./RemoveEntry.tsx";
 import {joinClasses} from "../../util/JoinClasses.ts";
 import {getMyName, Name, UserNameObservable} from "../../datamodel/name.ts";
+import {formatAsEuro} from "../../util/Formatter.ts";
 
 interface CartViewProps {
     cart: Cart;
@@ -71,14 +72,14 @@ export class CartView extends React.Component<CartViewProps, CartViewState> {
             </tr>
         )
         this.props.cart.entries.forEach((entry, index) => {
-            let variant = getVariant(menu, entry.product, entry.variant);
+            let variant = getVariant(menu, entry.menuItem, entry.variation);
 
             results.push(
                 <tr key={entry.id} className={index == 0 ? "cartBegin" : ""}>
                     <td className={joinClasses("box", this.props.cart.getPaymentClass())}>&nbsp;</td>
                     <td className="grow"><OptionListView entry={entry} restaurant={this.props.restaurant}/></td>
                     <td>{variant && variant.name}</td>
-                    <td className="textCenter">{entry.getPrice(menu).toFixed(2)} €</td>
+                    <td className="textCenter">{formatAsEuro(entry.getPrice(menu))}</td>
                     <td className="textCenter">
                         {
                             canEditCart &&

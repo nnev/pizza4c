@@ -1,6 +1,6 @@
 package de.noname.pizza4c.webpage;
 
-import de.noname.pizza4c.datamodel.lieferando.Restaurant;
+import de.noname.pizza4c.datamodel.lieferando2025.Restaurant;
 import de.noname.pizza4c.datamodel.pizza4c.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

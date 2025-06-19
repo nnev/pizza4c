@@ -1,6 +1,6 @@
 import React, {MouseEvent} from "react";
 import Restaurant, {CurrentRestaurantObservable} from "../../datamodel/restaurant/restaurant.ts";
-import {chooseRandomArray, chooseRandomDict, mapToDictionary} from "../../util/Dictionary.ts";
+import Dictionary, {chooseRandomDict, mapToDictionary} from "../../util/Dictionary.ts";
 import CartEntry from "../../datamodel/cart/cartEntry.ts";
 import {OptionListView} from "../overview/OptionListView.tsx";
 import {PixmapButton, PixmapGroup, PixmapLink} from "../Pixmap.tsx";
@@ -8,8 +8,7 @@ import FormattedError from "../../datamodel/error.ts";
 import {addToCart} from "../../backend/Cart.ts";
 import {Navigate} from "react-router-dom";
 import {FormatPrice} from "../overview/FormatPrice.tsx";
-import {OptionGroup} from "../../datamodel/restaurant/optionGroup.ts";
-import Variant from "../../datamodel/restaurant/variant.ts";
+import {ModifierGroup, Variation} from "../../datamodel/restaurant/menu.ts";
 
 interface RandomOrderProps {
 }
@@ -53,63 +52,66 @@ export class RandomOrder extends React.Component<RandomOrderProps, RandomOrderSt
         if (this.state.restaurant == undefined) {
             return
         }
-        let _product = chooseRandomDict(this.state.restaurant.menu.products);
-        console.log("Product", _product);
-        if (_product == undefined) {
+        let _menuItem = chooseRandomDict(this.state.restaurant.menu.menuItems);
+        console.log("Product", _menuItem);
+        if (_menuItem == undefined) {
             return;
         }
-        let [productId, product] = _product
+        let [menuItemId, menuItem] = _menuItem;
 
-        let variant = chooseRandomArray(product.variants);
-        console.log("variant", variant);
-        if (variant == undefined) {
+        let _variantion = chooseRandomDict(menuItem.variations);
+        console.log("variant", _variantion);
+        if (_variantion == undefined) {
             return;
         }
+        let [variationId, variantion] = _variantion;
 
-        let [minAddons, maxAddons] = this.getMinMaxOptions(variant);
+        let [minAddons, maxAddons] = this.getMinMaxOptions(variantion);
 
-        console.log("Available option groups", variant.optionGroupIds);
+        console.log("Available option groups", variantion.modifierGroups);
         let numOptions = Math.max(0, Math.max(minAddons, Math.min(this.state.numOptions, maxAddons)));
         this.setState({
-            selectedProductId: productId,
-            selectedVariantId: variant.id,
+            selectedProductId: menuItemId,
+            selectedVariantId: variationId,
             numOptions: numOptions,
-            selectedOptions: this.selectOptions(variant.optionGroupIds, numOptions)
+            selectedOptions: this.selectOptions(variantion.modifierGroups, numOptions)
         })
     }
 
     private randomizeAddons() {
-        if (this.state.restaurant == undefined || this.state.selectedProductId == undefined) {
+        if (this.state.restaurant == undefined || this.state.selectedProductId == undefined || this.state.selectedVariantId == undefined) {
             return;
         }
-        let product = this.state.restaurant.menu.products[this.state.selectedProductId];
-        let variant = product.variants.find(v => v.id == this.state.selectedVariantId)
+        let product = this.state.restaurant.menu.menuItems[this.state.selectedProductId];
+        let variant = product.variations[this.state.selectedVariantId];
         if (variant == undefined) {
             return;
         }
         this.setState({
-            selectedOptions: this.selectOptions(variant.optionGroupIds, this.state.numOptions)
+            selectedOptions: this.selectOptions(variant.modifierGroups, this.state.numOptions)
         })
     }
 
-    private selectOptions(optionGroupIds: string[], numOptions: number): Map<string, Set<string>> {
+    private selectOptions(modifierGroups: Dictionary<ModifierGroup>, numOptions: number): Map<string, Set<string>> {
         if (this.state.restaurant == null) {
             throw "";
         }
         let result = new Map<string, Set<string>>();
 
         let numInitialOptions = 0
-        for (let optionGroupId of optionGroupIds) {
-            let optionGroup = this.state.restaurant.menu.optionGroups[optionGroupId]
-            if (optionGroup.minChoices > 0) {
-                for (let i = 0; i < optionGroup.minChoices; i++) {
-                    let optionId = chooseRandomArray(optionGroup.optionIds)
-                    console.log(optionId);
-                    if (optionId == undefined) {
+        for (let modifierGroupId of Object.keys(modifierGroups)) {
+            let modifierGroup = modifierGroups[modifierGroupId]
+            if (modifierGroup.minAmount > 0) {
+                for (let i = 0; i < modifierGroup.minAmount; i++) {
+                    let _modifier = chooseRandomDict(modifierGroup.modifiers)
+                    console.log("Modifier", _modifier);
+                    if (_modifier == undefined) {
                         continue;
                     }
 
-                    if (this.addToOptionSet(result, optionGroupId, optionGroup, optionId)) {
+                    let [modifierId, _] = _modifier;
+
+                    if (this.addToOptionSet(result, modifierGroupId, modifierGroup, modifierId)) {
                         numInitialOptions++;
                     }
                 }
@@ -119,22 +121,24 @@ export class RandomOrder extends React.Component<RandomOrderProps, RandomOrderSt
         let numAddedOptions = 0;
         if (numInitialOptions < numOptions) {
             for (let i = 0; i < 100; i++) {
-                let optionGroupId = chooseRandomArray(optionGroupIds);
-                console.log("Option Group", optionGroupId);
-                if (optionGroupId == undefined) {
+                let _modifierGroup = chooseRandomDict(modifierGroups);
+                console.log("Modifier Group", _modifierGroup);
+                if (_modifierGroup == undefined) {
                     continue;
                 }
 
-                let optionGroup = this.state.restaurant.menu.optionGroups[optionGroupId];
-                console.log(optionGroup);
-                let optionId = chooseRandomArray(optionGroup.optionIds)
-                console.log(optionId);
-                if (optionId == undefined) {
+                let [modifierGroupId, modifierGroup] = _modifierGroup;
+
+                let _modifierId = chooseRandomDict(modifierGroup.modifiers)
+                console.log(_modifierId);
+                if (_modifierId == undefined) {
                     continue;
                 }
 
-                if (this.addToOptionSet(result, optionGroupId, optionGroup, optionId)) {
-                    console.log("********", optionGroupId, optionGroup, optionId)
+                let [modifierId, _] = _modifierId;
+
+                if (this.addToOptionSet(result, modifierGroupId, modifierGroup, modifierId)) {
+                    console.log("********", modifierGroupId, modifierGroup, modifierId)
                     numAddedOptions++;
                 }
 
@@ -148,15 +152,15 @@ export class RandomOrder extends React.Component<RandomOrderProps, RandomOrderSt
         return result;
     }
 
-    private addToOptionSet(result: Map<string, Set<string>>, optionGroupId: string, optionGroup: OptionGroup, optionId: string): boolean {
-        let optionSet = result.get(optionGroupId);
-        if (optionSet == undefined) {
-            optionSet = new Set<string>();
-            result.set(optionGroupId, optionSet);
+    private addToOptionSet(result: Map<string, Set<string>>, modifierGroupId: string, modifierGroup: ModifierGroup, modifierId: string): boolean {
+        let _modifiers = result.get(modifierGroupId);
+        if (_modifiers == undefined) {
+            _modifiers = new Set<string>();
+            result.set(modifierGroupId, _modifiers);
         }
-        if (optionSet.size < optionGroup.maxChoices) {
-            let exists = optionSet.has(optionId);
-            optionSet.add(optionId);
+        if (_modifiers.size < modifierGroup.maxAmount) {
+            let exists = _modifiers.has(modifierId);
+            _modifiers.add(modifierId);
             return !exists;
         }
         return false;
@@ -191,9 +195,9 @@ export class RandomOrder extends React.Component<RandomOrderProps, RandomOrderSt
         })
     }
 
-    private getMinMaxOptions(variant: Variant): [number, number] {
-        let minAddons = variant.optionGroupIds.map(it => this.state.restaurant!!.menu.optionGroups[it].minChoices).reduce((a, b) => a + b, 0)
-        let maxAddons = variant.optionGroupIds.map(it => this.state.restaurant!!.menu.optionGroups[it].maxChoices).reduce((a, b) => a + b, 0)
+    private getMinMaxOptions(variant: Variation): [number, number] {
+        let minAddons = Object.values(variant.modifierGroups).map(it => it.minAmount).reduce((a, b) => a + b, 0)
+        let maxAddons = Object.values(variant.modifierGroups).map(it => it.maxAmount).reduce((a, b) => a + b, 0)
         maxAddons = Math.min(maxAddons, minAddons + 5);
         return [minAddons, maxAddons];
     }
@@ -216,8 +220,8 @@ export class RandomOrder extends React.Component<RandomOrderProps, RandomOrderSt
             mapToDictionary(this.state.selectedOptions)
         )
 
-        let product = this.state.restaurant.menu.products[this.state.selectedProductId];
-        let variant = product.variants.find(v => v.id == this.state.selectedVariantId)
+        let product = this.state.restaurant.menu.menuItems[this.state.selectedProductId];
+        let variant = product.variations[this.state.selectedVariantId];
         if (variant == undefined) {
             return;
         }

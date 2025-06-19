@@ -72,7 +72,7 @@ public class AdminController {
         var allCarts = allCartService.getCurrentAllCarts();
         allCarts.ensureNotSubmitted();
 
-        String lieferandoFaxAddress = restaurantService.getSelectedRestaurant().getColophon().getData().getFax();
+        String lieferandoFaxAddress = null; // TODO: Investigate whether we can get the fax address from the new api data
         FaxSendStatus sendStatus = faxServiceProvider.sendFax(allCarts.getUuid(), lieferandoFaxAddress);
 
         if (sendStatus == FaxSendStatus.SUCCESS) {

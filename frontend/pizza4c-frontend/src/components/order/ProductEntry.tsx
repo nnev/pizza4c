@@ -1,23 +1,20 @@
 import React from "react";
-import {isConfigurableProduct} from "../../datamodel/restaurant/menu.ts";
+import {isConfigurableProduct, MenuItem} from "../../datamodel/restaurant/menu.ts";
 import {PixmapButton} from "../Pixmap.tsx";
-import {ProductInfoView} from "./ProductInfo.tsx";
-import Restaurant from "../../datamodel/restaurant/restaurant.ts";
-import Product from "../../datamodel/restaurant/product.ts";
 import {Navigate} from "react-router-dom";
 import {addToCart as addToCartApi} from "../../backend/Cart.ts";
 import {WordBreakHelper} from "./WordBreakHelper.tsx";
 import {joinClasses} from "../../util/JoinClasses.ts";
 import {selectableVegan} from "../../datamodel/cart/vegan.ts";
+import {formatAsEuro} from "../../util/Formatter.ts";
 
 interface ProductEntryProps {
-    restaurant: Restaurant
-    productId: string
+    menuItemId: string;
+    menuItem: MenuItem;
     vegan: selectableVegan
 }
 
 interface ProductEntryState {
-    product: Product;
     redirectToCustomize: boolean;
     addToCartCompleted: boolean;
 }
@@ -26,14 +23,13 @@ export class ProductEntry extends React.Component<ProductEntryProps, ProductEntr
     constructor(props: ProductEntryProps, context: any) {
         super(props, context);
         this.state = {
-            product: props.restaurant.menu.products[props.productId]!,
             redirectToCustomize: false,
             addToCartCompleted: false
         }
     }
 
     private getAddToCartLink() {
-        if (isConfigurableProduct(this.props.restaurant.menu, this.state.product)) {
+        if (isConfigurableProduct(this.props.menuItem)) {
             return <PixmapButton onClick={this.customize} pixmap="add"/>
         } else {
             return <PixmapButton onClick={this.addToCart} pixmap="add"/>
@@ -41,8 +37,8 @@ export class ProductEntry extends React.Component<ProductEntryProps, ProductEntr
     }
 
     addToCart = () => {
-        if (this.props.productId) {
-            addToCartApi(this.props.productId, this.state.product.variants[0].id, new Map<string, Set<string>>())
+        if (this.props.menuItemId) {
+            addToCartApi(this.props.menuItemId, Object.keys(this.props.menuItem.variations)[0], new Map<string, Set<string>>())
                 .then(_ => {
                     this.setState({addToCartCompleted: true});
                 })
@@ -58,28 +54,34 @@ export class ProductEntry extends React.Component<ProductEntryProps, ProductEntr
 
     render() {
         if (this.state.redirectToCustomize) {
-            return <Navigate to={'/customize/' + this.props.productId}/>
+            return <Navigate to={'/customize/' + this.props.menuItemId}/>
         }
 
         if (this.state.addToCartCompleted) {
             return <Navigate to="/"/>
         }
 
+        let minPrice = Number.MAX_SAFE_INTEGER;
+        Object.values(this.props.menuItem.variations).forEach((variation) => {
+            if (variation.priceCents < minPrice) {
+                minPrice = variation.priceCents;
+            }
+        })
+
         return (
-            <li className="product" key={this.props.productId}>
-                <div className={joinClasses("productMain", this.state.product.isVegan ? "vegan" : this.state.product.isVegetarian ? "vegetarian" : "fleisch")}>
-                    <h2><WordBreakHelper text={this.state.product.name}/></h2>
+            <li className="product" key={this.props.menuItemId}>
+                <div
+                    className={joinClasses("productMain", this.props.menuItem.isVegan ? "vegan" : this.props.menuItem.isVegetarian ? "vegetarian" : "fleisch")}>
+                    <h2><WordBreakHelper text={this.props.menuItem.name}/></h2>
                     <ol>
-                        {
-                            this.state.product.description.map(value => <li key={value}>{value}</li>)
-                        }
+                        <li>{this.props.menuItem.description}</li>
                     </ol>
-                    <ProductInfoView productInfo={this.state.product.productInfo}/>
+                    {/*<ProductInfoView productInfo={this.props.menuItem.productInfo}/>*/}
                 </div>
                 <div className="productSelect">
                     {this.getAddToCartLink()}
                 </div>
-                <div className="productPrice">{this.state.product.variants.at(0)!.prices.deliveryEuro + '€'}</div>
+                <div className="productPrice">{formatAsEuro(minPrice)}</div>
             </li>
         );
     }

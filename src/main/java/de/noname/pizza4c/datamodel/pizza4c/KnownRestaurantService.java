@@ -2,23 +2,24 @@ package de.noname.pizza4c.datamodel.pizza4c;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import de.noname.pizza4c.datamodel.lieferando.Category;
-import de.noname.pizza4c.datamodel.lieferando.Option;
-import de.noname.pizza4c.datamodel.lieferando.Product;
-import de.noname.pizza4c.datamodel.lieferando.Restaurant;
 import de.noname.pizza4c.datamodel.lieferando2025.*;
 import de.noname.pizza4c.webpage.RestaurantService;
+import io.netty.handler.logging.LogLevel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
+import reactor.netty.http.HttpProtocol;
+import reactor.netty.http.client.HttpClient;
+import reactor.netty.transport.logging.AdvancedByteBufFormat;
 
 import java.io.IOException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -27,6 +28,8 @@ import java.util.Map;
 @Service
 public class KnownRestaurantService {
     private static final Logger LOG = LoggerFactory.getLogger(KnownRestaurantService.class);
+    public static final String BEGIN_OF_JSON_BLOB_MARKER = "<script id=\"__NEXT_DATA__\" type=\"application/json\">";
+    public static final String END_OF_JSON_BLOB_MARKER = "</script>";
 
     @Autowired
     private KnownRestaurantRepository knownRestaurantRepository;
@@ -75,24 +78,24 @@ public class KnownRestaurantService {
     }
 
     private void vegetarianHeuristic(Restaurant restaurant) {
-        for (Category category : restaurant.getMenu().getCategories()) {
-            String informationText = category.getName() + category.getDescription().stream().reduce(String::concat).orElse("");
+        restaurant.getMenu().getMenuItems().forEach((s, menuItem) -> {
+            StringBuilder sb = new StringBuilder();
+            sb.append(menuItem.getName());
+            sb.append(menuItem.getDescription());
 
-            category.setVegetarian(isVegetarian(informationText));
-            category.setVegan(isVegan(informationText));
-        }
+            menuItem.getVariations().forEach((s1, variation) -> {
+                sb.append(variation.getName());
+                variation.getModifierGroups().forEach((s2, modifierGroup) -> {
+                    sb.append(modifierGroup.getName());
+                    modifierGroup.getModifiers().forEach((s3, modifier) -> {
+                        sb.append(modifier.getName());
+                    });
+                });
+            });
 
-        for (Product product : restaurant.getMenu().getProducts().values()) {
-            String informationText = product.getName() + product.getDescription().stream().reduce(String::concat).orElse("");
-
-            product.setVegetarian(isVegetarian(informationText));
-            product.setVegan(isVegan(informationText));
-        }
-
-        for (Option option : restaurant.getMenu().getOptions().values()) {
-            option.setVegetarian(isVegetarian(option.getName()));
-            option.setVegan(isVegan(option.getName()));
-        }
+            menuItem.setVegetarian(isVegetarian(s));
+            menuItem.setVegan(isVegan(s));
+        });
     }
 
     private static final List<String> NOT_VEGETARIAN_NAMES = List.of(
@@ -160,23 +163,72 @@ public class KnownRestaurantService {
     }
 
     private void cleanupOptionNames(Restaurant restaurant) {
-        restaurant.getMenu().getOptions().forEach((optionId, option) -> {
-            if (option.getName().startsWith("mit ")) {
-                option.setName(option.getName().substring(4));
-            }
+        restaurant.getMenu().getMenuItems().forEach((s, menuItem) -> {
+            menuItem.getVariations().forEach((s1, variation) -> {
+                if (variation.getName().startsWith("mit ")) {
+                    variation.setName(variation.getName().substring(4));
+                }
 
-            if (option.getName().endsWith(",")) {
-                option.setName(option.getName().substring(0, option.getName().length() - 1));
-            }
+                if (variation.getName().endsWith(",")) {
+                    variation.setName(variation.getName().substring(0, variation.getName().length() - 1));
+                }
+            });
+        });
+    }
+
+    ExchangeFilterFunction logRequest() {
+        return ExchangeFilterFunction.ofRequestProcessor(clientRequest -> {
+            StringBuilder sb = new StringBuilder("Request: \n");
+            //append clientRequest method and url
+            clientRequest
+                    .headers()
+                    .forEach((name, values) -> values.forEach(value -> sb.append(name).append("=").append(value).append("\r\n")));
+            LOG.info(sb.toString());
+            return Mono.just(clientRequest);
+        });
+    }
+
+    ExchangeFilterFunction logResponse() {
+        return ExchangeFilterFunction.ofResponseProcessor(clientResponse -> {
+            StringBuilder sb = new StringBuilder("Request: \n");
+            //append clientResponse method and url
+            clientResponse
+                    .headers()
+                    .asHttpHeaders()
+                    .forEach((name, values) -> values.forEach(value -> sb.append(name).append("=").append(value).append("\r\n")));
+            LOG.info(sb.toString());
+            return Mono.just(clientResponse);
         });
     }
 
     private Restaurant loadRestaurantData(String restaurantName) {
-        WebClient client = WebClient.builder()
+        var httpClient = HttpClient.create()
+                .protocol(HttpProtocol.H2)
+                .compress(true)
+                .wiretap("reactor.client.ProductWebClient", LogLevel.DEBUG, AdvancedByteBufFormat.TEXTUAL); // 2
+
+        var client = WebClient.builder()
+                .baseUrl("http://product-service:8080/")
+                .clientConnector(
+                        new ReactorClientHttpConnector(httpClient) // 3
+                )
                 .codecs(configurer -> configurer.defaultCodecs()
                         .maxInMemorySize(16 * 1024 * 1024)
-                ).build();
+                )
+                .filters(exchangeFilterFunctions -> {
+                    exchangeFilterFunctions.add(logRequest());
+                    exchangeFilterFunctions.add(logResponse());
+                })
+                .build();
 
+        Mono<String> homepage = client
+                .get()
+                .uri("https://www.lieferando.de/speisekarte/" + restaurantName + "?pemid=mini")
+                .header("User-Agent", "Mozilla/5.0 (X11; Linux x86_64; rv:138.0) Gecko/20100101 Firefox/138.0")
+                .header("Accept-Encoding", "deflate, gzip, br, zstd")
+                .header("Accept", "*/*")
+                .retrieve()
+                .bodyToMono(String.class);
         Mono<String> restaurantItem = client
                 .get()
                 .uri("https://globalmenucdn.eu-central-1.production.jet-external.com/" + restaurantName + "_de_items.json")
@@ -188,13 +240,44 @@ public class KnownRestaurantService {
                 .retrieve()
                 .bodyToMono(String.class);
 
-        return parseRestaurantData(restaurantItem.block(), restaurantItemDetails.block());
+        return parseRestaurantData(homepage.block(), restaurantItem.block(), restaurantItemDetails.block());
     }
 
 
-    private Restaurant parseRestaurantData(String restaurantItem, String restaurantItemDetails) {
+    private Restaurant parseRestaurantData(String homepage, String restaurantItem, String restaurantItemDetails) {
+        Restaurant restaurant = new Restaurant();
+
         try {
+            int beginOfJsonBlob = homepage.indexOf(BEGIN_OF_JSON_BLOB_MARKER);
+            if (beginOfJsonBlob == -1) {
+                LOG.error("Failed to find begin of embedded JSON BLOB");
+                return null;
+            }
+            int endOfJsonBlob = homepage.indexOf(END_OF_JSON_BLOB_MARKER, beginOfJsonBlob);
+            if (endOfJsonBlob == -1) {
+                LOG.error("Failed to find end of embedded JSON BLOB");
+                return null;
+            }
+
+            String embeddedJsonBlob = homepage.substring(beginOfJsonBlob + BEGIN_OF_JSON_BLOB_MARKER.length(), endOfJsonBlob);
+
             ObjectMapper mapper = new ObjectMapper();
+            Menu menu = new Menu();
+            menu.setMenuItems(new HashMap<>());
+            menu.setCategories(new HashMap<>());
+
+            JsonNode embeddedJsonBlobNode = mapper.readTree(embeddedJsonBlob);
+            JsonNode categoryNode = embeddedJsonBlobNode.get("props").get("appProps").get("preloadedState").get("menu").get("restaurant").get("cdn").get("restaurant").get("menus").get(0).get("categories");
+            for (JsonNode categoryEntryNode : categoryNode) {
+                String name = categoryEntryNode.get("name").textValue();
+                List<String> itemIds = new ArrayList<>();
+                for (JsonNode itemId : categoryEntryNode.get("itemIds")) {
+                    itemIds.add(itemId.textValue());
+                }
+
+                menu.getCategories().computeIfAbsent(name, ignored -> new ArrayList<>()).addAll(itemIds);
+            }
+
             JsonNode itemJsonNode = mapper.readTree(restaurantItem);
             JsonNode itemDetailsJsonNode = mapper.readTree(restaurantItemDetails);
 
@@ -205,72 +288,69 @@ public class KnownRestaurantService {
                 String _id = modifierSets.get("Id").asText();
 
                 Modifier modifier = new Modifier();
-                modifier.setId(modifierSets.get("Modifier").get("Id").asText());
+                modifiers.put(_id, modifier);
+
                 modifier.setName(modifierSets.get("Modifier").get("Name").asText());
-                modifier.setPrice(modifierSets.get("Modifier").get("AdditionPrice").decimalValue().scaleByPowerOfTen(2).intValue());
+                modifier.setPriceCents(modifierSets.get("Modifier").get("AdditionPrice").decimalValue().scaleByPowerOfTen(2).intValue());
                 modifier.setMinAmount(modifierSets.get("Modifier").get("MinChoices").intValue());
                 modifier.setMaxAmount(modifierSets.get("Modifier").get("MaxChoices").intValue());
                 modifier.setDefaultChoices(modifierSets.get("Modifier").get("DefaultChoices").intValue());
-
-                modifiers.put(_id, modifier);
             }
 
             for (JsonNode modifierGroup : itemDetailsJsonNode.get("ModifierGroups")) {
                 ModifierGroup group = new ModifierGroup();
-                group.setId(modifierGroup.get("Id").asText());
+                String id = modifierGroup.get("Id").asText();
                 group.setName(modifierGroup.get("Name").asText());
                 group.setMinAmount(modifierGroup.get("MinChoices").intValue());
                 group.setMaxAmount(modifierGroup.get("MaxChoices").intValue());
-                group.setModifiers(new ArrayList<>());
+                group.setModifiers(new HashMap<>());
                 for (JsonNode jsonNode : modifierGroup.get("Modifiers")) {
-                    group.getModifiers().add(modifiers.get(jsonNode.asText()));
+                    group.getModifiers().put(jsonNode.asText(), modifiers.get(jsonNode.asText()));
                 }
 
-                modifierGroups.put(group.getId(), group);
+                modifierGroups.put(id, group);
             }
 
-
-            Menu menu = new Menu();
 
             for (JsonNode itemNode : itemJsonNode.get("Items")) {
                 MenuItem menuItem = new MenuItem();
-                menu.add(menuItem);
+                String id = itemNode.get("Id").asText();
+                menu.getMenuItems().put(id, menuItem);
 
-                menuItem.setId(itemNode.get("Id").asText());
                 menuItem.setName(itemNode.get("Name").asText());
                 menuItem.setDescription(itemNode.get("Description").asText());
-                menuItem.setVariations(new ArrayList<>());
+                menuItem.setVariations(new HashMap<>());
 
                 for (JsonNode variationNode : itemNode.get("Variations")) {
                     Variation variation = new Variation();
-                    variation.setId(variationNode.get("Id").asText());
+                    String id1 = variationNode.get("Id").asText();
+                    menuItem.getVariations().put(id1, variation);
+
                     variation.setName(variationNode.get("Name").asText());
-                    variation.setPrice(variationNode.get("BasePrice").decimalValue().scaleByPowerOfTen(2).intValue());
-                    variation.setModifierGroups(new ArrayList<>());
+                    variation.setPriceCents(variationNode.get("BasePrice").decimalValue().scaleByPowerOfTen(2).intValue());
+                    variation.setModifierGroups(new HashMap<>());
 
                     for (JsonNode modifierGroupsIdsNode : variationNode.get("ModifierGroupsIds")) {
-                        variation.getModifierGroups().add(modifierGroups.get(modifierGroupsIdsNode.asText()));
+                        String id2 = modifierGroupsIdsNode.asText();
+                        variation.getModifierGroups().put(id2, modifierGroups.get(id2));
                     }
                 }
             }
+            restaurant.setMenu(menu);
         } catch (IOException e) {
             LOG.error("Failed to parse restaurant data", e);
         }
-        return null;
+
+        return restaurant;
     }
 
     private Restaurant loadRestaurantDataFromDisk(String restaurantName) {
         try {
-            ObjectMapper mapper = new ObjectMapper();
+            String homepage = new String(RestaurantService.class.getResourceAsStream("/static/" + restaurantName + "-homepage.html").readAllBytes());
+            String items = new String(RestaurantService.class.getResourceAsStream("/static/" + restaurantName + "-items.json").readAllBytes());
+            String itemDetails = new String(RestaurantService.class.getResourceAsStream("/static/" + restaurantName + "-itemDetails.json").readAllBytes());
 
-            String fileName = "/static/" + restaurantName + ".json";
-            URL resource = RestaurantService.class.getResource(fileName);
-            if (resource == null) {
-                LOG.error("Failed to retrieve static restaurant data for {}. No such file", restaurantName);
-                return null;
-            }
-
-            return mapper.readValue(resource, Restaurant.class);
+            return parseRestaurantData(homepage, items, itemDetails);
         } catch (IOException e) {
             LOG.error("Failed to retrieve new restaurant data for {}", restaurantName, e);
         }

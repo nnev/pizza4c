@@ -3,33 +3,34 @@ import {getVariant, Menu} from "../restaurant/menu.ts";
 
 export default class CartEntry {
     id: string;
-    product: string;
-    variant: string;
-    options: Dictionary<string[]>
+    menuItem: string;
+    variation: string;
+    modifiers: Dictionary<string[]>
 
     comment?: string;
 
     constructor(id: string, product: string, variant: string, options: Dictionary<string[]>, comment?: string) {
         this.id = id;
-        this.product = product;
-        this.variant = variant;
-        this.options = options;
+        this.menuItem = product;
+        this.variation = variant;
+        this.modifiers = options;
         this.comment = comment;
     }
 
     public getPrice(menu: Menu): number {
         let total = 0;
-        let variant = getVariant(menu, this.product, this.variant);
+        let variant = getVariant(menu, this.menuItem, this.variation);
         if (variant != undefined) {
-            total += variant!.prices.delivery;
-            let selectedOptions = this.options;
-            if (selectedOptions != undefined) {
-                for (let optionKey in selectedOptions) {
-                    let options = selectedOptions[optionKey];
-                    options.forEach(optionId => total += menu.options[optionId].prices.delivery)
+            total += variant.priceCents;
+            let selectedModifiers = this.modifiers;
+            if (selectedModifiers != undefined) {
+                for (let modifierGroupId in selectedModifiers) {
+                    let modifierGroup = variant.modifierGroups[modifierGroupId];
+                    let modifiers = selectedModifiers[modifierGroupId];
+                    modifiers.forEach(modifierId => total += modifierGroup.modifiers[modifierId].priceCents)
                 }
             }
         }
-        return total / 100;
+        return total;
     }
 }

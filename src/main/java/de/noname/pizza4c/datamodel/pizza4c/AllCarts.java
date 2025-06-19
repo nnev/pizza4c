@@ -1,7 +1,7 @@
 package de.noname.pizza4c.datamodel.pizza4c;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import de.noname.pizza4c.datamodel.lieferando.Menu;
+import de.noname.pizza4c.datamodel.lieferando2025.Menu;
 import de.noname.pizza4c.webpage.error.AlreadySubmittedException;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
@@ -41,8 +41,12 @@ public class AllCarts extends VersionedEntity {
     }
 
     @JsonIgnore
-    public BigDecimal getPrice(Menu menu) {
-        return carts.stream().map(cart -> cart.getPrice(menu)).reduce(BigDecimal.ZERO, BigDecimal::add);
+    public long getPriceCents(Menu menu) {
+        return carts.stream().mapToLong(cart -> cart.getPriceCents(menu)).sum();
+    }
+
+    public BigDecimal getPriceEuro(Menu menu) {
+        return new BigDecimal(getPriceCents(menu)).scaleByPowerOfTen(-2);
     }
 
     @JsonIgnore
@@ -53,13 +57,13 @@ public class AllCarts extends VersionedEntity {
     @Override
     public String toString() {
         return "AllCarts{" +
-               "uuid='" + uuid + '\'' +
-               ", selectedRestaurant='" + selectedRestaurant + '\'' +
-               ", carts=" + carts +
-               ", submittedAt=" + submittedAt +
-               ", deliveredAt=" + deliveredAt +
-               ", createdAt=" + createdAt +
-               ", deliveryTimeEstimation=" + deliveryTimeEstimation +
-               "} " + super.toString();
+                "uuid='" + uuid + '\'' +
+                ", selectedRestaurant='" + selectedRestaurant + '\'' +
+                ", carts=" + carts +
+                ", submittedAt=" + submittedAt +
+                ", deliveredAt=" + deliveredAt +
+                ", createdAt=" + createdAt +
+                ", deliveryTimeEstimation=" + deliveryTimeEstimation +
+                "} " + super.toString();
     }
 }

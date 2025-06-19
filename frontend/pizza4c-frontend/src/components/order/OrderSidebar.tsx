@@ -82,16 +82,16 @@ export class OrderSidebar extends React.Component<OrderSidebarProps, OrderSideba
         if (this.state.redirectToRandom) {
             return <Navigate to="/random"/>
         }
-        let categoryEntries = this.props.restaurant.menu.categories.map(category => {
-            return <li key={category.id}>
+        let categoryEntries = Object.keys(this.props.restaurant.menu.categories).map(categoryName => {
+            return <li key={categoryName}>
                 <a
-                    title={category.description.join(",")}
-                    onClick={this.selSelectedId(category.id)}
+                    title={categoryName}
+                    onClick={this.selSelectedId(categoryName)}
                 >
                     <h1
-                        className={category.id === this.state.selectedId ? "target" : ""}
+                        className={categoryName === this.state.selectedId ? "target" : ""}
                     >
-                        {category.name}
+                        {categoryName}
                     </h1>
                 </a>
             </li>

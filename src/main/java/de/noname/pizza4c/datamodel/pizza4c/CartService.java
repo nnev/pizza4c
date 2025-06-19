@@ -44,9 +44,9 @@ public class CartService {
     private CartEntry createEntry(ValidatedAddToCartDto validData) {
         CartEntry cartEntry = new CartEntry();
         cartEntry.setUuid(UUID.randomUUID().toString());
-        cartEntry.setProduct(validData.getProductId());
-        cartEntry.setVariant(validData.getVariantId());
-        cartEntry.setOptions(validData.getOptions());
+        cartEntry.setMenuItem(validData.getMenuItemId());
+        cartEntry.setVariation(validData.getVariantId());
+        cartEntry.setModifiers(validData.getModifiers());
         cartEntry.setComment(validData.getComment());
         return cartEntryRepository.saveAndFlush(cartEntry);
     }

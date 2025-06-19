@@ -1,48 +1,36 @@
-import Variant from "../../datamodel/restaurant/variant.ts";
-import Restaurant from "../../datamodel/restaurant/restaurant.ts";
-import {RadioOptionGroup, SelectedOptionCallback} from "./RadioOptionGroup.tsx";
-import {isOptionGroupMandatory, OptionGroup} from "../../datamodel/restaurant/optionGroup.ts";
+import {RadioOptionGroup, SelectedModifierCallback} from "./RadioOptionGroup.tsx";
 import React from "react";
 import {CheckboxOptionGroup} from "./CheckboxOptionGroup.tsx";
+import {isOptionGroupMandatory, ModifierGroup} from "../../datamodel/restaurant/menu.ts";
 
 interface CustomizeOptionGroupProps {
-    productId: string;
-    variant: Variant;
-    optionGroupId: string;
-    restaurant: Restaurant;
-    onOptionSelected: SelectedOptionCallback;
+    modifierGroupId: string;
+    modifierGroup: ModifierGroup;
+    onModifierSelected: SelectedModifierCallback;
 }
 
 interface CustomizeOptionGroupState {
-    optionGroup: OptionGroup;
 }
 
 export class CustomizeOptionGroup extends React.Component<CustomizeOptionGroupProps, CustomizeOptionGroupState> {
     constructor(props: CustomizeOptionGroupProps, context: any) {
         super(props, context);
-        this.state = {optionGroup: this.props.restaurant.menu.optionGroups[this.props.optionGroupId]};
     }
 
     render() {
         return (
             <li>
                 <fieldset>
-                    <h2>{this.state.optionGroup.name}{isOptionGroupMandatory(this.state.optionGroup) && "*"}</h2>
+                    <h2>{this.props.modifierGroup.name}{isOptionGroupMandatory(this.props.modifierGroup) && "*"}</h2>
                     {
-                        isOptionGroupMandatory(this.state.optionGroup) ? <RadioOptionGroup
-                            productId={this.props.productId}
-                            variantId={this.props.variant.id}
-                            optionGroupId={this.props.optionGroupId}
-                            restaurant={this.props.restaurant}
-                            optionIds={this.state.optionGroup.optionIds}
-                            onOptionSelected={this.props.onOptionSelected}
+                        isOptionGroupMandatory(this.props.modifierGroup) ? <RadioOptionGroup
+                            modifierGroup={this.props.modifierGroup}
+                            modifierGroupId={this.props.modifierGroupId}
+                            onModifierSelected={this.props.onModifierSelected}
                         /> : <CheckboxOptionGroup
-                            productId={this.props.productId}
-                            variantId={this.props.variant.id}
-                            optionGroupId={this.props.optionGroupId}
-                            restaurant={this.props.restaurant}
-                            optionIds={this.state.optionGroup.optionIds}
-                            onOptionSelected={this.props.onOptionSelected}
+                            modifierGroup={this.props.modifierGroup}
+                            modifierGroupId={this.props.modifierGroupId}
+                            onModifierSelected={this.props.onModifierSelected}
                         />
                     }
                 </fieldset>
