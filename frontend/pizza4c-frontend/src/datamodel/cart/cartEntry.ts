@@ -1,5 +1,5 @@
 import Dictionary from "../../util/Dictionary.ts";
-import {getVariant, Menu} from "../restaurant/menu.ts";
+import {getVariation, Menu} from "../restaurant/menu.ts";
 
 export default class CartEntry {
     id: string;
@@ -19,7 +19,7 @@ export default class CartEntry {
 
     public getPrice(menu: Menu): number {
         let total = 0;
-        let variant = getVariant(menu, this.menuItem, this.variation);
+        let variant = getVariation(menu, this.menuItem, this.variation);
         if (variant != undefined) {
             total += variant.priceCents;
             let selectedModifiers = this.modifiers;

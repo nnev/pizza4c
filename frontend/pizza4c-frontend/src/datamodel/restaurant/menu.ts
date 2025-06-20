@@ -57,12 +57,12 @@ export function isConfigurableModifierGroup(modifierGroup: ModifierGroup): boole
     return Object.keys(modifierGroup.modifiers).length > 0;
 }
 
-export function getVariant(menu: Menu, productId: string, variantId: string): Variation | undefined {
-    if (menu == undefined || productId == undefined || variantId == undefined) {
+export function getVariation(menu: Menu, menuItemId: string, variationId: string): Variation | undefined {
+    if (menu == undefined || menuItemId == undefined || variationId == undefined) {
         return undefined;
     }
 
-    return menu.menuItems[productId].variations[variantId];
+    return menu.menuItems[menuItemId].variations[variationId];
 }
 
 export function isOptionGroupMandatory(modifierGroup: ModifierGroup): boolean {

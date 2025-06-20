@@ -1,7 +1,7 @@
 import Cart from "../../datamodel/cart/cart.ts";
 import Restaurant from "../../datamodel/restaurant/restaurant.ts";
 import React from "react";
-import {getVariant} from "../../datamodel/restaurant/menu.ts";
+import {getVariation} from "../../datamodel/restaurant/menu.ts";
 import {OptionListView} from "./OptionListView.tsx";
 import {ToggleCartPaid} from "./ToggleCartPaid.tsx";
 import {RemoveEntry} from "./RemoveEntry.tsx";
@@ -72,7 +72,7 @@ export class CartView extends React.Component<CartViewProps, CartViewState> {
             </tr>
         )
         this.props.cart.entries.forEach((entry, index) => {
-            let variant = getVariant(menu, entry.menuItem, entry.variation);
+            let variant = getVariation(menu, entry.menuItem, entry.variation);
 
             results.push(
                 <tr key={entry.id} className={index == 0 ? "cartBegin" : ""}>

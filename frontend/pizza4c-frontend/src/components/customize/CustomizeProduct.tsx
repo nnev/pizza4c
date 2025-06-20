@@ -14,7 +14,7 @@ interface CustomizeProps {
 interface CustomizeState {
     restaurant?: Restaurant;
     menuItem?: MenuItem;
-    selectedVariantId?: string;
+    selectedVariationId?: string;
 }
 
 class CustomizeClazz extends React.Component<CustomizeProps, CustomizeState> {
@@ -30,8 +30,8 @@ class CustomizeClazz extends React.Component<CustomizeProps, CustomizeState> {
             restaurant: value,
             menuItem: menuItem,
         });
-        if (this.state.selectedVariantId == undefined && Object.keys(menuItem.variations).length == 1) {
-            this.setState({selectedVariantId: Object.keys(menuItem.variations)[0]})
+        if (this.state.selectedVariationId == undefined && Object.keys(menuItem.variations).length == 1) {
+            this.setState({selectedVariationId: Object.keys(menuItem.variations)[0]})
         }
     }
 
@@ -48,9 +48,9 @@ class CustomizeClazz extends React.Component<CustomizeProps, CustomizeState> {
             return (<></>)
         }
 
-        if (this.state.selectedVariantId != undefined) {
+        if (this.state.selectedVariationId != undefined) {
             return <Navigate
-                to={"/customize/" + this.props.menuItemId + "/" + this.state.selectedVariantId}
+                to={"/customize/" + this.props.menuItemId + "/" + this.state.selectedVariationId}
                 replace={Object.keys(this.state.menuItem.variations).length === 1}
             />;
         }
@@ -64,7 +64,7 @@ class CustomizeClazz extends React.Component<CustomizeProps, CustomizeState> {
                         Object.entries(this.state.menuItem.variations).map(([variationId, variation], index) => {
                             return <>
                                 <PixmapButton
-                                    onClick={() => this.setState({selectedVariantId: variationId})}
+                                    onClick={() => this.setState({selectedVariationId: variationId})}
                                     pixmap="add"
                                     text={
                                         <>
@@ -93,5 +93,5 @@ class CustomizeClazz extends React.Component<CustomizeProps, CustomizeState> {
 
 export const CustomizeProduct = () => {
     let props = useParams();
-    return <CustomizeClazz menuItemId={props.productId || "määh"}/>
+    return <CustomizeClazz menuItemId={props.menuItemId || "määh"}/>
 }

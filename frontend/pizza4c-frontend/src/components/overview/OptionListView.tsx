@@ -1,7 +1,7 @@
 import CartEntry from "../../datamodel/cart/cartEntry.ts";
 import Restaurant from "../../datamodel/restaurant/restaurant.ts";
 import React from "react";
-import {getVariant} from "../../datamodel/restaurant/menu.ts";
+import {getVariation} from "../../datamodel/restaurant/menu.ts";
 
 interface OptionListViewProps {
     entry: CartEntry;
@@ -47,7 +47,7 @@ export class OptionListView extends React.Component<OptionListViewProps, OptionL
             )
         }
 
-        let sizeValue = getVariant(this.props.restaurant.menu, this.props.entry.menuItem, this.props.entry.variation)?.name || "";
+        let sizeValue = getVariation(this.props.restaurant.menu, this.props.entry.menuItem, this.props.entry.variation)?.name || "";
         let product = this.props.restaurant.menu.menuItems[this.props.entry.menuItem];
         return (
             <>

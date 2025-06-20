@@ -16,10 +16,10 @@ interface RandomOrderProps {
 interface RandomOrderState {
     restaurant?: Restaurant
 
-    selectedProductId?: string
-    selectedVariantId?: string
-    selectedOptions?: Map<string, Set<string>>
-    numOptions: number
+    selectedMenuItemId?: string
+    selectedVariationId?: string
+    selectedModifiers?: Map<string, Set<string>>
+    numModifiers: number
     addToCartCompleted: boolean
     error?: FormattedError
 }
@@ -28,7 +28,7 @@ export class RandomOrder extends React.Component<RandomOrderProps, RandomOrderSt
     constructor(props: RandomOrderProps, context: any) {
         super(props, context);
         this.state = {
-            numOptions: 1,
+            numModifiers: 1,
             addToCartCompleted: false,
         }
     }
@@ -69,26 +69,26 @@ export class RandomOrder extends React.Component<RandomOrderProps, RandomOrderSt
         let [minAddons, maxAddons] = this.getMinMaxOptions(variantion);
 
         console.log("Available option groups", variantion.modifierGroups);
-        let numOptions = Math.max(0, Math.max(minAddons, Math.min(this.state.numOptions, maxAddons)));
+        let numOptions = Math.max(0, Math.max(minAddons, Math.min(this.state.numModifiers, maxAddons)));
         this.setState({
-            selectedProductId: menuItemId,
-            selectedVariantId: variationId,
-            numOptions: numOptions,
-            selectedOptions: this.selectOptions(variantion.modifierGroups, numOptions)
+            selectedMenuItemId: menuItemId,
+            selectedVariationId: variationId,
+            numModifiers: numOptions,
+            selectedModifiers: this.selectOptions(variantion.modifierGroups, numOptions)
         })
     }
 
     private randomizeAddons() {
-        if (this.state.restaurant == undefined || this.state.selectedProductId == undefined || this.state.selectedVariantId == undefined) {
+        if (this.state.restaurant == undefined || this.state.selectedMenuItemId == undefined || this.state.selectedVariationId == undefined) {
             return;
         }
-        let product = this.state.restaurant.menu.menuItems[this.state.selectedProductId];
-        let variant = product.variations[this.state.selectedVariantId];
-        if (variant == undefined) {
+        let menuItem = this.state.restaurant.menu.menuItems[this.state.selectedMenuItemId];
+        let variation = menuItem.variations[this.state.selectedVariationId];
+        if (variation == undefined) {
             return;
         }
         this.setState({
-            selectedOptions: this.selectOptions(variant.modifierGroups, this.state.numOptions)
+            selectedModifiers: this.selectOptions(variation.modifierGroups, this.state.numModifiers)
         })
     }
 
@@ -172,10 +172,10 @@ export class RandomOrder extends React.Component<RandomOrderProps, RandomOrderSt
     }
     submit = (ev: MouseEvent<HTMLInputElement>) => {
         ev.preventDefault();
-        if (this.state.selectedProductId == undefined || this.state.selectedVariantId == undefined || this.state.selectedOptions == undefined) {
+        if (this.state.selectedMenuItemId == undefined || this.state.selectedVariationId == undefined || this.state.selectedModifiers == undefined) {
             return
         }
-        addToCart(this.state.selectedProductId, this.state.selectedVariantId, this.state.selectedOptions, "")
+        addToCart(this.state.selectedMenuItemId, this.state.selectedVariationId, this.state.selectedModifiers, "")
             .then(_ => {
                 this.setState({addToCartCompleted: true});
             })
@@ -185,12 +185,12 @@ export class RandomOrder extends React.Component<RandomOrderProps, RandomOrderSt
     }
 
     lessAddons = () => {
-        this.setState({numOptions: Math.max(0, this.state.numOptions - 1)}, () => {
+        this.setState({numModifiers: Math.max(0, this.state.numModifiers - 1)}, () => {
             this.randomizeAddons()
         })
     }
     moreAddons = () => {
-        this.setState({numOptions: Math.min(5, this.state.numOptions + 1)}, () => {
+        this.setState({numModifiers: Math.min(5, this.state.numModifiers + 1)}, () => {
             this.randomizeAddons()
         })
     }
@@ -206,27 +206,27 @@ export class RandomOrder extends React.Component<RandomOrderProps, RandomOrderSt
         if (this.state.addToCartCompleted) {
             return <Navigate to="/"/>;
         }
-        if (this.state.selectedProductId == undefined ||
-            this.state.selectedVariantId == undefined ||
-            this.state.selectedOptions == undefined ||
+        if (this.state.selectedMenuItemId == undefined ||
+            this.state.selectedVariationId == undefined ||
+            this.state.selectedModifiers == undefined ||
             this.state.restaurant == undefined
         ) {
             return <></>
         }
         let cartEntry = new CartEntry(
             "",
-            this.state.selectedProductId,
-            this.state.selectedVariantId,
-            mapToDictionary(this.state.selectedOptions)
+            this.state.selectedMenuItemId,
+            this.state.selectedVariationId,
+            mapToDictionary(this.state.selectedModifiers)
         )
 
-        let product = this.state.restaurant.menu.menuItems[this.state.selectedProductId];
-        let variant = product.variations[this.state.selectedVariantId];
-        if (variant == undefined) {
+        let menuItem = this.state.restaurant.menu.menuItems[this.state.selectedMenuItemId];
+        let variation = menuItem.variations[this.state.selectedVariationId];
+        if (variation == undefined) {
             return;
         }
 
-        let [minAddons, maxAddons] = this.getMinMaxOptions(variant);
+        let [minAddons, maxAddons] = this.getMinMaxOptions(variation);
 
         return <main className="notSide">
             <h1>Deine Zufällige Bestellung</h1>
@@ -249,14 +249,14 @@ export class RandomOrder extends React.Component<RandomOrderProps, RandomOrderSt
                         onClick={() => this.lessAddons()}
                         pixmap="arrow_back"
                         text="Weniger Addons"
-                        disabled={this.state.numOptions <= minAddons}
+                        disabled={this.state.numModifiers <= minAddons}
                     />
-                    <span><b>{this.state.numOptions == 0 ? "Keine Addons" : "Bis zu " + this.state.numOptions + " Addons"}</b></span>
+                    <span><b>{this.state.numModifiers == 0 ? "Keine Addons" : "Bis zu " + this.state.numModifiers + " Addons"}</b></span>
                     <PixmapButton
                         onClick={() => this.moreAddons()}
                         pixmap="arrow_forward"
                         text="Mehr Addons"
-                        disabled={this.state.numOptions >= maxAddons}
+                        disabled={this.state.numModifiers >= maxAddons}
                     />
                     <PixmapButton
                         onClick={() => this.randomizeAddons()}

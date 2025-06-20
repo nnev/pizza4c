@@ -13,8 +13,8 @@ import {MenuItem, Variation} from "../../datamodel/restaurant/menu.ts";
 import {formatAsEuro} from "../../util/Formatter.ts";
 
 interface CustomizeVariantProps {
-    productId: string;
-    variantId: string;
+    menuItemId: string;
+    variationId: string;
 }
 
 interface CustomizeVariantState {
@@ -39,8 +39,8 @@ class CustomizeVariantClazz extends React.Component<CustomizeVariantProps, Custo
     }
 
     listener = (value: Restaurant) => {
-        let menuItem = value.menu.menuItems[this.props.productId];
-        let variation = menuItem.variations[this.props.variantId];
+        let menuItem = value.menu.menuItems[this.props.menuItemId];
+        let variation = menuItem.variations[this.props.variationId];
         this.setState({
             restaurant: value,
             menuItem: menuItem,
@@ -58,8 +58,8 @@ class CustomizeVariantClazz extends React.Component<CustomizeVariantProps, Custo
 
     addToCart = (ev: MouseEvent<HTMLInputElement>) => {
         ev.preventDefault();
-        if (this.props.productId && this.props.variantId && this.getCustomizationCompleted()) {
-            addToCart(this.props.productId, this.props.variantId, this.state.selectedOptions, this.state.comment)
+        if (this.props.menuItemId && this.props.variationId && this.getCustomizationCompleted()) {
+            addToCart(this.props.menuItemId, this.props.variationId, this.state.selectedOptions, this.state.comment)
                 .then(_ => {
                     this.setState({addToCartCompleted: true});
                 })
@@ -70,12 +70,12 @@ class CustomizeVariantClazz extends React.Component<CustomizeVariantProps, Custo
     }
     addToFavorites = (ev: MouseEvent<HTMLInputElement>) => {
         ev.preventDefault();
-        if (this.props.productId && this.props.variantId && this.getCustomizationCompleted()) {
+        if (this.props.menuItemId && this.props.variationId && this.getCustomizationCompleted()) {
             let favorites = getFavorites();
             favorites.favorite.push(new CartEntry(
                 "",
-                this.props.productId,
-                this.props.variantId,
+                this.props.menuItemId,
+                this.props.variationId,
                 mapToDictionary(this.state.selectedOptions),
                 this.state.comment
             ))
@@ -186,7 +186,7 @@ class CustomizeVariantClazz extends React.Component<CustomizeVariantProps, Custo
                 <PixmapGroup>
                     <PixmapLink to="/order" pixmap="arrow_back" text="Zurück zur Produktauswahl"/>
                     {Object.keys(this.state.menuItem.variations).length != 1 &&
-                        <PixmapLink to={"/customize/" + this.props.productId} pixmap="arrow_back"
+                        <PixmapLink to={"/customize/" + this.props.menuItemId} pixmap="arrow_back"
                                     text="Zurück zur Größenauswahl"/>
                     }
 
@@ -219,7 +219,7 @@ class CustomizeVariantClazz extends React.Component<CustomizeVariantProps, Custo
 export const CustomizeVariant = () => {
     let props = useParams();
     return <CustomizeVariantClazz
-        productId={props.productId || "määh"}
-        variantId={props.variantId || "mäh"}
+        menuItemId={props.menuItemId || "määh"}
+        variationId={props.variationId || "mäh"}
     />
 }
