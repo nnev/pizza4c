@@ -71,6 +71,9 @@ h1 {
     word-wrap: anywhere;
 }
 
+aside h1 {
+    font-size: 20px;
+}
 
 .material-icons {
     font-family: 'Material Icons';

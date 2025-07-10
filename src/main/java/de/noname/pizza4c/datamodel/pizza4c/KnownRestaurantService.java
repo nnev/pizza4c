@@ -78,23 +78,23 @@ public class KnownRestaurantService {
     }
 
     private void vegetarianHeuristic(Restaurant restaurant) {
-        restaurant.getMenu().getMenuItems().forEach((s, menuItem) -> {
+        restaurant.getMenu().getMenuItems().forEach((menuItemId, menuItem) -> {
             StringBuilder sb = new StringBuilder();
             sb.append(menuItem.getName());
             sb.append(menuItem.getDescription());
 
-            menuItem.getVariations().forEach((s1, variation) -> {
+            menuItem.getVariations().forEach((variationId, variation) -> {
                 sb.append(variation.getName());
-                variation.getModifierGroups().forEach((s2, modifierGroup) -> {
+                variation.getModifierGroups().forEach((modifierGroupId, modifierGroup) -> {
                     sb.append(modifierGroup.getName());
-                    modifierGroup.getModifiers().forEach((s3, modifier) -> {
+                    modifierGroup.getModifiers().forEach((modifierId, modifier) -> {
                         sb.append(modifier.getName());
                     });
                 });
             });
 
-            menuItem.setVegetarian(isVegetarian(s));
-            menuItem.setVegan(isVegan(s));
+            menuItem.setVegetarian(isVegetarian(sb.toString()));
+            menuItem.setVegan(isVegan(sb.toString()));
         });
     }
 

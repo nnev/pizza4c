@@ -5,6 +5,7 @@ import {OptionListView} from "./OptionListView.tsx";
 import {getMyName, Name, UserNameObservable} from "../../datamodel/name.ts";
 import AllCarts from "../../datamodel/cart/allCarts.ts";
 import {MyCartHeader} from "./MyCartHeader.tsx";
+import {formatAsEuro} from "../../util/Formatter.ts";
 
 
 interface MyCartProps {
@@ -68,7 +69,7 @@ export class MyCart extends React.Component<MyCartProps, MyCartState> {
                             text={myCart.payed ? "Du hast schon bezahlt" : "Du musst noch bezahlen"}
                             className={myCart.getPaymentClass()}
                         /> <br/>
-                        <b>Preis</b>: {myCart.getPrice(this.props.restaurant.menu).toFixed(2)} €
+                        <b>Preis</b>: {formatAsEuro(myCart.getPrice(this.props.restaurant.menu))}
                     </p>
                     <ol>
                         {

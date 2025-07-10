@@ -18,9 +18,6 @@ export class OptionListView extends React.Component<OptionListViewProps, OptionL
         let menu = this.props.restaurant.menu;
         let modifiers = this.props.entry.modifiers;
 
-        console.log("++++", this.props.entry.menuItem, this.props.entry.variation);
-        console.log("****", menu.menuItems[this.props.entry.menuItem], menu.menuItems[this.props.entry.menuItem].variations);
-
         let variation = menu.menuItems[this.props.entry.menuItem].variations[this.props.entry.variation];
 
         let mappedOptions: JSX.Element[] = []

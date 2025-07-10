@@ -48,19 +48,16 @@ export class RandomOrder extends React.Component<RandomOrderProps, RandomOrderSt
     }
 
     private randomize() {
-        console.log("Restaurant", this.state.restaurant);
         if (this.state.restaurant == undefined) {
             return
         }
         let _menuItem = chooseRandomDict(this.state.restaurant.menu.menuItems);
-        console.log("Product", _menuItem);
         if (_menuItem == undefined) {
             return;
         }
         let [menuItemId, menuItem] = _menuItem;
 
         let _variantion = chooseRandomDict(menuItem.variations);
-        console.log("variant", _variantion);
         if (_variantion == undefined) {
             return;
         }
@@ -68,7 +65,6 @@ export class RandomOrder extends React.Component<RandomOrderProps, RandomOrderSt
 
         let [minAddons, maxAddons] = this.getMinMaxOptions(variantion);
 
-        console.log("Available option groups", variantion.modifierGroups);
         let numOptions = Math.max(0, Math.max(minAddons, Math.min(this.state.numModifiers, maxAddons)));
         this.setState({
             selectedMenuItemId: menuItemId,
@@ -104,7 +100,6 @@ export class RandomOrder extends React.Component<RandomOrderProps, RandomOrderSt
             if (modifierGroup.minAmount > 0) {
                 for (let i = 0; i < modifierGroup.minAmount; i++) {
                     let _modifier = chooseRandomDict(modifierGroup.modifiers)
-                    console.log("Modifier", _modifier);
                     if (_modifier == undefined) {
                         continue;
                     }
@@ -122,7 +117,6 @@ export class RandomOrder extends React.Component<RandomOrderProps, RandomOrderSt
         if (numInitialOptions < numOptions) {
             for (let i = 0; i < 100; i++) {
                 let _modifierGroup = chooseRandomDict(modifierGroups);
-                console.log("Modifier Group", _modifierGroup);
                 if (_modifierGroup == undefined) {
                     continue;
                 }
@@ -130,7 +124,6 @@ export class RandomOrder extends React.Component<RandomOrderProps, RandomOrderSt
                 let [modifierGroupId, modifierGroup] = _modifierGroup;
 
                 let _modifierId = chooseRandomDict(modifierGroup.modifiers)
-                console.log(_modifierId);
                 if (_modifierId == undefined) {
                     continue;
                 }
@@ -138,11 +131,8 @@ export class RandomOrder extends React.Component<RandomOrderProps, RandomOrderSt
                 let [modifierId, _] = _modifierId;
 
                 if (this.addToOptionSet(result, modifierGroupId, modifierGroup, modifierId)) {
-                    console.log("********", modifierGroupId, modifierGroup, modifierId)
                     numAddedOptions++;
                 }
-
-                console.log("#######", numInitialOptions, numAddedOptions, numOptions, result);
 
                 if ((numAddedOptions + numInitialOptions) >= numOptions) {
                     break;
