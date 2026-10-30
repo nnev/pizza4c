@@ -1,4 +1,4 @@
-import React, {ChangeEvent, MouseEvent} from "react";
+import React, {ChangeEvent} from "react";
 import {PixmapButton} from "../Pixmap.tsx";
 import KnownRestaurant from "../../datamodel/restaurant/knownRestaurant.ts";
 import Restaurant, {CurrentRestaurantObservable} from "../../datamodel/restaurant/restaurant.ts";
@@ -52,8 +52,7 @@ export default class ChangeRestaurant extends React.Component<ChangeRestaurantPr
     changeRestaurantName = (ev: ChangeEvent<HTMLSelectElement>) => {
         this.setState({restaurantName: ev.target.value})
     }
-    changeRestaurantNameSubmit = (ev: MouseEvent<HTMLInputElement>) => {
-        ev.preventDefault();
+    changeRestaurantNameSubmit = () => {
         if (this.state.knownRestaurants === undefined) {
             return
         }

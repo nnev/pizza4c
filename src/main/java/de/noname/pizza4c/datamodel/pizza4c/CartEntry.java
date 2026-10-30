@@ -1,7 +1,7 @@
 package de.noname.pizza4c.datamodel.pizza4c;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.vladmihalcea.hibernate.type.json.JsonType;
+import io.hypersistence.utils.hibernate.type.json.JsonType;
 import de.noname.pizza4c.datamodel.lieferando2025.Menu;
 import de.noname.pizza4c.datamodel.lieferando2025.ModifierGroup;
 import de.noname.pizza4c.datamodel.lieferando2025.Variation;

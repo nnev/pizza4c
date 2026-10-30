@@ -1,7 +1,7 @@
-import React, {MouseEvent} from "react";
+import React from "react";
 import {PixmapButton} from "../Pixmap.tsx";
 import {newAllOrders} from "../../backend/Cart.ts";
-import {Navigate} from "react-router-dom";
+import {Navigate} from "react-router";
 import FormattedError from "../../datamodel/error.ts";
 import {Error} from "../Error.tsx";
 
@@ -22,8 +22,7 @@ export default class NewAllOrders extends React.Component<NewAllOrdersProps, New
         }
     }
 
-    handleNewAllOrders = (ev: MouseEvent<HTMLInputElement>) => {
-        ev.preventDefault();
+    handleNewAllOrders = () => {
         newAllOrders().then(_ => {
             this.setState({done: true})
         })

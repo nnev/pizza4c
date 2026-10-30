@@ -1,6 +1,6 @@
 import React from "react";
 import Restaurant, {CurrentRestaurantObservable} from "../../datamodel/restaurant/restaurant.ts";
-import {Navigate, useParams} from "react-router-dom";
+import {Navigate, useParams} from "react-router";
 import {PixmapButton, PixmapGroup, PixmapLink} from "../Pixmap.tsx";
 import {joinClasses} from "../../util/JoinClasses.ts";
 import {MenuItem} from "../../datamodel/restaurant/menu.ts";

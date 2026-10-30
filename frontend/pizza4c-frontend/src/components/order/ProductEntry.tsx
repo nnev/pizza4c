@@ -1,7 +1,7 @@
 import React from "react";
 import {isConfigurableProduct, MenuItem} from "../../datamodel/restaurant/menu.ts";
 import {PixmapButton} from "../Pixmap.tsx";
-import {Navigate} from "react-router-dom";
+import {Navigate} from "react-router";
 import {addToCart as addToCartApi} from "../../backend/Cart.ts";
 import {WordBreakHelper} from "./WordBreakHelper.tsx";
 import {joinClasses} from "../../util/JoinClasses.ts";

@@ -1,11 +1,11 @@
-import React, {MouseEvent} from "react";
+import React from "react";
 import Restaurant from "../../datamodel/restaurant/restaurant.ts";
 import {getFavorites, setFavorites} from "../../datamodel/favorites.ts";
 import {OptionListView} from "../overview/OptionListView.tsx";
 import {PixmapButton, PixmapGroup} from "../Pixmap.tsx";
 import CartEntry from "../../datamodel/cart/cartEntry.ts";
 import FormattedError from "../../datamodel/error.ts";
-import {Navigate} from "react-router-dom";
+import {Navigate} from "react-router";
 import {Error} from "../Error.tsx";
 import {addToCart, AllCartsObservable} from "../../backend/Cart.ts";
 import {dictionaryToMap} from "../../util/Dictionary.ts";
@@ -29,8 +29,7 @@ export class FavoritesEntry extends React.Component<FavoritesEntryProps, Favorit
         }
     }
 
-    addToCart = (ev: MouseEvent<HTMLInputElement>) => {
-        ev.preventDefault()
+    addToCart = () => {
         if (this.props.entry.menuItem && this.props.entry.variation) {
             addToCart(
                 this.props.entry.menuItem,
@@ -47,8 +46,7 @@ export class FavoritesEntry extends React.Component<FavoritesEntryProps, Favorit
         }
     }
 
-    removeFromFavorites = (ev: MouseEvent<HTMLInputElement>) => {
-        ev.preventDefault();
+    removeFromFavorites = () => {
         if (this.props.entry.menuItem && this.props.entry.variation) {
             if (window.confirm("Wirklich löschen?")) {
                 let favorites = getFavorites();

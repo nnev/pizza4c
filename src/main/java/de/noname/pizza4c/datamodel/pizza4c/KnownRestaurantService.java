@@ -1,7 +1,5 @@
 package de.noname.pizza4c.datamodel.pizza4c;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import de.noname.pizza4c.datamodel.lieferando2025.*;
 import de.noname.pizza4c.webpage.RestaurantService;
 import io.netty.handler.logging.LogLevel;
@@ -18,6 +16,9 @@ import reactor.core.publisher.Mono;
 import reactor.netty.http.HttpProtocol;
 import reactor.netty.http.client.HttpClient;
 import reactor.netty.transport.logging.AdvancedByteBufFormat;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -144,7 +145,9 @@ public class KnownRestaurantService {
             "Fudge",
             "Joghurt",
             "Rahm",
-            "mit Ei"
+            "mit Ei",
+            "Kapsalon",
+            "Börek"
     );
 
     private boolean isVegetarian(String name) {
@@ -337,7 +340,7 @@ public class KnownRestaurantService {
                 }
             }
             restaurant.setMenu(menu);
-        } catch (IOException e) {
+        } catch (JacksonException e) {
             LOG.error("Failed to parse restaurant data", e);
         }
 
@@ -364,7 +367,7 @@ public class KnownRestaurantService {
         try {
             ObjectMapper mapper = new ObjectMapper();
             return mapper.readValue(data, Restaurant.class);
-        } catch (IOException e) {
+        } catch (JacksonException e) {
             LOG.error("Failed to load restaurant data", e);
         }
         return null;
@@ -377,7 +380,7 @@ public class KnownRestaurantService {
         try {
             ObjectMapper mapper = new ObjectMapper();
             return mapper.writeValueAsString(restaurant);
-        } catch (IOException e) {
+        } catch (JacksonException e) {
             LOG.error("Failed to load restaurant data", e);
         }
         return null;

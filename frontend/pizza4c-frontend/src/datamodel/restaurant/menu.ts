@@ -62,7 +62,7 @@ export function getVariation(menu: Menu, menuItemId: string, variationId: string
         return undefined;
     }
 
-    return menu.menuItems[menuItemId].variations[variationId];
+    return menu.menuItems[menuItemId]?.variations[variationId];
 }
 
 export function isOptionGroupMandatory(modifierGroup: ModifierGroup): boolean {

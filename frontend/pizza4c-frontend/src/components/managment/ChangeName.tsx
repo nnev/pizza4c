@@ -1,5 +1,5 @@
-import React, {ChangeEvent, FormEvent, MouseEvent, KeyboardEvent} from "react";
-import {Navigate} from "react-router-dom";
+import React, {ChangeEvent} from "react";
+import {Navigate} from "react-router";
 import {getMyName, Name, setMyName} from "../../datamodel/name.ts";
 import {PixmapButton, PixmapGroup} from "../Pixmap.tsx";
 import {Error} from "../Error.tsx"
@@ -34,16 +34,7 @@ export default class ChangeName extends React.Component<ChangeNameProps, ChangeN
     changeMayStore = (ev: ChangeEvent<HTMLInputElement>) => {
         this.setState({mayStore: ev.target.checked})
     }
-    changeNameSubmit = (ev: (MouseEvent<HTMLInputElement> | FormEvent<HTMLFormElement> | KeyboardEvent<HTMLInputElement>)) => {
-        if ("key" in ev) {
-            if (ev.key == "Enter") {
-                ev.preventDefault()
-            } else {
-                return;
-            }
-        } else {
-            ev.preventDefault();
-        }
+    changeNameSubmit = () => {
         if (this.ready() == "VALID") {
             setMyName(this.state.name, this.state.mayStore);
             this.setState({nameChanged: true})
@@ -51,8 +42,7 @@ export default class ChangeName extends React.Component<ChangeNameProps, ChangeN
         return;
     }
 
-    generateRandomName = (ev: MouseEvent<HTMLInputElement>) => {
-        ev.preventDefault();
+    generateRandomName = () => {
         this.setState({name: Name.generateNewName()})
     }
 

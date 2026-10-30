@@ -1,8 +1,8 @@
-import React, {ChangeEvent, MouseEvent} from "react";
+import React, {ChangeEvent} from "react";
 import {PixmapButton} from "../Pixmap.tsx";
 import {getKnownRestaurants} from "../../backend/restaurant.ts";
 import {addNewRestaurant} from "../../backend/Admin.ts";
-import {Navigate} from "react-router-dom";
+import {Navigate} from "react-router";
 
 interface ChangeRestaurantProps {
 }
@@ -30,8 +30,7 @@ export default class AddRestaurant extends React.Component<ChangeRestaurantProps
     changeRestaurantId = (ev: ChangeEvent<HTMLInputElement>) => {
         this.setState({restaurantId: ev.target.value})
     }
-    changeRestaurantNameSubmit = (ev: MouseEvent<HTMLInputElement>) => {
-        ev.preventDefault();
+    changeRestaurantNameSubmit = () => {
         addNewRestaurant(this.state.restaurantName, this.state.restaurantId).then(() => getKnownRestaurants());
     }
 

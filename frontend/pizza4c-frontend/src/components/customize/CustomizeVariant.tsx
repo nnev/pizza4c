@@ -1,8 +1,8 @@
 import Restaurant, {CurrentRestaurantObservable} from "../../datamodel/restaurant/restaurant.ts";
-import React, {ChangeEvent, MouseEvent} from "react";
+import React, {ChangeEvent} from "react";
 import {CustomizeOptionGroup} from "./CustomizeOptionGroup.tsx";
 import {PixmapButton, PixmapGroup, PixmapLink} from "../Pixmap.tsx";
-import {Navigate, useParams} from "react-router-dom";
+import {Navigate, useParams} from "react-router";
 import {addToCart} from "../../backend/Cart.ts";
 import FormattedError from "../../datamodel/error.ts";
 import {Error} from "../Error.tsx";
@@ -56,8 +56,7 @@ class CustomizeVariantClazz extends React.Component<CustomizeVariantProps, Custo
         CurrentRestaurantObservable.unsubscribe(this.listener);
     }
 
-    addToCart = (ev: MouseEvent<HTMLInputElement>) => {
-        ev.preventDefault();
+    addToCart = () => {
         if (this.props.menuItemId && this.props.variationId && this.getCustomizationCompleted()) {
             addToCart(this.props.menuItemId, this.props.variationId, this.state.selectedOptions, this.state.comment)
                 .then(_ => {
@@ -68,8 +67,7 @@ class CustomizeVariantClazz extends React.Component<CustomizeVariantProps, Custo
                 })
         }
     }
-    addToFavorites = (ev: MouseEvent<HTMLInputElement>) => {
-        ev.preventDefault();
+    addToFavorites = () => {
         if (this.props.menuItemId && this.props.variationId && this.getCustomizationCompleted()) {
             let favorites = getFavorites();
             favorites.favorite.push(new CartEntry(

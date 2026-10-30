@@ -1,7 +1,7 @@
 import CartEntry from "../../datamodel/cart/cartEntry.ts";
 import Restaurant from "../../datamodel/restaurant/restaurant.ts";
-import React from "react";
-import {getVariation} from "../../datamodel/restaurant/menu.ts";
+import React, {JSX} from "react";
+import {getVariation, MenuItem, Variation} from "../../datamodel/restaurant/menu.ts";
 
 interface OptionListViewProps {
     entry: CartEntry;
@@ -15,23 +15,25 @@ interface OptionListViewState {
 
 export class OptionListView extends React.Component<OptionListViewProps, OptionListViewState> {
     render() {
-        let menu = this.props.restaurant.menu;
-        let modifiers = this.props.entry.modifiers;
+        const menu = this.props.restaurant.menu;
+        const modifiers = this.props.entry.modifiers;
 
-        let variation = menu.menuItems[this.props.entry.menuItem].variations[this.props.entry.variation];
+        const variation: Variation | undefined = getVariation(menu, this.props.entry.menuItem, this.props.entry.variation);
 
-        let mappedOptions: JSX.Element[] = []
-        for (let optionGroupKey in modifiers) {
-            let modifierGroup = variation.modifierGroups[optionGroupKey];
-            let modifierIds = modifiers[optionGroupKey];
-            for (let modifierId of modifierIds) {
-                let option = modifierGroup.modifiers[modifierId];
-                if (option) {
-                    mappedOptions.push(
-                        <span key={option.name}>
+        const mappedOptions: JSX.Element[] = []
+        if (variation !== undefined) {
+            for (const optionGroupKey in modifiers) {
+                const modifierGroup = variation.modifierGroups[optionGroupKey];
+                const modifierIds = modifiers[optionGroupKey];
+                for (const modifierId of modifierIds) {
+                    const option = modifierGroup.modifiers[modifierId];
+                    if (option) {
+                        mappedOptions.push(
+                            <span key={option.name}>
                             &nbsp;&nbsp;+&nbsp;{option.name}<br/>
                         </span>
-                    )
+                        )
+                    }
                 }
             }
         }
@@ -44,8 +46,8 @@ export class OptionListView extends React.Component<OptionListViewProps, OptionL
             )
         }
 
-        let sizeValue = getVariation(this.props.restaurant.menu, this.props.entry.menuItem, this.props.entry.variation)?.name || "";
-        let product = this.props.restaurant.menu.menuItems[this.props.entry.menuItem];
+        const sizeValue = variation?.name || "";
+        const product: MenuItem | undefined = menu.menuItems[this.props.entry.menuItem];
         return (
             <>
                 <b>

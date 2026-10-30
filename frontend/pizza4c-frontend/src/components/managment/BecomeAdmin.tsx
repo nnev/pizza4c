@@ -1,5 +1,5 @@
-import React, {ChangeEvent, MouseEvent} from "react";
-import {Navigate} from "react-router-dom";
+import React, {ChangeEvent} from "react";
+import {Navigate} from "react-router";
 import {PixmapButton} from "../Pixmap.tsx";
 import {getAdminTicket} from "../../backend/Admin.ts";
 import {AdminObservable} from "../../datamodel/admin.ts";
@@ -25,8 +25,7 @@ export default class BecomeAdmin extends React.Component<BecomeAdminProps, Becom
     magicWords = (ev: ChangeEvent<HTMLInputElement>) => {
         this.setState({magicWords: ev.target.value})
     }
-    changeNameSubmit = (ev: MouseEvent<HTMLInputElement>) => {
-        ev.preventDefault();
+    changeNameSubmit = () => {
         getAdminTicket(this.state.magicWords).then(_ => {
             let isAdmin = AdminObservable.getValue().isAdmin;
             return this.setState({redirectOverview: isAdmin});

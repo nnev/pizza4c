@@ -1,7 +1,5 @@
 package de.noname.pizza4c.fax.clicksend;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import de.noname.pizza4c.fax.FaxSendStatus;
 import de.noname.pizza4c.fax.FaxServiceProvider;
 import de.noname.pizza4c.webpage.RestaurantService;
@@ -20,6 +18,8 @@ import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientException;
 import reactor.netty.http.client.HttpClient;
 import reactor.netty.transport.logging.AdvancedByteBufFormat;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.ObjectMapper;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
@@ -104,7 +104,7 @@ public class ClickSendFaxServiceProvider implements FaxServiceProvider {
         String body;
         try {
             body = new ObjectMapper().writer().writeValueAsString(clickSendRequest);
-        } catch (JsonProcessingException e) {
+        } catch (JacksonException e) {
             LOG.error("Failed to json serialize click send request", e);
             return null;
         }

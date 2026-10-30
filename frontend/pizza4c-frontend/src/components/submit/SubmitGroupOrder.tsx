@@ -1,5 +1,5 @@
 import React from "react";
-import {Navigate} from "react-router-dom";
+import {Navigate} from "react-router";
 import {fetchAllCarts} from "../../backend/Cart.ts";
 import {PixmapGroup, PixmapLink} from "../Pixmap.tsx";
 import {AdminObservable} from "../../datamodel/admin.ts";

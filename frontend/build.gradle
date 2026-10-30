@@ -1,10 +1,13 @@
 plugins {
-    id "com.github.node-gradle.node" version "7.0.2"
+    id "com.github.node-gradle.node" version "7.1.0"
     id 'java'
 }
 
-sourceCompatibility = '17'
-targetCompatibility = '17'
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}
 
 node {
     allowInsecureProtocol = false

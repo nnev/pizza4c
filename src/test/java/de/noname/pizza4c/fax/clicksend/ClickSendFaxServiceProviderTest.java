@@ -1,12 +1,12 @@
 package de.noname.pizza4c.fax.clicksend;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import tools.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
 
@@ -50,7 +50,7 @@ class ClickSendFaxServiceProviderTest {
     }
 
     private ClickSendResponse loadResponse(String path) throws IOException {
-        return new ObjectMapper().reader().readValue(
+        return new ObjectMapper().readValue(
                 ClickSendFaxServiceProviderTest.class.getResourceAsStream(path),
                 ClickSendResponse.class
         );

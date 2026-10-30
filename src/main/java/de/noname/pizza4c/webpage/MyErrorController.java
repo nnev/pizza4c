@@ -1,31 +1,27 @@
 package de.noname.pizza4c.webpage;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
-import org.springframework.boot.autoconfigure.web.ServerProperties;
 import org.springframework.boot.web.error.ErrorAttributeOptions;
 import org.springframework.boot.web.error.ErrorAttributeOptions.Include;
-import org.springframework.boot.web.servlet.error.ErrorAttributes;
-import org.springframework.boot.web.servlet.error.ErrorController;
+import org.springframework.boot.webmvc.error.ErrorAttributes;
+import org.springframework.boot.webmvc.error.ErrorController;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.server.ResponseStatusException;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.ObjectMapper;
 
 import java.util.HashMap;
 
 @Controller
 public class MyErrorController implements ErrorController {
     private final ErrorAttributes errorAttributes;
-    private final ServerProperties serverProperties;
 
-    public MyErrorController(
-            ErrorAttributes errorAttributes, ServerProperties serverProperties) {
+    public MyErrorController(ErrorAttributes errorAttributes) {
         this.errorAttributes = errorAttributes;
-        this.serverProperties = serverProperties;
     }
 
 
@@ -42,7 +38,7 @@ public class MyErrorController implements ErrorController {
                 map.put("status", errors.get("status"));
                 map.put("message", errors.get("message"));
                 return new ObjectMapper().writeValueAsString(map);
-            } catch (JsonProcessingException e) {
+            } catch (JacksonException e) {
                 // pass
             }
         }

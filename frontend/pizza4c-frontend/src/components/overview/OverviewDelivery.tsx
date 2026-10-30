@@ -1,6 +1,6 @@
-import React, {MouseEvent} from "react";
+import React from "react";
 import {Pixmap, PixmapButton} from "../Pixmap.tsx";
-import {Navigate} from "react-router-dom";
+import {Navigate} from "react-router";
 import AllCarts from "../../datamodel/cart/allCarts.ts";
 import {formatDate} from "../../util/Time.ts";
 import Restaurant from "../../datamodel/restaurant/restaurant.ts";
@@ -24,8 +24,7 @@ export class OverviewDelivery extends React.Component<OverviewDeliveryProps, Ove
         }
     }
 
-    setDelivery = (ev: MouseEvent<any>) => {
-        ev.preventDefault();
+    setDelivery = () => {
         this.setState({redirectDelivery: true});
     }
 

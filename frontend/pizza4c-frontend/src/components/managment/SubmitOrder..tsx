@@ -1,6 +1,6 @@
-import React, {MouseEvent} from "react";
+import React from "react";
 import {PixmapButton} from "../Pixmap.tsx";
-import {Navigate} from "react-router-dom";
+import {Navigate} from "react-router";
 
 interface SubmitOrderProps {
 }
@@ -18,8 +18,7 @@ export default class SubmitOrder extends React.Component<SubmitOrderProps, Submi
         }
     }
 
-    handleSubmitOrder = (ev: MouseEvent<HTMLInputElement>) => {
-        ev.preventDefault();
+    handleSubmitOrder = () => {
         this.setState({submitOrder: true});
     }
 

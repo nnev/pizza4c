@@ -1,6 +1,6 @@
 import Cart from "../../datamodel/cart/cart.ts";
 import Restaurant from "../../datamodel/restaurant/restaurant.ts";
-import React from "react";
+import React, {JSX} from "react";
 import {CartView} from "./CartView.tsx";
 
 interface CartsViewProps {

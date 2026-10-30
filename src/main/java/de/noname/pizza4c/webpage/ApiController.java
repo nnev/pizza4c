@@ -1,6 +1,5 @@
 package de.noname.pizza4c.webpage;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import de.noname.pizza4c.datamodel.lieferando2025.Restaurant;
 import de.noname.pizza4c.datamodel.pizza4c.*;
 import de.noname.pizza4c.pdf.PdfGenerator;
@@ -10,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.AbstractView;
+import tools.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -42,7 +42,7 @@ public class ApiController {
     @PostMapping("/api/addToCart")
     public Cart addToCart(@RequestBody String rawBody) throws IOException {
         Restaurant restaurant = restaurantService.getSelectedRestaurant();
-        var data = new ObjectMapper().reader().readValue(rawBody, AddToCartDto.class);
+        var data = new ObjectMapper().readValue(rawBody, AddToCartDto.class);
         var validData = data.ensureValid(restaurant.getMenu());
 
         allCartService.getCurrentAllCarts().ensureNotSubmitted();

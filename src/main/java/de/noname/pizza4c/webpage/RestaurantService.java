@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class RestaurantService {
@@ -46,9 +47,18 @@ public class RestaurantService {
 
     @Transactional
     public void addRestaurant(String humanReadableName, String lieferandoName) {
-        long maxId = listAllKnownRestaurants().stream().mapToLong(VersionedEntity::getId).max().orElse(1);
+        LOG.info("Adding restaurant {}", humanReadableName);
+        List<KnownRestaurant> knownRestaurants = listAllKnownRestaurants();
+        LOG.info("Found {} known restaurants: {}", knownRestaurants.size(), knownRestaurants.stream().map(knownRestaurant -> Map.of(
+                "id", knownRestaurant.getId(),
+                "version", knownRestaurant.getVersion(),
+                "humanReadableName", knownRestaurant.getHumanReadableName(),
+                "lieferandoName", knownRestaurant.getLieferandoName()
+        )).toList());
+        long maxId = knownRestaurants.stream().mapToLong(VersionedEntity::getId).max().orElse(knownRestaurants.size());
+        LOG.info("Max id {} new restaurant", maxId);
         var restaurant = new KnownRestaurant();
-        restaurant.setId(maxId + 1);
+//        restaurant.setId(maxId + 1);
         restaurant.setLieferandoName(lieferandoName);
         restaurant.setHumanReadableName(humanReadableName);
         knownRestaurantRepository.saveAndFlush(restaurant);

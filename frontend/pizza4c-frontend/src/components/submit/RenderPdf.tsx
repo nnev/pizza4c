@@ -1,6 +1,6 @@
 import React from "react";
 import {renderPdf} from "../../backend/RenderPdf.ts";
-import {Navigate} from "react-router-dom";
+import {Navigate} from "react-router";
 
 
 interface RenderProps {

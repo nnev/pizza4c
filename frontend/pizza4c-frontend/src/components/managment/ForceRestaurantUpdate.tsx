@@ -1,6 +1,6 @@
-import React, {MouseEvent} from "react";
+import React from "react";
 import {PixmapButton} from "../Pixmap.tsx";
-import {Navigate} from "react-router-dom";
+import {Navigate} from "react-router";
 import FormattedError from "../../datamodel/error.ts";
 import {Error} from "../Error.tsx";
 import {forceRestaurantRefresh} from "../../backend/Admin.ts";
@@ -22,8 +22,7 @@ export default class ForceRestaurantUpdate extends React.Component<ForceRestaura
         }
     }
 
-    handleForceRestaurantUpdate = (ev: MouseEvent<HTMLInputElement>) => {
-        ev.preventDefault();
+    handleForceRestaurantUpdate = () => {
         forceRestaurantRefresh().then(value => {
             this.setState({updated: value})
         })

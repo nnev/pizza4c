@@ -1,7 +1,7 @@
-import React, {ChangeEvent, MouseEvent} from "react";
+import React, {ChangeEvent} from "react";
 import {PixmapButton} from "../Pixmap.tsx";
 import {setDelivered} from "../../backend/Cart.ts";
-import {Navigate} from "react-router-dom";
+import {Navigate} from "react-router";
 import FormattedError from "../../datamodel/error.ts";
 import {Error} from "../Error.tsx";
 import {formatDateAsDateTime} from "../../util/Time.ts";
@@ -32,8 +32,7 @@ export class Delivery extends React.Component<DeliveryProps, DeliveryState> {
         this.setState({date: date});
     }
 
-    saveDate = (ev: MouseEvent<any>) => {
-        ev.preventDefault();
+    saveDate = () => {
         setDelivered(this.state.date).then(_ => {
             this.setState({saved: true})
         }).catch(value => {

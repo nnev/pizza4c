@@ -1,4 +1,4 @@
-import React, {MouseEvent} from "react";
+import React from "react";
 import Restaurant, {CurrentRestaurantObservable} from "../../datamodel/restaurant/restaurant.ts";
 import Dictionary, {chooseRandomDict, mapToDictionary} from "../../util/Dictionary.ts";
 import CartEntry from "../../datamodel/cart/cartEntry.ts";
@@ -6,7 +6,7 @@ import {OptionListView} from "../overview/OptionListView.tsx";
 import {PixmapButton, PixmapGroup, PixmapLink} from "../Pixmap.tsx";
 import FormattedError from "../../datamodel/error.ts";
 import {addToCart} from "../../backend/Cart.ts";
-import {Navigate} from "react-router-dom";
+import {Navigate} from "react-router";
 import {FormatPrice} from "../overview/FormatPrice.tsx";
 import {ModifierGroup, Variation} from "../../datamodel/restaurant/menu.ts";
 
@@ -156,12 +156,10 @@ export class RandomOrder extends React.Component<RandomOrderProps, RandomOrderSt
         return false;
     }
 
-    reroll = (ev: MouseEvent<HTMLInputElement>) => {
-        ev.preventDefault();
+    reroll = () => {
         this.randomize();
     }
-    submit = (ev: MouseEvent<HTMLInputElement>) => {
-        ev.preventDefault();
+    submit = () => {
         if (this.state.selectedMenuItemId == undefined || this.state.selectedVariationId == undefined || this.state.selectedModifiers == undefined) {
             return
         }

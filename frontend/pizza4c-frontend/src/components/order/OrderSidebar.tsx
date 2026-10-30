@@ -2,7 +2,7 @@ import React from "react";
 import Restaurant from "../../datamodel/restaurant/restaurant.ts";
 import {selectableVegan, VeganObservable} from "../../datamodel/cart/vegan.ts";
 import {Pixmap} from "../Pixmap.tsx";
-import {Navigate} from "react-router-dom";
+import {Navigate} from "react-router";
 import {getFavorites} from "../../datamodel/favorites.ts";
 
 interface OrderSidebarProps {

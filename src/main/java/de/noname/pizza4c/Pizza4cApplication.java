@@ -22,7 +22,7 @@ public class Pizza4cApplication {
     public void initializeRestaurantDataOnFirstStart() {
         if (restaurantService.getSelectedRestaurant() == null) {
             LOG.info("No restaurant data selected. Refreshing all data");
-            restaurantService.forceRefreshRestaurantData();
+//            restaurantService.forceRefreshRestaurantData();
         }
     }
 

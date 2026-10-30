@@ -8,7 +8,7 @@ import {FormatPrice} from "./FormatPrice.tsx";
 import {ProgressMoney} from "../Progress.tsx";
 import {Admin, AdminObservable} from "../../datamodel/admin.ts";
 import {Name, UserNameObservable} from "../../datamodel/name.ts";
-import {Navigate} from "react-router-dom";
+import {Navigate} from "react-router";
 import {OverviewDelivery} from "./OverviewDelivery.tsx";
 
 

@@ -1,5 +1,5 @@
 import React from 'react';
-import {BrowserRouter, Link, Navigate, Route, Routes} from "react-router-dom";
+import {BrowserRouter, Link, Navigate, Route, Routes} from "react-router";
 import {Order} from "./components/order/Order.tsx";
 import {CustomizeProduct} from "./components/customize/CustomizeProduct.tsx";
 import {getCurrentRestaurant} from "./backend/restaurant.ts";

@@ -1,10 +1,10 @@
-import React, {MouseEventHandler} from "react";
-import {Link} from "react-router-dom";
+import React from "react";
+import {Link} from "react-router";
 import {joinClasses} from "../util/JoinClasses.ts";
 
 interface PixmapProps {
     pixmap: string;
-    text?: string | JSX.Element;
+    text?: string | React.JSX.Element;
     className?: string;
     autofocus?: boolean;
     tabIndex?: number;
@@ -12,7 +12,7 @@ interface PixmapProps {
 }
 
 interface PixmapButtonProps extends PixmapProps {
-    onClick: MouseEventHandler<any>;
+    onClick: () => void;
     disabled?: boolean;
     grow?: boolean;
 }
@@ -40,8 +40,14 @@ export class PixmapButton extends React.Component<PixmapButtonProps, any> {
     render() {
         return (
             <button
-                onClick={this.props.onClick}
-                onSubmit={this.props.onClick}
+                onClick={(ev) => {
+                    ev.preventDefault()
+                    this.props.onClick()
+                }}
+                onSubmit={(ev) =>{
+                    ev.preventDefault()
+                    this.props.onClick()
+                }}
                 disabled={this.props.disabled}
                 className={joinClasses("pixmapButton", this.props.className)}
                 autoFocus={this.props.autofocus || false}
